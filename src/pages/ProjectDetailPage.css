@@ -1090,6 +1090,37 @@
     .accordion-item.expanded .accordion-content {
         height: auto;
     }
+
+    /* Fix Content Overflow */
+    .unit-content-wrapper {
+        padding: 1.5rem;
+    }
+
+    .unit-stats-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+
+    .unit-availability-stat {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .unit-extra-stats {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .unit-actions-row {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
 }
 
 
