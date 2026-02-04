@@ -1,9 +1,9 @@
-import brandLogoWhite from '../assets/brand-logo-white.png';
-import brandLogoBlack from '../assets/brand-logo-black.png';
-import islandLogoWhite from '../assets/island-logo-white.png';
-import islandLogoBlack from '../assets/island-logo-black.png';
-import coastalLogoWhite from '../assets/coastal-logo-white.png';
-import coastalLogoBlack from '../assets/coastal-logo-black.png';
+const brandLogoWhite = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/brand-logo-white.png';
+const brandLogoBlack = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/brand-logo-black.png';
+const islandLogoWhite = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/island-logo-white.png';
+const islandLogoBlack = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/island-logo-black.png';
+const coastalLogoWhite = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/coastal-logo-white.png';
+const coastalLogoBlack = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/coastal-logo-black.png';
 
 export const brandBranding = {
     name: 'ARCADEA PROPERTY',
