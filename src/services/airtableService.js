@@ -2,6 +2,8 @@ const BASE_URL = 'https://api.airtable.com/v0';
 const PAT = import.meta.env.VITE_AIRTABLE_PAT;
 const BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
 
+import { oneParkLaneProject } from '../data/oneParkLaneData';
+
 const TABLES = {
     PROJECTS: import.meta.env.VITE_AIRTABLE_TABLE_PROJECTS || 'Projects',
     UNITS: import.meta.env.VITE_AIRTABLE_TABLE_UNITS || 'Units',
@@ -58,14 +60,41 @@ export const clearCache = () => {
  * Fetch all projects for a specific collection
  */
 export const fetchProjectsByCollection = async (collectionName) => {
-    if (!BASE_ID || BASE_ID === 'your_base_id_here') {
-        throw new Error('Airtable Base ID not configured');
+    // 1. Prepare static projects if any
+    let staticProjects = [];
+    // Check for both 'Coastal' (Airtable value) and 'coastal' (ID value)
+    if (collectionName === 'Coastal' || collectionName === 'coastal') {
+        staticProjects.push({
+            id: oneParkLaneProject.id,
+            title: oneParkLaneProject.name,
+            location: oneParkLaneProject.location,
+            price: oneParkLaneProject.price,
+            image: oneParkLaneProject.heroImage,
+            tag: oneParkLaneProject.tag,
+            features: [
+                oneParkLaneProject.stats.beds + ' Bed',
+                oneParkLaneProject.stats.baths + ' Bath',
+                oneParkLaneProject.stats.size
+            ],
+            collection: 'Coastal', // Normalize to Coastal for display
+            slug: oneParkLaneProject.slug,
+        });
+    }
+
+    // Return static projects immediately if no API configuration
+    if (!BASE_ID || BASE_ID === 'your_base_id_here' || !PAT) {
+        return staticProjects;
     }
 
     // Check cache first
     const cacheKey = `projects_${collectionName}`;
     const cached = getFromCache(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+        // We assume the cached version already includes the static projects if the cache logic is consistent
+        // However, to be safe, we could check if the static project is there. 
+        // For simplicity, let's just use the cached data which should be correct after the first fetch.
+        return cached;
+    }
 
     try {
         const filter = encodeURIComponent(`{Collection} = '${collectionName}'`);
@@ -76,11 +105,13 @@ export const fetchProjectsByCollection = async (collectionName) => {
         if (!response.ok) {
             const errorBody = await response.json();
             console.error('Airtable Error Response:', errorBody);
+            // Fallback to static projects on error, but log it
+            if (staticProjects.length > 0) return staticProjects;
             throw new Error(`Airtable Error: ${errorBody.error?.message || response.statusText}`);
         }
 
         const data = await response.json();
-        const projects = data.records.map(record => {
+        const airtableProjects = data.records.map(record => {
             const f = record.fields;
             // Combine bedrooms, bathrooms, and size into a list of "features" for the card preview
             const features = [
@@ -102,11 +133,17 @@ export const fetchProjectsByCollection = async (collectionName) => {
             };
         });
 
+        // Combine static and dynamic projects
+        // Place static projects FIRST as requested ("most important project")
+        const allProjects = [...staticProjects, ...airtableProjects];
+
         // Store in cache
-        setCache(cacheKey, projects);
-        return projects;
+        setCache(cacheKey, allProjects);
+        return allProjects;
     } catch (error) {
         console.error('Airtable Fetch Error:', error);
+        // Fallback to static projects if available
+        if (staticProjects.length > 0) return staticProjects;
         throw error;
     }
 };
@@ -115,6 +152,11 @@ export const fetchProjectsByCollection = async (collectionName) => {
  * Fetch a single project with all its linked data
  */
 export const fetchProjectDetail = async (projectIdOrSlug) => {
+    // 1. Check for Static Project first
+    if (projectIdOrSlug === oneParkLaneProject.id || projectIdOrSlug === oneParkLaneProject.slug) {
+        return oneParkLaneProject;
+    }
+
     if (!BASE_ID) throw new Error('Airtable Base ID not configured');
 
     // Check cache first
@@ -183,8 +225,7 @@ export const fetchProjectDetail = async (projectIdOrSlug) => {
         const resourcesResponse = await fetch(resourcesUrl, { headers });
         const resourcesData = resourcesResponse.ok ? await resourcesResponse.json() : { records: [] };
 
-
-        return {
+        const projectDetail = {
             id: projectRecord.id,
             name: p['Name'],
             description: p['Overview Blurb'],

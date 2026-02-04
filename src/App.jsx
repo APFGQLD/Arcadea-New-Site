@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import PropertiesPage from './pages/PropertiesPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
+import OneParkLanePage from './pages/OneParkLanePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import BlogPage from './pages/BlogPage';
@@ -21,6 +22,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/properties" element={<PropertiesPage />} />
+          {/* Specific route for One Park Lane BEFORE generic project ID route */}
+          <Route path="/project/one-park-lane" element={<OneParkLanePage />} />
           <Route path="/project/:id" element={<ProjectDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
