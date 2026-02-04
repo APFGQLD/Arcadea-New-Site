@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://arcadeaproperty.com/sitemap.xml
+Sitemap: https://arcadea.com.au/sitemap.xml
 
 # Disallow admin or private areas (if any in future)
 # Disallow: /admin/
