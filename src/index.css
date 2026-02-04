@@ -1,0 +1,242 @@
+@import './variables.css';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  font-family: var(--font-main);
+  background-color: var(--bg-primary);
+  background-image: var(--ambient-glow);
+  background-attachment: fixed;
+  /* Parallax effect for glow */
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-gold);
+}
+
+/* Page Transitions */
+main {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+button {
+  font-family: var(--font-main);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  transition: all var(--transition-fast);
+  z-index: 1000;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  color: var(--accent-gold);
+}
+
+/* Custom Language Selector */
+.language-selector {
+  position: relative;
+  user-select: none;
+}
+
+.lang-selected {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: var(--transition-fast);
+}
+
+.lang-selected:hover {
+  border-color: var(--accent-gold);
+}
+
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 0.85rem;
+}
+
+.lang-option:hover {
+  background: var(--bg-tertiary);
+  color: var(--accent-gold);
+}
+
+.flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Global Buttons */
+.btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all var(--transition-normal);
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--accent-gold);
+  color: #ffffff;
+  /* Primary buttons usually stay light text for contrast */
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-gold-light);
+  transform: translateY(-3px);
+}
+
+.btn-secondary {
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  transform: translateY(-3px);
+}
+
+/* Utility Classes */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.text-gold {
+  color: var(--accent-gold);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.section-padding {
+  padding: 8rem 0;
+}
+
+
+
+/* Heroicon Utilities */
+.hero-icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.hero-icon-sm {
+  width: 1.25em;
+  height: 1.25em;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 4rem 0;
+  }
+}

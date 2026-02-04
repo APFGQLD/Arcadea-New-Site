@@ -1,0 +1,75 @@
+{
+    "nav": {
+        "home": "首页",
+        "properties": "物业项目",
+        "services": "服务项目",
+        "about": "关于我们",
+        "contact": "联系我们"
+    },
+    "hero": {
+        "title": "重新定义奢华房地产",
+        "subtitle": "高雅生活，精致投资",
+        "description": "Arcadea Property 专门在全球最抢手的地点挖掘高收益、期房投资机会和豪华住宅。",
+        "cta": "查看投资组合"
+    },
+    "services": {
+        "title": "我们的专业领域",
+        "subtitle": "全面的房地产与财务解决方案",
+        "pillars": {
+            "hotel": {
+                "title": "酒店及度假村投资",
+                "items": [
+                    "物业收益保证",
+                    "稳健的投资回报率 (ROI)",
+                    "对接全球知名品牌",
+                    "对接经验丰富且值得信赖的开发商"
+                ]
+            },
+            "financial": {
+                "title": "财务服务",
+                "subtitle": "通过我们、合作伙伴及信赖的顾问",
+                "items": [
+                    "股权释放 (Equity Release)",
+                    "自管养老金 (SMSF) 建立与转入",
+                    "海外物业税务折旧",
+                    "税务高效所有权建议",
+                    "碎片化投资 (Fractional Investing)"
+                ]
+            },
+            "australian": {
+                "title": "澳洲物业",
+                "items": [
+                    "高品质且精选的澳洲物业",
+                    "透明的销售流程",
+                    "CoPosit 和存款债券 (Deposit Bonds)",
+                    "独家房源与开发项目"
+                ]
+            }
+        }
+    },
+    "properties": {
+        "title": "精选投资组合",
+        "description": "探索我们独家挑选的一流房地产资产，这些资产经过严格审查，旨在实现增长和卓越。",
+        "cta": "发现更多机会",
+        "exploreDetails": "查看详情",
+        "explore_title": "探索我们的系列",
+        "explore_subtitle": "选择目的地以查看我们的独家房源。",
+        "tags": {
+            "limited": "限量供应",
+            "preLaunch": "预售",
+            "offPlan": "期房"
+        }
+    },
+    "about": {
+        "title": "我们的理念",
+        "description": "在 Arcadea Property，我们认为房地产不仅仅是交易；它是通过在全球增长市场的战略收购来建立长期财富。"
+    },
+    "contact": {
+        "title": "私人咨询",
+        "description": "联系我们的专家顾问，就您的房地产需求进行机密咨询。",
+        "formPlaceholder": "[潜在客户表单集成点]"
+    },
+    "footer": {
+        "rights": "版权所有。专业房地产咨询服务。"
+    }
+}

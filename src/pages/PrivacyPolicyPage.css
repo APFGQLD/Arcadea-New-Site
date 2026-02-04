@@ -1,0 +1,103 @@
+/* Privacy Policy Page */
+.privacy-page {
+    min-height: 100vh;
+    background: var(--background-primary);
+    padding-bottom: 6rem;
+}
+
+/* Hero Section */
+.privacy-hero {
+    background: var(--surface-elevated);
+    padding: 8rem 0 4rem;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.privacy-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+/* Content */
+.privacy-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 3rem;
+}
+
+.privacy-content section {
+    margin-bottom: 3rem;
+}
+
+.privacy-content h2 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.privacy-content p,
+.privacy-content li {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.privacy-content ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.privacy-content li {
+    margin-bottom: 0.5rem;
+}
+
+.privacy-content strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.privacy-content a {
+    color: var(--accent-gold);
+    text-decoration: underline;
+    transition: opacity var(--transition-normal);
+}
+
+.privacy-content a:hover {
+    opacity: 0.8;
+}
+
+.privacy-last-updated {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    font-style: italic;
+    margin-top: 3rem;
+    text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .privacy-hero {
+        padding: 6rem 0 3rem;
+    }
+
+    .privacy-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .privacy-title {
+        font-size: 2rem;
+    }
+}

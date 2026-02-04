@@ -1,0 +1,205 @@
+{
+    "nav": {
+        "home": "Home",
+        "properties": "Properties",
+        "services": "Services",
+        "about": "About",
+        "contact": "Get in Touch"
+    },
+    "hero": {
+        "title": "Redefining Luxury Real Estate",
+        "subtitle": "Exquisite Living, Refined Investments",
+        "description": "Arcadea Property specializes in identifying high-yield, off-plan investment opportunities and luxury residences across the world's most sought-after locations.",
+        "cta": "View Portfolio"
+    },
+    "services": {
+        "title": "Our Expertise",
+        "subtitle": "Comprehensive Property & Financial Solutions",
+        "pillars": {
+            "hotel": {
+                "title": "Hotel and Resort Investments",
+                "items": [
+                    "Guaranteed Returns on property",
+                    "Strong ROI",
+                    "Access to globally respected brands",
+                    "Access to experienced and trusted developers"
+                ]
+            },
+            "financial": {
+                "title": "Financial Service Partnerships",
+                "subtitle": "Through us, our partners and trusted advisors",
+                "items": [
+                    "Equity Release",
+                    "SMSF Creation and Rollover",
+                    "Tax Depreciation On Overseas Properties",
+                    "Tax effective ownership",
+                    "Fractional Investing"
+                ]
+            },
+            "australian": {
+                "title": "Australian Property",
+                "items": [
+                    "High Quality & Curated Australian Property",
+                    "Transparent Sales Process",
+                    "CoPosit and Deposit Bonds",
+                    "Exclusive Listings and Developments"
+                ]
+            }
+        }
+    },
+    "properties": {
+        "title": "Curated Portfolio",
+        "description": "Explore our exclusive selection of prime real estate assets, meticulously vetted for growth and distinction.",
+        "cta": "Discover More Opportunities",
+        "exploreDetails": "EXPLORE DETAILS",
+        "explore_title": "Explore Our Collections",
+        "explore_subtitle": "Select a destination to view our exclusive listings.",
+        "tags": {
+            "limited": "Limited Offering",
+            "preLaunch": "Pre-Launch",
+            "offPlan": "Off-Plan"
+        },
+        "filters": {
+            "all": "All Properties",
+            "island": "Island Collection",
+            "coastal": "Coastal Collection"
+        },
+        "labels": {
+            "bedrooms": "Bedrooms",
+            "bathrooms": "Bathrooms",
+            "size": "Size",
+            "price": "Price",
+            "location": "Location",
+            "status": "Status",
+            "collection": "Collection",
+            "developer": "Developer",
+            "completion": "Completion",
+            "roi": "Projected ROI",
+            "rental_yield": "Rental Yield",
+            "starting_from": "Starting From",
+            "poa": "Price on Application"
+        },
+        "actions": {
+            "view_details": "View Details",
+            "enquire_now": "Enquire Now",
+            "download_brochure": "Download Brochure",
+            "book_viewing": "Book a Viewing",
+            "back_to_portfolio": "Back to Portfolio"
+        },
+        "loading": "Loading properties...",
+        "no_properties": "No properties found in this collection.",
+        "error": "Unable to load properties. Please try again later."
+    },
+    "about": {
+        "title": "Our Philosophy",
+        "description": "At Arcadea Property, we believe that real estate is more than just transactions; it's about building long-term wealth through strategic acquisitions in global growth markets."
+    },
+    "about_page": {
+        "hero": {
+            "title": "THE ARCHITECT OF WEALTH & LIFESTYLE",
+            "subtitle": "We curate the world's most exceptional properties, bridging the gap between high-yield accessibility and ultra-luxury living."
+        },
+        "story": {
+            "title": "OUR STORY",
+            "headline": "Not Just Real Estate.",
+            "headline_accent": "A Curator of Exceptional Lifestyles.",
+            "paragraph1": "Arcadea is not just a real estate agency; we are curators of exceptional lifestyles and astute wealth creation. We bridge the gap between two distinct worlds: the high-yield accessibility of tropical investment and the ultra-luxury prestige of Australian coastal living.",
+            "paragraph2": "Our mission is clear: to curate the world's most exceptional properties, ensuring that whether you seek ROI or residence, your journey is seamless, sophisticated, and secure.",
+            "paragraph3": "We envision a world where property ownership transcends borders—where smart adventurers discover paradise that pays, and the established elite find their sanctuary."
+        },
+        "collections": {
+            "title": "THE TWO COLLECTIONS",
+            "subtitle": "One brand. Two distinct conversations. Each tailored to your unique vision.",
+            "island": {
+                "title": "The Island Collection",
+                "tagline": "Paradise that Pays",
+                "description": "High-yield investment properties in Bali and overseas. Managed villas and hotels designed for smart adventurers seeking ROI and diversification.",
+                "keywords": [
+                    "Yield",
+                    "Growth",
+                    "Turnkey",
+                    "Passive",
+                    "Managed"
+                ]
+            },
+            "coastal": {
+                "title": "The Coastal Collection",
+                "tagline": "Lifestyle, Legacy, Prestige",
+                "description": "Ultra-luxury Australian properties on the Gold Coast. Trophy residences for the established elite seeking status, stability, and sanctuary.",
+                "keywords": [
+                    "Unrivaled",
+                    "Sanctuary",
+                    "Panoramas",
+                    "Iconic",
+                    "Prestige"
+                ]
+            },
+            "cta": "Explore Collection"
+        },
+        "values": {
+            "title": "OUR VALUES",
+            "subtitle": "The pillars that define our approach to every partnership.",
+            "precision": {
+                "title": "Precision",
+                "description": "Every detail matters. From 12% projected yields to 270-degree ocean views, we provide exact data you can trust."
+            },
+            "trust": {
+                "title": "Trust",
+                "description": "We are the calm experts. Transparency and honesty form the foundation of every relationship we build."
+            },
+            "excellence": {
+                "title": "Excellence",
+                "description": "We curate only the world's most exceptional properties, ensuring every offering meets our exacting standards."
+            },
+            "global": {
+                "title": "Global Vision",
+                "description": "Bridging continents and cultures, we connect investors with opportunities from Bali to the Gold Coast."
+            }
+        },
+        "process": {
+            "title": "OUR PROCESS",
+            "subtitle": "From discovery to elevation, we guide you every step of the way.",
+            "steps": {
+                "discovery": {
+                    "title": "Discovery",
+                    "description": "We begin by understanding your goals, whether you seek high-yield returns or a trophy residence."
+                },
+                "curation": {
+                    "title": "Curation",
+                    "description": "Our team presents a carefully selected portfolio aligned with your investment strategy or lifestyle vision."
+                },
+                "structure": {
+                    "title": "Structure",
+                    "description": "We guide you through financing, legal frameworks, and tax optimization with precision and clarity."
+                },
+                "acquisition": {
+                    "title": "Acquisition",
+                    "description": "From contract to completion, we ensure a seamless, sophisticated transaction process."
+                },
+                "elevation": {
+                    "title": "Elevation",
+                    "description": "Post-purchase, we provide ongoing support, management, and insights to maximize your investment."
+                }
+            }
+        },
+        "why": {
+            "title": "WHY CHOOSE ARCADEA",
+            "years": "Years of Expertise",
+            "properties": "Properties Sold",
+            "sales": "In Sales Volume"
+        },
+        "cta": {
+            "title": "BEGIN YOUR JOURNEY",
+            "subtitle": "Whether you seek the data or the dream, we are here to guide you.",
+            "button": "Get in Touch"
+        }
+    },
+    "contact": {
+        "title": "Inquire Privately",
+        "description": "Contact our expert advisors for a confidential consultation regarding your property requirements.",
+        "formPlaceholder": "[Lead Form Integration Point]"
+    },
+    "footer": {
+        "rights": "All rights reserved. Professional Real Estate Advisory."
+    }
+}

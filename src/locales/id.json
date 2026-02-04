@@ -1,0 +1,75 @@
+{
+    "nav": {
+        "home": "Beranda",
+        "properties": "Properti",
+        "services": "Layanan",
+        "about": "Tentang Kami",
+        "contact": "Hubungi Kami"
+    },
+    "hero": {
+        "title": "Mendefinisikan Ulang Real Estat Mewah",
+        "subtitle": "Kehidupan Eksklusif, Investasi Terpilih",
+        "description": "Arcadea Property mengkhususkan diri dalam mengidentifikasi peluang investasi off-plan dengan hasil tinggi dan hunian mewah di lokasi paling dicari di dunia.",
+        "cta": "Lihat Portofolio"
+    },
+    "services": {
+        "title": "Keahlian Kami",
+        "subtitle": "Solusi Properti & Keuangan Komprehensif",
+        "pillars": {
+            "hotel": {
+                "title": "Investasi Hotel dan Resor",
+                "items": [
+                    "Jaminan Imbal Hasil properti",
+                    "ROI yang Kuat",
+                    "Akses ke merek ternama tingkat global",
+                    "Akses ke pengembang yang berpengalaman dan terpercaya"
+                ]
+            },
+            "financial": {
+                "title": "Layanan Keuangan",
+                "subtitle": "Melalui kami, mitra, dan penasihat terpercaya",
+                "items": [
+                    "Pelepasan Ekuitas (Equity Release)",
+                    "Pembuatan dan Rollover SMSF",
+                    "Depresiasi Pajak Properti Luar Negeri",
+                    "Kepemilikan yang efisien secara pajak",
+                    "Investasi Fraksional"
+                ]
+            },
+            "australian": {
+                "title": "Properti Australia",
+                "items": [
+                    "Properti Australia Berkualitas Tinggi & Kurasi",
+                    "Proses Penjualan yang Transparan",
+                    "CoPosit dan Obligasi Deposit",
+                    "Listing dan Pengembangan Eksklusif"
+                ]
+            }
+        }
+    },
+    "properties": {
+        "title": "Portofolio Pilihan",
+        "description": "Jelajahi seleksi eksklusif aset real estat utama kami, yang diperiksa secara teliti untuk pertumbuhan dan keunggulan.",
+        "cta": "Temukan Lebih Banyak Peluang",
+        "exploreDetails": "JELAJAHI RINCIAN",
+        "explore_title": "Jelajahi Koleksi Kami",
+        "explore_subtitle": "Pilih destinasi untuk melihat listing eksklusif kami.",
+        "tags": {
+            "limited": "Penawaran Terbatas",
+            "preLaunch": "Pra-Peluncuran",
+            "offPlan": "Off-Plan"
+        }
+    },
+    "about": {
+        "title": "Filosofi Kami",
+        "description": "Di Arcadea Property, kami percaya bahwa real estat lebih dari sekadar transaksi; ini tentang membangun kekayaan jangka panjang melalui akuisisi strategis di pasar pertumbuhan global."
+    },
+    "contact": {
+        "title": "Konsultasi Privat",
+        "description": "Hubungi penasihat ahli kami untuk konsultasi rahasia mengenai kebutuhan properti Anda.",
+        "formPlaceholder": "[Titik Integrasi Formulir Prospek]"
+    },
+    "footer": {
+        "rights": "Seluruh hak cipta dilindungi undang-undang. Penasihat Real Estat Profesional."
+    }
+}
