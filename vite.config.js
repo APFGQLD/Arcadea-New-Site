@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './', // Use relative paths for assets (Required for HashRouter stability)
+  base: '/', // Use absolute paths for assets (Required for deep linking)
   plugins: [react()],
   build: {
     // Code splitting for better performance
