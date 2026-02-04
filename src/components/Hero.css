@@ -4,9 +4,11 @@
     width: 100%;
     display: flex;
     align-items: center;
-    background-image: url('https://pixabay.com/get/gd37424b9924f71c5dab222dd8cb247842ba88229c39e85a334ec0c52e5e3895f295314a4ab3778c11433bdb108cba48915cf0e6776a29c392df23a8fe6cbe41b_1920.jpg');
+    background-image: url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/cliff-5954980-scaled.jpg');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     overflow: hidden;
 }
 
