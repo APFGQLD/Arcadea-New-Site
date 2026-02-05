@@ -16,80 +16,35 @@
     margin-bottom: 0.5rem;
 }
 
-.loading-logo {
+/* 1. Base Logo (Always visible, low opacity) */
+.loading-logo-base {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    opacity: 0.3;
+    opacity: 0.2;
 }
 
-/* Color Fade Overlay - Animates from top to bottom */
-.loading-fade-overlay {
+/* 2. Fill Logo (Animates in on top) */
+.loading-logo-fill {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom,
-            var(--accent-gold) 0%,
-            var(--accent-gold) 50%,
-            transparent 50%,
-            transparent 100%);
-    mix-blend-mode: multiply;
-    animation: fadeDown 1.5s ease-in-out infinite;
-    mask-image: url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/big-a.png');
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    -webkit-mask-image: url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/big-a.png');
-    -webkit-mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
+    object-fit: contain;
+    opacity: 1;
+    /* Initial State: Hidden (clipped out) */
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+    animation: fillUp 2s ease-in-out infinite;
 }
 
-/* Dark mode adjustment */
-[data-theme='dark'] .loading-fade-overlay {
-    mix-blend-mode: screen;
-}
-
-/* Fade Down Animation */
-@keyframes fadeDown {
+/* Fill Animation */
+@keyframes fillUp {
     0% {
-        background-position: 0 -100%;
-    }
-
-    50% {
-        background-position: 0 0%;
-    }
-
-    100% {
-        background-position: 0 100%;
-    }
-}
-
-/* Alternative simpler animation using clip-path */
-.loading-fade-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--accent-gold);
-    clip-path: polygon(0 0, 100% 0, 100% 0%, 0 0%);
-    animation: fillDown 1.5s ease-in-out infinite;
-    mask-image: url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/big-a.png');
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    -webkit-mask-image: url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/big-a.png');
-    -webkit-mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-}
-
-@keyframes fillDown {
-    0% {
-        clip-path: polygon(0 0, 100% 0, 100% 0%, 0 0%);
+        clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
     }
 
     50% {
@@ -97,7 +52,9 @@
     }
 
     100% {
-        clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        opacity: 0;
+        /* Fade out at the end to restart smoothly */
     }
 }
 

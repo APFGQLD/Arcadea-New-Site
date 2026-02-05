@@ -6,12 +6,18 @@ const LoadingSpinner = ({ message = 'Loading...' }) => {
     return (
         <div className="loading-spinner-container">
             <div className="loading-logo-wrapper">
+                {/* Base Logo (Faint) */}
                 <img
                     src={bigALogo}
-                    alt="Loading"
-                    className="loading-logo"
+                    alt="Loading Base"
+                    className="loading-logo-base"
                 />
-                <div className="loading-fade-overlay"></div>
+                {/* Fill Logo (Animated) */}
+                <img
+                    src={bigALogo}
+                    alt="Loading Fill"
+                    className="loading-logo-fill"
+                />
             </div>
             {message && <p className="loading-message">{message}</p>}
         </div>

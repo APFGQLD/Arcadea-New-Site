@@ -230,6 +230,7 @@ export const fetchProjectDetail = async (projectIdOrSlug) => {
             name: p['Name'],
             description: p['Overview Blurb'],
             statusTag: p['Status'],
+            collection: p['Collection'],
             heroImage: p['Hero Image']?.[0]?.url,
             stats: {
                 beds: p['Bedrooms'],

@@ -423,8 +423,16 @@ const ProjectDetailPage = () => {
                                                         <ArrowDownTrayIcon className="hero-icon-sm" style={{ marginLeft: '0.5rem' }} />
                                                     </a>
                                                 )}
-                                                <button className="action-btn primary-btn">
-                                                    {t('project_detail.reserve', 'Reserve Now')}
+                                                <button className="action-btn primary-btn" onClick={() => {
+                                                    if (project.collection === 'Coastal' || project.collection === 'coastal') {
+                                                        navigate('/#contact');
+                                                    } else {
+                                                        // Default reserve action (if any, currently just a button)
+                                                    }
+                                                }}>
+                                                    {(project.collection === 'Coastal' || project.collection === 'coastal')
+                                                        ? t('project_detail.request_info', 'Request More Information')
+                                                        : t('project_detail.reserve', 'Reserve Now')}
                                                 </button>
                                             </div>
                                         </div>
