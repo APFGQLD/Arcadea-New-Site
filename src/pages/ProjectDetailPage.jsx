@@ -14,6 +14,7 @@ import {
     MinusIcon
 } from '@heroicons/react/24/solid';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ComparisonTable from '../components/ComparisonTable';
 import './ProjectDetailPage.css';
 
 const ProjectDetailPage = () => {
@@ -444,11 +445,18 @@ const ProjectDetailPage = () => {
                 </div>
             </section>
 
+            {/* 4.5. Comparison Table (Island Collection Only) */}
+            {(project.collection === 'Island' || project.collection === 'island') && (
+                <section className="detail-comparison container">
+                    <ComparisonTable project={project} />
+                </section>
+            )}
+
             {/* 5. Developer Section */}
             <section className="detail-developer bg-secondary">
                 <div className="container developer-flex">
                     <div className="developer-info">
-                        <h2>{t('project_detail.dev_title', 'The Developer')}</h2>
+                        <h2 className="section-title">{t('project_detail.dev_title', 'The Developer')}</h2>
                         <h3>{project.developer.name}</h3>
                         <p>{formatAirtableText(project.developer.description)}</p>
                     </div>
@@ -469,13 +477,18 @@ const ProjectDetailPage = () => {
 
             {/* 6. Location Section */}
             <section className="detail-location container">
-                <h2>{t('project_detail.location_title', 'Location')}</h2>
+                <h2 className="section-title">{t('project_detail.location_title', 'Location')}</h2>
                 <div className="location-grid">
                     <div className="hotspots-list">
                         {(() => {
-                            const maxDistance = Math.max(...project.hotspots.map(h => parseFloat(h.distance) || 0), 1000); // Default to 1000 divisor if empty
+                            // Sort hotspots by distance (low to high)
+                            const sortedHotspots = [...project.hotspots].sort((a, b) => {
+                                return (parseFloat(a.distance) || 0) - (parseFloat(b.distance) || 0);
+                            });
 
-                            return project.hotspots.map(spot => {
+                            const maxDistance = Math.max(...sortedHotspots.map(h => parseFloat(h.distance) || 0), 1000); // Default to 1000 divisor if empty
+
+                            return sortedHotspots.map(spot => {
                                 const dist = parseFloat(spot.distance) || 0;
                                 const widthPercent = Math.min((dist / maxDistance) * 100, 100);
 

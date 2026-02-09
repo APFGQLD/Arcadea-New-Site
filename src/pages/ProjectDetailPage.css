@@ -1334,7 +1334,7 @@
     display: grid;
     grid-template-columns: 1fr 1.5fr;
     gap: 4rem;
-    margin-top: 3rem;
+    /* margin-top: 3rem; - Removed as section-title handles spacing now */
 }
 
 .hotspot-item {
