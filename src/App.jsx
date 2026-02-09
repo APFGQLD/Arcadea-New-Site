@@ -7,6 +7,7 @@ import ProjectDetailPage from './pages/ProjectDetailPage';
 import OneParkLanePage from './pages/OneParkLanePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
+import IPDCPage from './pages/IPDCPage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
@@ -27,6 +28,7 @@ function App() {
           <Route path="/project/:id" element={<ProjectDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/services/ipdc" element={<IPDCPage />} />
           <Route path="/news" element={<BlogPage />} />
           <Route path="/news/:slug" element={<BlogPostPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

@@ -3,6 +3,9 @@ import axios from 'axios';
 // WordPress API Configuration
 const WP_API_URL = import.meta.env.VITE_WP_API_URL || 'https://cms.arcadea.com.au/wp-json/wp/v2';
 
+// Default image if none is set or API fails
+const DEFAULT_FEATURED_IMAGE = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/V04_FINAL_lowres.jpeg';
+
 /**
  * Fetch all blog posts with pagination
  * @param {number} page - Page number
@@ -30,7 +33,7 @@ export const fetchBlogPosts = async (page = 1, perPage = 9) => {
                 content: post.content.rendered,
                 date: post.date,
                 author: post._embedded?.author?.[0]?.name || 'Arcadea',
-                featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || null,
+                featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || DEFAULT_FEATURED_IMAGE,
                 categories: post._embedded?.['wp:term']?.[0] || []
             })),
             totalPages: parseInt(response.headers['x-wp-totalpages']) || 1,
@@ -68,7 +71,7 @@ export const fetchBlogPost = async (slug) => {
             date: post.date,
             author: post._embedded?.author?.[0]?.name || 'Arcadea',
             authorAvatar: post._embedded?.author?.[0]?.avatar_urls?.['96'] || null,
-            featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || null,
+            featuredImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || DEFAULT_FEATURED_IMAGE,
             categories: post._embedded?.['wp:term']?.[0] || []
         };
     } catch (error) {

@@ -13,7 +13,7 @@ const PAT = process.env.VITE_AIRTABLE_PAT;
 const BASE_ID = process.env.VITE_AIRTABLE_BASE_ID;
 const PROJECTS_TABLE = process.env.VITE_AIRTABLE_TABLE_PROJECTS || 'Projects';
 const WP_API_URL = process.env.VITE_WP_API_URL || 'https://cms.arcadea.com.au/wp-json/wp/v2';
-const SITE_URL = 'https://arcadeaproperty.com'; // Update with your actual domain
+const SITE_URL = 'https://arcadea.com.au'; // Update with your actual domain
 
 /**
  * Fetch all projects from Airtable
@@ -97,6 +97,7 @@ function generateSitemapXML(projects, blogPosts) {
         { url: '/', priority: '1.0', changefreq: 'weekly' },
         { url: '/properties', priority: '0.9', changefreq: 'weekly' },
         { url: '/news', priority: '0.8', changefreq: 'daily' },
+        { url: '/services/ipdc', priority: '0.8', changefreq: 'monthly' },
         { url: '/privacy-policy', priority: '0.5', changefreq: 'yearly' },
     ];
 
