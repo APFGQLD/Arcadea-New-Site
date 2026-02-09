@@ -481,6 +481,15 @@
         gap: 1rem;
         padding: 0 2rem;
     }
+
+    .opl-title-seq-wrapper {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .opl-seq-word {
+        font-size: 3rem;
+    }
 }
 
 @media (hover: none) {

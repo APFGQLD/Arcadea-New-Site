@@ -147,6 +147,8 @@
         line-height: 1.2;
         white-space: normal;
         text-align: center;
+        justify-content: center;
+        align-items: center;
     }
 
     .container {

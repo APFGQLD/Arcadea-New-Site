@@ -95,8 +95,8 @@ const OneParkLanePage = () => {
                             <span
                                 className="opl-seq-word"
                                 style={{
-                                    opacity: getOpacity(0.4, 0.5),
-                                    transform: `translateY(${30 * (1 - getOpacity(0.4, 0.5))}px)`
+                                    opacity: getOpacity(0.35, 0.45),
+                                    transform: `translateY(${30 * (1 - getOpacity(0.35, 0.45))}px)`
                                 }}
                             >
                                 One
@@ -104,8 +104,8 @@ const OneParkLanePage = () => {
                             <span
                                 className="opl-seq-word"
                                 style={{
-                                    opacity: getOpacity(0.55, 0.65),
-                                    transform: `translateY(${30 * (1 - getOpacity(0.55, 0.65))}px)`
+                                    opacity: getOpacity(0.5, 0.6),
+                                    transform: `translateY(${30 * (1 - getOpacity(0.5, 0.6))}px)`
                                 }}
                             >
                                 Park
@@ -113,8 +113,8 @@ const OneParkLanePage = () => {
                             <span
                                 className="opl-seq-word"
                                 style={{
-                                    opacity: getOpacity(0.7, 0.8),
-                                    transform: `translateY(${30 * (1 - getOpacity(0.7, 0.8))}px)`
+                                    opacity: getOpacity(0.65, 0.75),
+                                    transform: `translateY(${30 * (1 - getOpacity(0.65, 0.75))}px)`
                                 }}
                             >
                                 Lane
