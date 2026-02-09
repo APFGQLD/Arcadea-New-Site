@@ -100,6 +100,11 @@ function generateSitemapXML(projects, blogPosts) {
         { url: '/privacy-policy', priority: '0.5', changefreq: 'yearly' },
     ];
 
+    // Hardcoded project pages
+    const hardcodedProjects = [
+        { url: '/project/one-park-lane', priority: '0.9', changefreq: 'monthly' }
+    ];
+
     // Dynamic project pages
     const projectPages = projects.map(project => {
         const slug = project.fields['Slug'] || project.id;
@@ -119,7 +124,7 @@ function generateSitemapXML(projects, blogPosts) {
         };
     });
 
-    const allPages = [...staticPages, ...projectPages, ...blogPages];
+    const allPages = [...staticPages, ...hardcodedProjects, ...projectPages, ...blogPages];
 
     // Build XML
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
