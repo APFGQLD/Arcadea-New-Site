@@ -26,9 +26,12 @@ getDb().then(() => {
 
 // Routes
 
-// Root Route
-app.get('/', (req, res) => {
-    res.send('Arcadea Property API Server Running');
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// API Routes
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // 1. Sync Endpoint
@@ -157,6 +160,12 @@ app.get('/api/properties/:idOrSlug', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
+
+
+// Catch-all to serve React App for any other route
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.listen(PORT, () => {
