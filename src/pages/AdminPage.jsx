@@ -205,6 +205,15 @@ const AdminPage = () => {
                     <div className="wp-menu-item" onClick={() => navigate('/')}>
                         Visit Site
                     </div>
+                    <a
+                        href="https://cms.arcadea.com.au/wp-admin"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="wp-menu-item"
+                        style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}
+                    >
+                        Visit CMS (WP)
+                    </a>
                     <div className="wp-menu-item logout" onClick={handleLogout}>
                         Log Out
                     </div>
