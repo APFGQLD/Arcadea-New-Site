@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import PropertiesPage from './pages/PropertiesPage';
@@ -10,15 +10,22 @@ import ServicesPage from './pages/ServicesPage';
 import IPDCPage from './pages/IPDCPage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
+import FlyBeforeYouBuyPage from './pages/FlyBeforeYouBuyPage';
+import EventReplayPage from './pages/EventReplayPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Footer from './components/Footer';
+import ShortLinkRedirect from './pages/ShortLinkRedirect';
 import './index.css';
 
 function App() {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+
   return (
     <div className="app-wrapper">
-      <Navbar />
+      {!isAdminPage && <Navbar />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -31,11 +38,17 @@ function App() {
           <Route path="/services/ipdc" element={<IPDCPage />} />
           <Route path="/news" element={<BlogPage />} />
           <Route path="/news/:slug" element={<BlogPostPage />} />
+          <Route path="/campaigns/fly-before-you-buy" element={<FlyBeforeYouBuyPage />} />
+          <Route path="/event/replay" element={<EventReplayPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+
+          {/* Catch-all for short links - MUST be last before 404 */}
+          <Route path="/:slug" element={<ShortLinkRedirect />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
-      <Footer />
+      {!isAdminPage && <Footer />}
     </div>
   );
 }

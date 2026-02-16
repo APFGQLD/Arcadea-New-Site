@@ -1,0 +1,280 @@
+/* WordPress Admin Style Reset & Vars */
+:root {
+    --wp-admin-theme-color: #2271b1;
+    --wp-admin-theme-color-dark: #135e96;
+    --wp-sidebar-bg: #23282d;
+    --wp-sidebar-text: #fff;
+    --wp-body-bg: #f1f1f1;
+    --wp-text-color: #3c434a;
+    --wp-border-color: #dcdcde;
+    --wp-white: #ffffff;
+}
+
+body {
+    margin: 0;
+    /* Ensure no default margin on page when in admin */
+}
+
+/* Auth Page (WP Login Style) */
+.wp-login-page {
+    background: var(--wp-body-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    padding-top: 0 !important;
+    /* Override standard site padding */
+}
+
+.wp-login-card {
+    background: var(--wp-white);
+    padding: 24px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    border: 1px solid var(--wp-border-color);
+    margin-top: 20px;
+}
+
+.wp-login-card input {
+    font-size: 24px;
+    padding: 6px 8px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background: var(--wp-white);
+}
+
+/* Admin Layout */
+.wp-admin-wrap {
+    display: flex;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    color: var(--wp-text-color);
+    background: var(--wp-body-bg);
+    padding-top: 50px;
+    /* Space for admin bar if we had one, or just layout */
+}
+
+/* Sidebar */
+.wp-sidebar {
+    width: 160px;
+    background: var(--wp-sidebar-bg);
+    color: var(--wp-sidebar-text);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999;
+    padding-top: 32px;
+}
+
+.wp-menu-item {
+    display: block;
+    padding: 10px 12px;
+    color: rgba(240, 246, 252, 0.7);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.wp-menu-item:hover {
+    background: #191e23;
+    color: #72aee6;
+}
+
+.wp-menu-item.active {
+    background: var(--wp-admin-theme-color);
+    color: var(--wp-white);
+    border-left-color: var(--wp-white);
+    /* Actually typically arrow, but this works */
+}
+
+.wp-menu-item.logout {
+    margin-top: auto;
+    color: #ff8080;
+}
+
+/* Main Content */
+.wp-content {
+    flex: 1;
+    margin-left: 160px;
+    /* Sidebar width */
+    padding: 20px 40px;
+}
+
+.wp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.wp-heading-1 {
+    font-size: 23px;
+    font-weight: 400;
+    margin: 0;
+    padding: 9px 0 4px 0;
+    line-height: 1.3;
+}
+
+/* Cards / Postboxes */
+.wp-card {
+    background: var(--wp-white);
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+    margin-bottom: 20px;
+    padding: 0;
+    /* Header handling */
+}
+
+.wp-card-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--wp-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wp-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.wp-card-body {
+    padding: 15px;
+}
+
+/* Forms */
+.wp-form-row {
+    margin-bottom: 15px;
+}
+
+.wp-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.wp-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0 8px;
+    line-height: 2;
+    min-height: 30px;
+    box-shadow: 0 0 0 transparent;
+    border-radius: 4px;
+    border: 1px solid #8c8f94;
+    background-color: #fff;
+    color: #2c3338;
+}
+
+.wp-input:focus {
+    border-color: var(--wp-admin-theme-color);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+    outline: 2px solid transparent;
+}
+
+.wp-btn {
+    display: inline-flex;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 2.15384615;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.wp-btn-primary {
+    background: var(--wp-admin-theme-color);
+    border-color: var(--wp-admin-theme-color);
+    color: #fff;
+}
+
+.wp-btn-primary:hover {
+    background: var(--wp-admin-theme-color-dark);
+    border-color: var(--wp-admin-theme-color-dark);
+    color: #fff;
+}
+
+.wp-btn-secondary {
+    color: #2271b1;
+    border-color: #2271b1;
+    background: #f6f7f7;
+}
+
+.wp-btn-secondary:hover {
+    background: #f0f0f1;
+    border-color: #0a4b78;
+    color: #0a4b78;
+}
+
+.wp-btn-danger {
+    color: #b32d2e;
+    border-color: #b32d2e;
+    background: transparent;
+    line-height: 1.5;
+    min-height: auto;
+    padding: 2px 8px;
+}
+
+.wp-btn-danger:hover {
+    background: #b32d2e;
+    color: white;
+}
+
+/* Tables */
+.wp-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+    background: #fff;
+}
+
+.wp-list-table th,
+.wp-list-table td {
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.wp-list-table thead th {
+    border-bottom: 1px solid #c3c4c7;
+    font-weight: 400;
+    color: #2c3338;
+    background: #fff;
+}
+
+.wp-list-table tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.wp-list-table td {
+    vertical-align: middle;
+}
+
+.wp-tag {
+    background: #e5e5e5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #646970;
+    font-family: monospace;
+}

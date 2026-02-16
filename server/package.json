@@ -1,0 +1,23 @@
+{
+    "name": "arcadea-property-server",
+    "version": "1.0.0",
+    "description": "Backend API for Arcadea Property Site",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "node --watch index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "Arcadea Property",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "node-fetch": "^3.3.2",
+        "sqlite": "^5.1.1",
+        "sqlite3": "^5.1.7"
+    }
+}
