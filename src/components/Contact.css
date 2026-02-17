@@ -81,6 +81,12 @@
     gap: 0.75rem;
     margin-top: 1rem;
     align-self: center;
+    background-color: var(--accent-gold);
+    color: #ffffff;
+}
+
+.contact-form button[type="submit"]:hover {
+    background-color: var(--accent-gold-light);
 }
 
 .contact-form button[type="submit"]:disabled {

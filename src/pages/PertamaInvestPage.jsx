@@ -90,7 +90,7 @@ const PertamaInvestPage = () => {
                     <h3 className="featured-label">Featured Opportunity</h3>
                     <h2 className="featured-title">Beraban Luxury Lofts</h2>
                     <p className="featured-desc">The newest addition to our curated collection. Combining modern luxury with classic Bali charm in the heart of Canggu.</p>
-                    <Link to="/project/beraban-luxury-lofts" className="featured-link">View Project Details →</Link>
+                    <Link to="/project/beraban" className="featured-link">View Project Details →</Link>
                 </div>
 
                 <h2 className="pertama-heading" style={{ marginTop: '0px' }}>Request Investment Info</h2>
