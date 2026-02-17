@@ -4,8 +4,11 @@ const BASE_URL = 'https://api.airtable.com/v0';
 const PAT = import.meta.env.VITE_AIRTABLE_PAT;
 const BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
 const TABLES = {
-    PROJECTS: import.meta.env.VITE_AIRTABLE_TABLE_PROJECTS || 'Projects',
-    UNITS: import.meta.env.VITE_AIRTABLE_TABLE_UNITS || 'Units',
+    PROJECTS: import.meta.env.VITE_AIRTABLE_TABLE_PROJECTS || 'tblKz1Fe46iHrYnz5',
+    UNITS: import.meta.env.VITE_AIRTABLE_TABLE_UNITS || 'tbl7yTEyfnOPeJ9uv',
+    HOTSPOTS: 'tblcTTNvfRkwPZqjg',
+    GALLERY: 'tblJx9nmpXuFiEMd7',
+    RESOURCES: 'tblAzUDH46eh9ZPwy',
 };
 
 // Simple in-memory cache
@@ -55,6 +58,21 @@ async function fetchAllRecords(table, filterFormula = '') {
     }
 
     return allRecords;
+}
+
+// Helper to fetch linked records from any table
+async function fetchLinkedRecords(table, projectId) {
+    try {
+        const records = await fetchAllRecords(table);
+        return records.filter(r => {
+            const linked = getField(r.fields, 'Project', 'Projects', 'Linked Project', 'Project Link');
+            // Check if linked field contains the Project ID (it's an array of IDs)
+            return Array.isArray(linked) && linked.includes(projectId);
+        });
+    } catch (err) {
+        console.error(`Error fetching linked table ${table}:`, err);
+        return [];
+    }
 }
 
 /**
@@ -111,6 +129,21 @@ export const fetchProjectsByCollection = async (collectionName) => {
     }
 };
 
+// Helper to safely get field values from multiple potential key names
+const getField = (fields, ...keys) => {
+    for (const key of keys) {
+        if (fields[key] !== undefined && fields[key] !== null) return fields[key];
+    }
+    return undefined;
+};
+
+// Helper to safely get image URL
+const getImageUrl = (fields, ...keys) => {
+    const field = getField(fields, ...keys);
+    if (Array.isArray(field) && field.length > 0) return field[0].url;
+    return undefined;
+};
+
 /**
  * Fetch a single project with all its linked data
  */
@@ -126,7 +159,7 @@ export const fetchProjectDetail = async (projectIdOrSlug) => {
         let projectRecord = CACHE.projects?.find(p => p.id === projectIdOrSlug || p.fields['Slug'] === projectIdOrSlug);
 
         if (!projectRecord) {
-            // Fetch specific record if not in cache (by formula)
+            // Fetch specific record if not in cache
             const formula = `OR(RECORD_ID()='${projectIdOrSlug}', {Slug}='${projectIdOrSlug}')`;
             const records = await fetchAllRecords(TABLES.PROJECTS, formula);
             projectRecord = records[0];
@@ -134,12 +167,19 @@ export const fetchProjectDetail = async (projectIdOrSlug) => {
 
         if (!projectRecord) throw new Error('Project not found');
 
-        // Now fetch linked data (Units, etc.) - This requires separate calls
-        // For simplicity in this client-side version, we might skip complex relational fetching 
-        // OR we implement it if needed. 
-        // LET'S IMPLEMENT BASIC MAPPING for the Detail View
+        console.log('Debug: Project Record Found:', projectRecord.fields);
 
-        return mapAirtableRecordToDetail(projectRecord);
+        // Fetch ALL linked data in parallel
+        const [units, hotspots, gallery, resources] = await Promise.all([
+            fetchLinkedRecords(TABLES.UNITS, projectRecord.id),
+            fetchLinkedRecords(TABLES.HOTSPOTS, projectRecord.id),
+            fetchLinkedRecords(TABLES.GALLERY, projectRecord.id),
+            fetchLinkedRecords(TABLES.RESOURCES, projectRecord.id)
+        ]);
+
+        console.log(`Debug: Fetched ${units.length} units, ${gallery.length} gallery items, ${resources.length} resources`);
+
+        return mapAirtableRecordToDetail(projectRecord, units, hotspots, gallery, resources);
 
     } catch (error) {
         console.error('Detail Fetch Error:', error);
@@ -154,54 +194,100 @@ function mapAirtableToApp(records) {
         const f = record.fields;
         return {
             id: record.id,
-            title: f['Name'],
-            location: f['Location'] || '',
-            price: f['Price Display'] || 'POA',
-            image: f['Hero Image']?.[0]?.url || '',
-            tag: f['Status Tag'] || '',
-            collection: f['Collection'],
-            slug: f['Slug'] || '',
+            title: getField(f, 'Name', 'Title', 'Project Name'),
+            location: getField(f, 'Location', 'Address') || '',
+            price: getField(f, 'Price Display', 'Price', 'Price Range') || 'POA',
+            image: getImageUrl(f, 'Hero Image', 'Image', 'Cover Image') || '',
+            tag: getField(f, 'Status Tag', 'Status', 'Tag') || '',
+            collection: getField(f, 'Collection', 'Category'),
+            slug: getField(f, 'Slug', 'slug') || '',
             features: [
-                f['Bedrooms'] ? `${f['Bedrooms']} Bed` : '',
-                f['Bathrooms'] ? `${f['Bathrooms']} Bath` : '',
-                f['Unit Sizes']
+                getField(f, 'Bedrooms', 'Beds') ? `${getField(f, 'Bedrooms', 'Beds')} Bed` : '',
+                getField(f, 'Bathrooms', 'Baths') ? `${getField(f, 'Bathrooms', 'Baths')} Bath` : '',
+                getField(f, 'Unit Sizes', 'Size')
             ].filter(Boolean)
         };
     });
 }
 
+
+
 // Helper to map Airtable Record to Full Detail View
-function mapAirtableRecordToDetail(record) {
+function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = [], resources = []) {
     const f = record.fields;
+
+    // Debug helper for images
+    if (!getImageUrl(f, 'Hero Image', 'Image')) console.warn('Missing Hero Image for', f['Name']);
+
+    const mappedUnits = units.map(u => {
+        const uf = u.fields;
+        return {
+            id: u.id,
+            config: getField(uf, 'Unit Configuration', 'Name', 'Config', 'Unit Type') || 'Unit',
+            totalUnits: getField(uf, 'Units Total', 'Total Units', 'Count', 'Number of Units') || 0,
+            soldUnits: getField(uf, 'Units Sold', 'Sold Units', 'Sold') || 0,
+            price: getField(uf, 'Price', 'Sale Price', 'Price Display'),
+            minPrice: getField(uf, 'Min Price', 'Minimum Price'),
+            description: getField(uf, 'Description', 'Notes'),
+            image: getImageUrl(uf, 'Unit Type Image', 'Image', 'Unit Image', 'Photo'),
+            floorPlan: getImageUrl(uf, 'Floor Plan', 'Plan'),
+            percentage: getField(uf, 'Percentage', 'Share Percentage', 'Share') || 0
+        };
+    });
+
+    const mappedGallery = gallery.map(g => ({
+        id: g.id,
+        url: getImageUrl(g.fields, 'Image', 'Photo', 'File', 'Gallery Image'),
+        caption: getField(g.fields, 'Name', 'Caption', 'Description') || ''
+    })).filter(g => g.url);
+
+    // If gallery table empty, fallback to hero (or empty)
+    if (mappedGallery.length === 0 && getImageUrl(f, 'Hero Image')) {
+        mappedGallery.push({ url: getImageUrl(f, 'Hero Image'), caption: 'Main View' });
+    }
+
+    const mappedResources = resources.map(r => ({
+        id: r.id,
+        label: getField(r.fields, 'Name', 'Label', 'Title', 'Resource Name'),
+        type: getField(r.fields, 'Type', 'Category', 'Resource Type'),
+        link: getField(r.fields, 'Link', 'URL', 'External Link') || getImageUrl(r.fields, 'File', 'Document', 'Attachment'),
+        image: getImageUrl(r.fields, 'Image', 'Thumbnail', 'Cover')
+    }));
+
+    const mappedHotspots = hotspots.map(h => ({
+        id: h.id,
+        name: getField(h.fields, 'Name', 'Place', 'Hotspot Name'),
+        distance: getField(h.fields, 'Distance', 'Dist'),
+        time: getField(h.fields, 'Time', 'Duration'),
+        category: getField(h.fields, 'Type', 'Category')
+    }));
+
     return {
         id: record.id,
-        name: f['Name'],
-        description: f['Overview Blurb'], // Using Overview Blurb as description for now
-        statusTag: f['Status Tag'],
-        collection: f['Collection'],
-        heroImage: f['Hero Image']?.[0]?.url,
+        name: getField(f, 'Name', 'Title'),
+        description: getField(f, 'Overview Blurb', 'Description', 'Overview'),
+        statusTag: getField(f, 'Status', 'Status Tag'),
+        collection: getField(f, 'Collection', 'Category'),
+        heroImage: getImageUrl(f, 'Hero Image', 'Image', 'Cover Image'),
         stats: {
-            beds: f['Bedrooms'],
-            baths: f['Bathrooms'],
-            size: f['Unit Sizes'],
-            ipdc: f['IPDC']
+            beds: getField(f, 'Bedrooms', 'Beds'),
+            baths: getField(f, 'Bathrooms', 'Baths'),
+            size: getField(f, 'Unit Sizes', 'Size', 'Area'),
+            ipdc: getField(f, 'IPDC', 'Yield')
         },
         developer: {
-            name: f['Dev Name'],
-            description: f['Dev Bio'],
-            image: f['Dev Image']?.[0]?.url
+            name: getField(f, 'Dev Name', 'Developer'),
+            description: getField(f, 'Dev Bio', 'Developer Bio'),
+            image: getImageUrl(f, 'Dev Image', 'Developer Logo')
         },
         map: {
-            lat: f['Latitude'],
-            lng: f['Longitude']
+            lat: getField(f, 'Latitude', 'Lat'),
+            lng: getField(f, 'Longitude', 'Lng', 'Long')
         },
-        // Linked data would normally be fetched here. 
-        // For a client-side "light" version, we assume basic details are enough 
-        // unless we want to make 4 more API calls per project load.
-        units: [],
-        hotspots: [],
-        gallery: (f['Gallery Images'] || []).map(img => ({ url: img.url, caption: '' })),
-        resources: []
+        units: mappedUnits,
+        hotspots: mappedHotspots,
+        gallery: mappedGallery,
+        resources: mappedResources
     };
 }
 
