@@ -23,15 +23,12 @@ export const linkService = {
 
         if (error) {
             // .single() returns error if no rows found, which is expected for non-existent links
-            // so we don't always log as error, just return null
             return null;
         }
         return data;
     },
 
     add: async (origin, destination) => {
-        // Check if origin exists first? unique constraint in DB handles it, but nice to check
-        // Actually, let DB handle unique constraint error for atomicity
         const { data, error } = await supabase
             .from('short_links')
             .insert([
@@ -60,13 +57,9 @@ export const linkService = {
     },
 
     incrementClicks: async (id, currentClicks) => {
-        // Simple update for now. 
-        // Ideally use an RPC call like `increment_clicks` if high concurrency needed.
-        // But for this use case, read-modify-write is acceptable or just +1
-
         const { error } = await supabase
             .from('short_links')
-            .update({ clicks: currentClicks + 1 })
+            .update({ clicks: (currentClicks || 0) + 1 })
             .eq('id', id);
 
         if (error) {
