@@ -144,6 +144,19 @@ const getImageUrl = (fields, ...keys) => {
     return undefined;
 };
 
+// Helper to get thumbnail from an attachment field (e.g. PDF cover)
+const getAttachmentThumbnail = (fields, ...keys) => {
+    const field = getField(fields, ...keys);
+    if (Array.isArray(field) && field.length > 0) {
+        // Try large, then small, then just the URL if it's an image
+        if (field[0].thumbnails?.large?.url) return field[0].thumbnails.large.url;
+        if (field[0].thumbnails?.small?.url) return field[0].thumbnails.small.url;
+        // If it's an image file itself, use the main url
+        if (field[0].type?.startsWith('image/')) return field[0].url;
+    }
+    return undefined;
+};
+
 /**
  * Fetch a single project with all its linked data
  */
@@ -178,6 +191,11 @@ export const fetchProjectDetail = async (projectIdOrSlug) => {
         ]);
 
         console.log(`Debug: Fetched ${units.length} units, ${gallery.length} gallery items, ${resources.length} resources`);
+
+        // Debug Resources to check field names if still failing
+        if (resources.length > 0) {
+            console.log('Debug: Sample Resource Fields:', Object.keys(resources[0].fields));
+        }
 
         return mapAirtableRecordToDetail(projectRecord, units, hotspots, gallery, resources);
 
@@ -231,7 +249,8 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
             description: getField(uf, 'Description', 'Notes'),
             image: getImageUrl(uf, 'Unit Type Image', 'Image', 'Unit Image', 'Photo'),
             floorPlan: getImageUrl(uf, 'Floor Plan', 'Plan'),
-            percentage: getField(uf, 'Percentage', 'Share Percentage', 'Share') || 0
+            percentage: getField(uf, 'Percentage', 'Share Percentage', 'Share') || 0,
+            salesLink: getField(uf, 'Sales Link', 'Reserve Link', 'External Link')
         };
     });
 
@@ -246,13 +265,38 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
         mappedGallery.push({ url: getImageUrl(f, 'Hero Image'), caption: 'Main View' });
     }
 
-    const mappedResources = resources.map(r => ({
-        id: r.id,
-        label: getField(r.fields, 'Name', 'Label', 'Title', 'Resource Name'),
-        type: getField(r.fields, 'Type', 'Category', 'Resource Type'),
-        link: getField(r.fields, 'Link', 'URL', 'External Link') || getImageUrl(r.fields, 'File', 'Document', 'Attachment'),
-        image: getImageUrl(r.fields, 'Image', 'Thumbnail', 'Cover')
-    }));
+    const mappedResources = resources.map(r => {
+        const type = getField(r.fields, 'Type', 'Category', 'Resource Type') || '';
+        const isWebsite = type.toLowerCase().includes('website') || type.toLowerCase().includes('link') || type.toLowerCase().includes('url');
+
+        // Determine link source based on Type
+        let linkUrl;
+        if (isWebsite) {
+            linkUrl = getField(r.fields, 'URL', 'Url', 'Link', 'External Link');
+        } else {
+            // Assume file attachment
+            linkUrl = getImageUrl(r.fields, 'Attachments', 'attachments', 'File', 'Document');
+        }
+
+        // Fallback if specific type lookup failed
+        if (!linkUrl) {
+            linkUrl = getImageUrl(r.fields, 'Attachments', 'attachments', 'File', 'Document') || getField(r.fields, 'URL', 'Url', 'Link');
+        }
+
+        // Thumbnail logic: Try explicit image, then attachment thumbnail
+        let thumbUrl = getImageUrl(r.fields, 'Image', 'Thumbnail', 'Cover');
+        if (!thumbUrl) {
+            thumbUrl = getAttachmentThumbnail(r.fields, 'Attachments', 'attachments', 'File', 'Document');
+        }
+
+        return {
+            id: r.id,
+            label: getField(r.fields, 'Name', 'Label', 'Title', 'Resource Name'),
+            type: type,
+            link: linkUrl,
+            image: thumbUrl
+        };
+    });
 
     const mappedHotspots = hotspots.map(h => ({
         id: h.id,

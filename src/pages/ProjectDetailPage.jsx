@@ -427,8 +427,8 @@ const ProjectDetailPage = () => {
                                                 <button className="action-btn primary-btn" onClick={() => {
                                                     if (project.collection === 'Coastal' || project.collection === 'coastal') {
                                                         navigate('/#contact');
-                                                    } else {
-                                                        // Default reserve action (if any, currently just a button)
+                                                    } else if (unit.salesLink) {
+                                                        window.open(unit.salesLink, '_blank', 'noopener,noreferrer');
                                                     }
                                                 }}>
                                                     {(project.collection === 'Coastal' || project.collection === 'coastal')
