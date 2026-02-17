@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "node server/index.js",
     "build": "vite build",
     "prerender": "node prerender.js",
     "sitemap": "node generate-sitemap.js",
@@ -19,12 +20,18 @@
     "@microsoft/clarity": "^1.0.2",
     "@supabase/supabase-js": "^2.95.3",
     "axios": "^1.13.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "i18next": "^25.8.0",
     "i18next-browser-languagedetector": "^8.2.0",
+    "node-fetch": "^3.3.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-i18next": "^16.5.4",
-    "react-router-dom": "^7.13.0"
+    "react-router-dom": "^7.13.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
