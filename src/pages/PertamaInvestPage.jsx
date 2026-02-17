@@ -50,13 +50,13 @@ const PertamaInvestPage = () => {
                         <div className="success-icon">✓</div>
                         <h2 className="pertama-heading">Thank You</h2>
                         <p className="pertama-text">
-                            We have received your details. One of our investment specialists will be in touch shortly to discuss property opportunities in Bali.
+                            We have received your details. One of our investment specialists will be in touch shortly.
                         </p>
                         <p className="pertama-text">
-                            Enjoy your stay at Pertama.
+                            In the meantime, you can access our comprehensive investment guide below.
                         </p>
-                        <button className="form-btn" onClick={() => window.location.href = '/'}>
-                            Explore More Projects
+                        <button className="form-btn" onClick={() => window.location.href = 'https://www.baliproperty.com.au/investment-guide'}>
+                            Download Investment Guide
                         </button>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ const PertamaInvestPage = () => {
                         <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
 
                         <button type="submit" className="form-btn" disabled={loading}>
-                            {loading ? 'Sending...' : 'Get Investment Guide'}
+                            {loading ? 'Sending...' : 'Get In Touch'}
                         </button>
                     </form>
                 </div>
