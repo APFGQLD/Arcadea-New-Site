@@ -89,49 +89,85 @@ async function fetchAllBlogPosts() {
 /**
  * Generate XML sitemap
  */
+/**
+ * Parse App.jsx to find static routes
+ */
+function getStaticRoutesFromApp() {
+    try {
+        const appPath = path.join(__dirname, 'src', 'App.jsx');
+        const appContent = fs.readFileSync(appPath, 'utf8');
+
+        // Match all path="..." definitions
+        const routeRegex = /<Route\s+path=["']([^"']+)["']/g;
+        const matches = [];
+        let match;
+
+        while ((match = routeRegex.exec(appContent)) !== null) {
+            const routePath = match[1];
+            // Exclude dynamic routes, wildcards, and admin routes
+            if (!routePath.includes(':') && !routePath.includes('*') && !routePath.startsWith('/admin')) {
+                matches.push(routePath);
+            }
+        }
+
+        console.log(`✅ Found ${matches.length} static routes in App.jsx`);
+        return matches;
+    } catch (error) {
+        console.error('⚠️  Failed to parse App.jsx:', error.message);
+        return []; // Fallback to empty if file not found
+    }
+}
+
+/**
+ * Generate XML sitemap
+ */
 function generateSitemapXML(projects, blogPosts) {
     const now = new Date().toISOString();
+    const urls = new Map(); // Use Map to deduplicate by URL
 
-    // Static pages
-    const staticPages = [
-        { url: '/', priority: '1.0', changefreq: 'weekly' },
-        { url: '/properties', priority: '0.9', changefreq: 'weekly' },
-        { url: '/news', priority: '0.8', changefreq: 'daily' },
-        { url: '/services/ipdc', priority: '0.8', changefreq: 'monthly' },
-        { url: '/privacy-policy', priority: '0.5', changefreq: 'yearly' },
-    ];
+    // Helper to add URL if not exists
+    const addUrl = (url, priority, changefreq) => {
+        if (!urls.has(url)) {
+            urls.set(url, { url, priority, changefreq });
+        }
+    };
 
-    // Hardcoded project pages
-    const hardcodedProjects = [
-        { url: '/project/one-park-lane', priority: '0.9', changefreq: 'monthly' }
-    ];
+    // 1. Scrape static pages from App.jsx
+    const staticRoutes = getStaticRoutesFromApp();
+    staticRoutes.forEach(route => {
+        // Assign priorities based on depth/importance
+        let priority = '0.8';
+        let changefreq = 'weekly';
 
-    // Dynamic project pages
-    const projectPages = projects.map(project => {
+        if (route === '/') {
+            priority = '1.0';
+            changefreq = 'daily';
+        } else if (route.includes('/campaign')) {
+            priority = '0.9'; // Campaigns are important
+        } else if (route === '/contact' || route === '/about') {
+            priority = '0.7';
+            changefreq = 'monthly';
+        }
+
+        addUrl(route, priority, changefreq);
+    });
+
+    // 2. Dynamic project pages (Airtable)
+    projects.forEach(project => {
         const slug = project.fields['Slug'] || project.id;
-        return {
-            url: `/project/${slug}`,
-            priority: '0.8',
-            changefreq: 'monthly'
-        };
+        addUrl(`/project/${slug}`, '0.8', 'monthly');
     });
 
-    // Dynamic blog pages
-    const blogPages = blogPosts.map(post => {
-        return {
-            url: `/news/${post.slug}`,
-            priority: '0.7',
-            changefreq: 'weekly'
-        };
+    // 3. Dynamic blog pages (WordPress)
+    blogPosts.forEach(post => {
+        addUrl(`/news/${post.slug}`, '0.7', 'weekly');
     });
-
-    const allPages = [...staticPages, ...hardcodedProjects, ...projectPages, ...blogPages];
 
     // Build XML
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-    for (const page of allPages) {
+    for (const page of urls.values()) {
         xml += '  <url>\n';
         xml += `    <loc>${SITE_URL}${page.url}</loc>\n`;
         xml += `    <lastmod>${now}</lastmod>\n`;
@@ -150,11 +186,11 @@ function generateSitemapXML(projects, blogPosts) {
 async function generateSitemap() {
     console.log('🗺️  Generating XML sitemap...\n');
 
-    // Check if dist folder exists
-    const distPath = path.join(__dirname, 'dist');
-    if (!fs.existsSync(distPath)) {
-        console.error('❌ dist folder not found. Please run "npm run build" first.');
-        process.exit(1);
+    // Check if public folder exists (it should in a Vite project)
+    const publicPath = path.join(__dirname, 'public');
+    if (!fs.existsSync(publicPath)) {
+        console.warn('⚠️  public folder not found. Creating it...');
+        fs.mkdirSync(publicPath);
     }
 
     // Fetch all projects
@@ -168,8 +204,8 @@ async function generateSitemap() {
     // Generate sitemap XML
     const sitemapXML = generateSitemapXML(projects, blogPosts);
 
-    // Write sitemap.xml to dist folder
-    const sitemapPath = path.join(distPath, 'sitemap.xml');
+    // Write sitemap.xml to public folder
+    const sitemapPath = path.join(publicPath, 'sitemap.xml');
     fs.writeFileSync(sitemapPath, sitemapXML);
 
     console.log('✅ Sitemap generated successfully!');
