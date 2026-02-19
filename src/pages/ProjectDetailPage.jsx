@@ -260,7 +260,7 @@ const ProjectDetailPage = () => {
                                 onClick={() => setSelectedImageIndex(index)}
                             >
                                 <img
-                                    src={item.url}
+                                    src={item.thumbnail || item.url}
                                     alt={item.caption}
                                     width="800"
                                     height="600"

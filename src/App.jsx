@@ -18,6 +18,7 @@ import PertamaInvestPage from './pages/PertamaInvestPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Footer from './components/Footer';
 import ShortLinkRedirect from './pages/ShortLinkRedirect';
+import PageLoader from './components/PageLoader';
 import './index.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <div className="app-wrapper">
+      <PageLoader />
       {!isAdminPage && <Navbar />}
       <main>
         <Routes>

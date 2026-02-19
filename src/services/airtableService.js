@@ -144,6 +144,18 @@ const getImageUrl = (fields, ...keys) => {
     return undefined;
 };
 
+// Helper to safely get optimized image URL (prefer large thumbnail)
+const getOptimizedImageUrl = (fields, ...keys) => {
+    const field = getField(fields, ...keys);
+    if (Array.isArray(field) && field.length > 0) {
+        // Try large, then small, then just the URL if it's an image
+        if (field[0].thumbnails?.large?.url) return field[0].thumbnails.large.url;
+        if (field[0].thumbnails?.small?.url) return field[0].thumbnails.small.url;
+        return field[0].url;
+    }
+    return undefined;
+};
+
 // Helper to get thumbnail from an attachment field (e.g. PDF cover)
 const getAttachmentThumbnail = (fields, ...keys) => {
     const field = getField(fields, ...keys);
@@ -215,7 +227,7 @@ function mapAirtableToApp(records) {
             title: getField(f, 'Name', 'Title', 'Project Name'),
             location: getField(f, 'Location', 'Address') || '',
             price: getField(f, 'Price Display', 'Price', 'Price Range') || 'POA',
-            image: getImageUrl(f, 'Hero Image', 'Image', 'Cover Image') || '',
+            image: getOptimizedImageUrl(f, 'Hero Image', 'Image', 'Cover Image') || '',
             tag: getField(f, 'Status Tag', 'Status', 'Tag') || '',
             collection: getField(f, 'Collection', 'Category'),
             slug: getField(f, 'Slug', 'slug') || '',
@@ -247,7 +259,7 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
             price: getField(uf, 'Price', 'Sale Price', 'Price Display'),
             minPrice: getField(uf, 'Min Price', 'Minimum Price'),
             description: getField(uf, 'Description', 'Notes'),
-            image: getImageUrl(uf, 'Unit Type Image', 'Image', 'Unit Image', 'Photo'),
+            image: getOptimizedImageUrl(uf, 'Unit Type Image', 'Image', 'Unit Image', 'Photo'),
             floorPlan: getImageUrl(uf, 'Floor Plan', 'Plan'),
             percentage: getField(uf, 'Percentage', 'Share Percentage', 'Share') || 0,
             salesLink: getField(uf, 'Sales Link', 'Reserve Link', 'External Link')
@@ -257,12 +269,17 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
     const mappedGallery = gallery.map(g => ({
         id: g.id,
         url: getImageUrl(g.fields, 'Image', 'Photo', 'File', 'Gallery Image'),
+        thumbnail: getOptimizedImageUrl(g.fields, 'Image', 'Photo', 'File', 'Gallery Image'),
         caption: getField(g.fields, 'Name', 'Caption', 'Description') || ''
     })).filter(g => g.url);
 
     // If gallery table empty, fallback to hero (or empty)
     if (mappedGallery.length === 0 && getImageUrl(f, 'Hero Image')) {
-        mappedGallery.push({ url: getImageUrl(f, 'Hero Image'), caption: 'Main View' });
+        mappedGallery.push({
+            url: getImageUrl(f, 'Hero Image'),
+            thumbnail: getOptimizedImageUrl(f, 'Hero Image'),
+            caption: 'Main View'
+        });
     }
 
     const mappedResources = resources.map(r => {
@@ -284,7 +301,7 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
         }
 
         // Thumbnail logic: Try explicit image, then attachment thumbnail
-        let thumbUrl = getImageUrl(r.fields, 'Image', 'Thumbnail', 'Cover');
+        let thumbUrl = getOptimizedImageUrl(r.fields, 'Image', 'Thumbnail', 'Cover');
         if (!thumbUrl) {
             thumbUrl = getAttachmentThumbnail(r.fields, 'Attachments', 'attachments', 'File', 'Document');
         }
