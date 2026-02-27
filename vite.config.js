@@ -31,6 +31,12 @@ export default defineConfig({
         target: 'http://localhost:3002',
         changeOrigin: true,
         secure: false,
+      },
+      '/wp-api': {
+        target: 'https://cms.arcadea.com.au/wp-json/wp/v2',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/wp-api/, ''),
       }
     }
   }

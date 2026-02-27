@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // WordPress API Configuration
-const WP_API_URL = import.meta.env.VITE_WP_API_URL || 'https://cms.arcadea.com.au/wp-json/wp/v2';
+const WP_API_URL = import.meta.env.DEV
+    ? '/wp-api'
+    : (import.meta.env.VITE_WP_API_URL || 'https://cms.arcadea.com.au/wp-json/wp/v2');
 const WP_USER = import.meta.env.VITE_WP_USER;
 const WP_APP_PASS = import.meta.env.VITE_WP_APP_PASS;
 
@@ -53,8 +55,7 @@ export const fetchBlogPosts = async (page = 1, perPage = 9) => {
         };
     } catch (error) {
         console.error('Error fetching blog posts:', error);
-        // Return mock data for development
-        return getMockBlogPosts(page, perPage);
+        throw error; // Rethrow to show error in UI instead of mock data
     }
 };
 
@@ -89,7 +90,7 @@ export const fetchBlogPost = async (slug) => {
         };
     } catch (error) {
         console.error('Error fetching blog post:', error);
-        return getMockBlogPost(slug);
+        throw error;
     }
 };
 
