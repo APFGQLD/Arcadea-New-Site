@@ -2,6 +2,17 @@ import axios from 'axios';
 
 // WordPress API Configuration
 const WP_API_URL = import.meta.env.VITE_WP_API_URL || 'https://cms.arcadea.com.au/wp-json/wp/v2';
+const WP_USER = import.meta.env.VITE_WP_USER;
+const WP_APP_PASS = import.meta.env.VITE_WP_APP_PASS;
+
+// Helper to get authentication header
+const getAuthHeader = () => {
+    if (WP_USER && WP_APP_PASS) {
+        const token = btoa(`${WP_USER}:${WP_APP_PASS}`);
+        return { 'Authorization': `Basic ${token}` };
+    }
+    return {};
+};
 
 // Default image if none is set or API fails
 const DEFAULT_FEATURED_IMAGE = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/V04_FINAL_lowres.jpeg';
@@ -21,7 +32,8 @@ export const fetchBlogPosts = async (page = 1, perPage = 9) => {
                 _embed: true, // Include featured images and author
                 orderby: 'date',
                 order: 'desc'
-            }
+            },
+            headers: getAuthHeader()
         });
 
         return {
@@ -57,7 +69,8 @@ export const fetchBlogPost = async (slug) => {
             params: {
                 slug,
                 _embed: true
-            }
+            },
+            headers: getAuthHeader()
         });
 
         const post = response.data[0];
@@ -86,7 +99,9 @@ export const fetchBlogPost = async (slug) => {
  */
 export const fetchCategories = async () => {
     try {
-        const response = await axios.get(`${WP_API_URL}/categories`);
+        const response = await axios.get(`${WP_API_URL}/categories`, {
+            headers: getAuthHeader()
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching categories:', error);
