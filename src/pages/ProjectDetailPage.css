@@ -1588,3 +1588,67 @@
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%);
     }
 }
+
+/* Sold Out UI Styles */
+.accordion-item.sold-out {
+    opacity: 0.85;
+    cursor: default;
+}
+
+.accordion-item.sold-out .item-overlay {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9));
+}
+
+.accordion-item.sold-out:not(.expanded) {
+    filter: grayscale(0.6);
+}
+
+.sold-out-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: #b91c1c;
+    /* Prominent Red */
+    color: #ffffff;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.5s ease;
+}
+
+.availability-count.sold-out {
+    color: #ef4444;
+    /* Brighter red for the count */
+}
+
+.sold-out-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ef4444;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.availability-bar-fill.sold-out {
+    background: rgba(239, 68, 68, 0.2);
+    width: 0% !important;
+}
+
+.action-btn.primary-btn.disabled {
+    background: rgba(185, 28, 28, 0.1);
+    color: var(--text-muted);
+    border: 1px solid rgba(185, 28, 28, 0.2);
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.accordion-item.sold-out.expanded .unit-type {
+    color: #fca5a5;
+    /* Light red for the type label when expanded and sold out */
+}

@@ -323,14 +323,17 @@ const ProjectDetailPage = () => {
                         const available = Math.max(0, total - sold);
                         const percentAvailable = total > 0 ? (available / total) * 100 : 0;
 
+                        const isSoldOut = total > 0 && available === 0;
+
                         let barColorClass = 'high';
-                        if (percentAvailable < 20) barColorClass = 'low';
+                        if (isSoldOut) barColorClass = 'sold-out';
+                        else if (percentAvailable < 20) barColorClass = 'low';
                         else if (percentAvailable < 50) barColorClass = 'med';
 
                         return (
                             <div
                                 key={unit.id}
-                                className={`accordion-item ${expandedUnitId === unit.id ? 'expanded' : ''}`}
+                                className={`accordion-item ${expandedUnitId === unit.id ? 'expanded' : ''} ${isSoldOut ? 'sold-out' : ''}`}
                                 style={{
                                     backgroundImage: unit.image ? `url(${unit.image})` : undefined,
                                     backgroundSize: 'cover',
@@ -339,6 +342,12 @@ const ProjectDetailPage = () => {
                                 onClick={() => toggleUnit(unit.id)}
                             >
                                 <div className="item-overlay"></div>
+
+                                {isSoldOut && (
+                                    <div className="sold-out-badge">
+                                        {t('project_detail.sold_out', 'Sold Out')}
+                                    </div>
+                                )}
 
                                 <div className="accordion-header">
                                     <div className="unit-info-basic">
@@ -374,10 +383,14 @@ const ProjectDetailPage = () => {
 
                                             <div className="unit-stats-row">
                                                 <div className="unit-availability-stat">
-                                                    <span className={`availability-count ${barColorClass}`}>
-                                                        {available}
+                                                    {!isSoldOut && (
+                                                        <span className={`availability-count ${barColorClass}`}>
+                                                            {available}
+                                                        </span>
+                                                    )}
+                                                    <span className={`availability-label ${isSoldOut ? 'sold-out-label' : ''}`}>
+                                                        {isSoldOut ? t('project_detail.fully_sold', 'Fully Sold') : t('project_detail.units_available', 'Units Available')}
                                                     </span>
-                                                    <span className="availability-label">{t('project_detail.units_available', 'Units Available')}</span>
                                                     <div className="availability-bar-visual">
                                                         <div
                                                             className={`availability-bar-fill ${barColorClass}`}
@@ -424,16 +437,24 @@ const ProjectDetailPage = () => {
                                                         <ArrowDownTrayIcon className="hero-icon-sm" style={{ marginLeft: '0.5rem' }} />
                                                     </a>
                                                 )}
-                                                <button className="action-btn primary-btn" onClick={() => {
-                                                    if (project.collection === 'Coastal' || project.collection === 'coastal') {
-                                                        navigate('/#contact');
-                                                    } else if (unit.salesLink) {
-                                                        window.open(unit.salesLink, '_blank', 'noopener,noreferrer');
+                                                <button
+                                                    className={`action-btn primary-btn ${isSoldOut ? 'disabled' : ''}`}
+                                                    disabled={isSoldOut}
+                                                    onClick={() => {
+                                                        if (isSoldOut) return;
+                                                        if (project.collection === 'Coastal' || project.collection === 'coastal') {
+                                                            navigate('/#contact');
+                                                        } else if (unit.salesLink) {
+                                                            window.open(unit.salesLink, '_blank', 'noopener,noreferrer');
+                                                        }
+                                                    }}
+                                                >
+                                                    {isSoldOut
+                                                        ? t('project_detail.sold_out', 'Sold Out')
+                                                        : (project.collection === 'Coastal' || project.collection === 'coastal')
+                                                            ? t('project_detail.request_info', 'Request More Information')
+                                                            : t('project_detail.reserve', 'Reserve Now')
                                                     }
-                                                }}>
-                                                    {(project.collection === 'Coastal' || project.collection === 'coastal')
-                                                        ? t('project_detail.request_info', 'Request More Information')
-                                                        : t('project_detail.reserve', 'Reserve Now')}
                                                 </button>
                                             </div>
                                         </div>
