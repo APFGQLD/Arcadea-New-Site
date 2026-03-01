@@ -201,5 +201,30 @@
     },
     "footer": {
         "rights": "All rights reserved. Professional Real Estate Advisory."
+    },
+    "join": {
+        "title": "Join Virtual Meeting",
+        "subtitle": "Select your representative to enter their private Zoom room.",
+        "password_notice": "The password for all meeting rooms is: JOIN",
+        "select_representative": "Select your representative...",
+        "join_button": "Join Meeting",
+        "redirecting": "Taking you to {{name}}'s Zoom...",
+        "representatives": {
+            "fred": {
+                "name": "Fred Baker"
+            },
+            "darren": {
+                "name": "Darren Abbot"
+            },
+            "pamela": {
+                "name": "Pamela Patt"
+            },
+            "lauren": {
+                "name": "Lauren Paszkowski"
+            },
+            "matt": {
+                "name": "Matt Sully"
+            }
+        }
     }
 }

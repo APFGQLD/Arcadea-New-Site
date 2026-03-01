@@ -15,6 +15,7 @@ import EventReplayPage from './pages/EventReplayPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import AdminPage from './pages/AdminPage';
 import PertamaInvestPage from './pages/PertamaInvestPage';
+import JoinPage from './pages/JoinPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Footer from './components/Footer';
 import ShortLinkRedirect from './pages/ShortLinkRedirect';
@@ -46,6 +47,7 @@ function App() {
           <Route path="/event/replay" element={<EventReplayPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/join" element={<JoinPage />} />
 
           {/* Catch-all for short links - MUST be last before 404 */}
           <Route path="/:slug" element={<ShortLinkRedirect />} />

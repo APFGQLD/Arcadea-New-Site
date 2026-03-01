@@ -71,5 +71,30 @@
     },
     "footer": {
         "rights": "Seluruh hak cipta dilindungi undang-undang. Penasihat Real Estat Profesional."
+    },
+    "join": {
+        "title": "Bergabung dengan Pertemuan Virtual",
+        "subtitle": "Pilih perwakilan Anda untuk masuk ke ruang Zoom pribadi mereka.",
+        "password_notice": "Kata sandi untuk semua ruang pertemuan adalah: JOIN",
+        "select_representative": "Pilih perwakilan Anda...",
+        "join_button": "Gabung Pertemuan",
+        "redirecting": "Membawa Anda ke Zoom {{name}}...",
+        "representatives": {
+            "fred": {
+                "name": "Fred Baker"
+            },
+            "darren": {
+                "name": "Darren Abbot"
+            },
+            "pamela": {
+                "name": "Pamela Patt"
+            },
+            "lauren": {
+                "name": "Lauren Paszkowski"
+            },
+            "matt": {
+                "name": "Matt Sully"
+            }
+        }
     }
 }

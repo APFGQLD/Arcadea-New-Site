@@ -1,0 +1,188 @@
+.join-page-container {
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    background-image: var(--ambient-glow);
+    padding: 120px 20px 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.join-content-wrapper {
+    max-width: 600px;
+    width: 100%;
+}
+
+.join-glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    padding: 60px 40px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.join-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.join-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+.password-notice-banner {
+    background: rgba(133, 113, 77, 0.1);
+    border: 1px solid rgba(133, 113, 77, 0.3);
+    border-radius: var(--radius-md);
+    padding: 15px 20px;
+    margin-bottom: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.password-icon {
+    font-size: 1.1rem;
+}
+
+.password-text {
+    font-size: 0.95rem;
+    color: var(--accent-gold-light);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.dropdown-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+.representative-select {
+    width: 100%;
+    padding: 16px 20px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2385714d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+}
+
+.representative-select:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+}
+
+.join-action-button {
+    width: 100%;
+    padding: 18px;
+    background: var(--accent-gold);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.join-action-button:hover:not(.disabled) {
+    background: var(--accent-gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(133, 113, 77, 0.3);
+}
+
+.join-action-button.disabled {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.dropdown-container.fade-out {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    margin-bottom: 0;
+}
+
+.redirecting-transition {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    animation: fadeIn 0.5s ease forwards;
+    padding: 20px 0;
+}
+
+.redirecting-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(133, 113, 77, 0.1);
+    border-top: 3px solid var(--accent-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.redirecting-text {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin: 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .join-title {
+        font-size: 2rem;
+    }
+
+    .join-glass-card {
+        padding: 40px 20px;
+    }
+}

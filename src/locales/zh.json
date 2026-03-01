@@ -71,5 +71,30 @@
     },
     "footer": {
         "rights": "版权所有。专业房地产咨询服务。"
+    },
+    "join": {
+        "title": "加入在线会议",
+        "subtitle": "选择您的顾问进入其私人 Zoom 会议室。",
+        "password_notice": "所有会议室的密码均为：JOIN",
+        "select_representative": "选择您的顾问...",
+        "join_button": "加入会议",
+        "redirecting": "正在为您跳转至 {{name}} 的 Zoom 会议室...",
+        "representatives": {
+            "fred": {
+                "name": "Fred Baker"
+            },
+            "darren": {
+                "name": "Darren Abbot"
+            },
+            "pamela": {
+                "name": "Pamela Patt"
+            },
+            "lauren": {
+                "name": "Lauren Paszkowski"
+            },
+            "matt": {
+                "name": "Matt Sully"
+            }
+        }
     }
 }
