@@ -1,0 +1,97 @@
+.the-luc-reviews-page {
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+}
+
+.reviews-hero {
+    padding: 120px 0 60px;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&auto=format&fit=crop&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+}
+
+.reviews-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-family: var(--font-heading);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.reviews-subtitle {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    opacity: 0.9;
+}
+
+.reviews-toggle-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.reviews-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 5px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toggle-btn {
+    padding: 12px 30px;
+    border-radius: 40px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.toggle-btn.active {
+    background-color: var(--gold-primary, #C5A059);
+    color: black;
+    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+}
+
+.toggle-btn:not(.active):hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.reviews-container {
+    padding: 80px 0;
+}
+
+.widget-wrapper {
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ensure container max-width from main styles is respected */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .reviews-hero {
+        padding: 100px 0 40px;
+    }
+    
+    .toggle-btn {
+        padding: 10px 20px;
+        font-size: 0.8rem;
+    }
+}

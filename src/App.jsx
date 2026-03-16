@@ -17,6 +17,7 @@ import AdminPage from './pages/AdminPage';
 import PertamaInvestPage from './pages/PertamaInvestPage';
 import JoinPage from './pages/JoinPage';
 import NotFoundPage from './pages/NotFoundPage';
+import TheLucReviewsPage from './pages/TheLucReviewsPage';
 import Footer from './components/Footer';
 import ShortLinkRedirect from './pages/ShortLinkRedirect';
 import PageLoader from './components/PageLoader';
@@ -36,6 +37,7 @@ function App() {
           <Route path="/properties" element={<PropertiesPage />} />
           {/* Specific route for One Park Lane BEFORE generic project ID route */}
           <Route path="/project/one-park-lane" element={<OneParkLanePage />} />
+          <Route path="/project/luc/reviews" element={<TheLucReviewsPage />} />
           <Route path="/project/:id" element={<ProjectDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
