@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
@@ -35,6 +35,7 @@ const ProjectDetailPage = () => {
             try {
                 const data = await fetchProjectDetail(id);
                 setProject(data);
+                setSelectedImageIndex(null); // Reset lightbox on project change
             } catch (err) {
                 console.error('Error fetching project detail:', err);
                 setError(t('project_detail.error', 'Failed to load project details.'));
@@ -47,6 +48,16 @@ const ProjectDetailPage = () => {
         window.scrollTo(0, 0);
     }, [id, t]);
 
+    const handleNextImage = useCallback(() => {
+        if (!project?.gallery?.length) return;
+        setSelectedImageIndex((prev) => (prev + 1) % project.gallery.length);
+    }, [project?.gallery?.length]);
+
+    const handlePrevImage = useCallback(() => {
+        if (!project?.gallery?.length) return;
+        setSelectedImageIndex((prev) => (prev - 1 + project.gallery.length) % project.gallery.length);
+    }, [project?.gallery?.length]);
+
     // Handle Keyboard Navigation
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -57,15 +68,7 @@ const ProjectDetailPage = () => {
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedImageIndex]);
-
-    const handleNextImage = () => {
-        setSelectedImageIndex((prev) => (prev + 1) % project.gallery.length);
-    };
-
-    const handlePrevImage = () => {
-        setSelectedImageIndex((prev) => (prev - 1 + project.gallery.length) % project.gallery.length);
-    };
+    }, [selectedImageIndex, handleNextImage, handlePrevImage]);
 
     const scrollCarousel = (direction) => {
         if (!carouselRef.current) return;
@@ -553,29 +556,58 @@ const ProjectDetailPage = () => {
             </section >
             {/* 7. Lightbox Overlay */}
             {
-                selectedImageIndex !== null && (
+                selectedImageIndex !== null && project.gallery[selectedImageIndex] && (
                     <div className="lightbox-overlay" onClick={() => setSelectedImageIndex(null)}>
                         <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
                             <button className="lightbox-close" onClick={() => setSelectedImageIndex(null)}>×</button>
 
-                            <button className="lightbox-prev" onClick={handlePrevImage}>‹</button>
+                            <button
+                                className="lightbox-prev"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePrevImage();
+                                }}
+                            >
+                                ‹
+                            </button>
+
                             <div className="lightbox-image-container">
-                                <img
-                                    src={project.gallery[selectedImageIndex].url}
-                                    alt={project.gallery[selectedImageIndex].caption}
-                                    className="lightbox-image"
-                                    width="1200"
-                                    height="900"
-                                    loading="eager"
-                                    decoding="async"
-                                />
-                                {project.gallery[selectedImageIndex].caption && (
-                                    <div className="lightbox-caption">
-                                        {project.gallery[selectedImageIndex].caption}
-                                    </div>
-                                )}
+                                <div
+                                    className="lightbox-slider-track"
+                                    style={{
+                                        transform: `translateX(-${selectedImageIndex * 100}%)`
+                                    }}
+                                >
+                                    {project.gallery.map((item, index) => (
+                                        <div key={item.id || index} className="lightbox-slide">
+                                            <img
+                                                src={item.url}
+                                                alt={item.caption}
+                                                className="lightbox-image"
+                                                width="1200"
+                                                height="900"
+                                                loading={Math.abs(index - selectedImageIndex) <= 1 ? "eager" : "lazy"}
+                                                decoding="async"
+                                            />
+                                            {item.caption && (
+                                                <div className="lightbox-caption">
+                                                    {item.caption}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <button className="lightbox-next" onClick={handleNextImage}>›</button>
+
+                            <button
+                                className="lightbox-next"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleNextImage();
+                                }}
+                            >
+                                ›
+                            </button>
 
                             <div className="lightbox-counter">
                                 {(selectedImageIndex + 1)} / {project.gallery.length}

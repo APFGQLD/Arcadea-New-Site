@@ -471,31 +471,51 @@
 .lightbox-image-container {
     height: 100%;
     width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.lightbox-slider-track {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+    will-change: transform;
+}
+
+.lightbox-slide {
+    flex: 0 0 100%;
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
+    padding: 0 5%;
 }
 
 .lightbox-image {
     max-width: 100%;
-    max-height: 100%;
+    max-height: 85%;
     object-fit: contain;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.4s ease;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease;
+}
+
+.lightbox-image:hover {
+    transform: scale(1.02);
 }
 
 .lightbox-caption {
-    position: absolute;
-    bottom: -40px;
-    left: 0;
+    margin-top: 2rem;
     width: 100%;
     text-align: center;
     color: #fff;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 300;
     letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-close {
@@ -514,20 +534,24 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 4rem;
+    font-size: 5rem;
     color: #fff;
-    opacity: 0.4;
+    opacity: 0.6;
     padding: 2rem;
-    transition: all 0.3s;
-    z-index: 10001;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 10005;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-prev {
-    left: -80px;
+    left: 20px;
 }
 
 .lightbox-next {
-    right: -80px;
+    right: 20px;
 }
 
 .lightbox-close:hover,
@@ -560,11 +584,17 @@
 
 @media (max-width: 1200px) {
     .lightbox-prev {
-        left: 0;
+        left: 10px;
     }
 
     .lightbox-next {
-        right: 0;
+        right: 10px;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        font-size: 4rem;
+        padding: 1.5rem;
     }
 }
 
