@@ -18,6 +18,7 @@ import PertamaInvestPage from './pages/PertamaInvestPage';
 import JoinPage from './pages/JoinPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TheLucReviewsPage from './pages/TheLucReviewsPage';
+import CalculatorPage from './pages/CalculatorPage';
 import Footer from './components/Footer';
 import ShortLinkRedirect from './pages/ShortLinkRedirect';
 import PageLoader from './components/PageLoader';
@@ -48,6 +49,7 @@ function App() {
           <Route path="/campaign/pertama" element={<PertamaInvestPage />} />
           <Route path="/event/replay" element={<EventReplayPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/calculator" element={<CalculatorPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/join" element={<JoinPage />} />
 

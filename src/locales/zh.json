@@ -4,7 +4,8 @@
         "properties": "物业项目",
         "services": "服务项目",
         "about": "关于我们",
-        "contact": "联系我们"
+        "contact": "联系我们",
+        "calculators": "计算器"
     },
     "hero": {
         "title": "重新定义奢华房地产",
@@ -70,7 +71,12 @@
         "formPlaceholder": "[潜在客户表单集成点]"
     },
     "footer": {
-        "rights": "版权所有。专业房地产咨询服务。"
+        "rights": "版权所有。专业房地产咨询服务。",
+        "calculator": "计算器"
+    },
+    "calculators": {
+        "title": "财务工具",
+        "subtitle": "选择计算器来协助您的投资规划。"
     },
     "join": {
         "title": "加入在线会议",

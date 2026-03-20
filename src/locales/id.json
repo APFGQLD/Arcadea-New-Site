@@ -4,7 +4,8 @@
         "properties": "Properti",
         "services": "Layanan",
         "about": "Tentang Kami",
-        "contact": "Hubungi Kami"
+        "contact": "Hubungi Kami",
+        "calculators": "Kalkulator"
     },
     "hero": {
         "title": "Mendefinisikan Ulang Real Estat Mewah",
@@ -70,7 +71,12 @@
         "formPlaceholder": "[Titik Integrasi Formulir Prospek]"
     },
     "footer": {
-        "rights": "Seluruh hak cipta dilindungi undang-undang. Penasihat Real Estat Profesional."
+        "rights": "Seluruh hak cipta dilindungi undang-undang. Penasihat Real Estat Profesional.",
+        "calculator": "Kalkulator"
+    },
+    "calculators": {
+        "title": "Alat Keuangan",
+        "subtitle": "Pilih kalkulator untuk membantu perencanaan investasi Anda."
     },
     "join": {
         "title": "Bergabung dengan Pertemuan Virtual",

@@ -4,7 +4,8 @@
         "properties": "Properties",
         "services": "Services",
         "about": "About",
-        "contact": "Get in Touch"
+        "contact": "Get in Touch",
+        "calculators": "Calculators"
     },
     "hero": {
         "title": "Redefining Luxury Real Estate",
@@ -170,7 +171,7 @@
                 },
                 "structure": {
                     "title": "Structure",
-                    "description": "We guide you through financing, legal frameworks, and tax optimization with precision and clarity."
+                    "description": "We guide you through financing, legal frameworks, and tax optimisation with precision and clarity."
                 },
                 "acquisition": {
                     "title": "Acquisition",
@@ -200,7 +201,12 @@
         "formPlaceholder": "[Lead Form Integration Point]"
     },
     "footer": {
-        "rights": "All rights reserved. Professional Real Estate Advisory."
+        "rights": "All rights reserved. Professional Real Estate Advisory.",
+        "calculator": "Calculators"
+    },
+    "calculators": {
+        "title": "Financial Tools",
+        "subtitle": "Select a calculator to help with your investment planning."
     },
     "join": {
         "title": "Join Virtual Meeting",
