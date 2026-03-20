@@ -11,7 +11,18 @@ import {
     ArrowDownTrayIcon,
     ArrowRightIcon,
     PlusIcon,
-    MinusIcon
+    MinusIcon,
+    HomeIcon,
+    CalendarIcon,
+    MapPinIcon,
+    ClockIcon,
+    CurrencyDollarIcon,
+    ShieldCheckIcon,
+    BuildingOfficeIcon,
+    BriefcaseIcon,
+    UsersIcon,
+    LightBulbIcon,
+    GlobeAltIcon
 } from '@heroicons/react/24/solid';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
@@ -156,10 +167,39 @@ const ProjectDetailPage = () => {
         });
     };
 
+    const getIcon = (iconName) => {
+        if (!iconName) return <PresentationChartLineIcon className="hero-icon" />;
+
+        const icons = {
+            moonicon: MoonIcon,
+            sparklesicon: SparklesIcon,
+            arrowspointingouticon: ArrowsPointingOutIcon,
+            presentationchartlineicon: PresentationChartLineIcon,
+            homeicon: HomeIcon,
+            calendaricon: CalendarIcon,
+            mappinicon: MapPinIcon,
+            clockicon: ClockIcon,
+            currencydollaricon: CurrencyDollarIcon,
+            shieldcheckicon: ShieldCheckIcon,
+            buildingofficeicon: BuildingOfficeIcon,
+            briefcaseicon: BriefcaseIcon,
+            usersicon: UsersIcon,
+            lightbulbicon: LightBulbIcon,
+            globealticon: GlobeAltIcon
+        };
+
+        // Clean name: remove non-alphanumeric, lowercase and ensure it ends with "icon" for lookup
+        let cleanName = iconName.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+        if (!cleanName.endsWith('icon')) cleanName += 'icon';
+
+        const Icon = icons[cleanName] || PresentationChartLineIcon;
+        return <Icon className="hero-icon" />;
+    };
+
     return (
         <div className="project-detail-page">
             {/* 1. Cinematic Hero Section */}
-            <section className="detail-hero">
+            <section className="detail-hero" id="hero">
                 <div className="hero-background">
                     <img
                         src={project.heroImage}
@@ -189,8 +229,22 @@ const ProjectDetailPage = () => {
                 </div>
             </section>
 
+            {/* Quick Navigation Banner */}
+            <nav className="detail-nav-banner">
+                <div className="container nav-banner-inner">
+                    <a href="#overview" className="nav-banner-link">{t('project_detail.nav_overview', 'Overview')}</a>
+                    <a href="#vision" className="nav-banner-link">{t('project_detail.nav_vision', 'The Vision')}</a>
+                    <a href="#resources" className="nav-banner-link">{t('project_detail.nav_resources', 'Resources')}</a>
+                    <a href="#availability" className="nav-banner-link">{t('project_detail.nav_availability', 'Availability')}</a>
+                    {(project.collection === 'Island' || project.collection === 'island') && (
+                        <a href="#comparison" className="nav-banner-link">{t('project_detail.nav_comparison', 'Comparison')}</a>
+                    )}
+                    <a href="#location" className="nav-banner-link">{t('project_detail.nav_location', 'Location')}</a>
+                </div>
+            </nav>
+
             {/* 2. Overview & Stats Section */}
-            <section className="detail-overview container">
+            <section className="detail-overview container" id="overview">
                 <div className="overview-grid">
                     <div className="overview-info">
                         <h2 className="section-title">{t('project_detail.overview_title', 'The Project')}</h2>
@@ -201,44 +255,17 @@ const ProjectDetailPage = () => {
                         <div className="project-stats-card">
                             <h4 className="stats-card-title">{t('project_detail.quick_facts', 'Quick Facts')}</h4>
                             <div className="stats-inner-grid">
-                                <div className="compact-stat">
-                                    <div className="stat-icon-small">
-                                        <MoonIcon className="hero-icon" />
-                                    </div>
-                                    <div className="stat-text">
-                                        <span className="label">{t('project_detail.beds', 'Bedrooms')}</span>
-                                        <span className="value">{project.stats.beds}</span>
-                                    </div>
-                                </div>
-                                <div className="compact-stat">
-                                    <div className="stat-icon-small">
-                                        <SparklesIcon className="hero-icon" />
-                                    </div>
-                                    <div className="stat-text">
-                                        <span className="label">{t('project_detail.baths', 'Bathrooms')}</span>
-                                        <span className="value">{project.stats.baths}</span>
-                                    </div>
-                                </div>
-                                <div className="compact-stat">
-                                    <div className="stat-icon-small">
-                                        <ArrowsPointingOutIcon className="hero-icon" />
-                                    </div>
-                                    <div className="stat-text">
-                                        <span className="label">{t('project_detail.size', 'Unit Sizes')}</span>
-                                        <span className="value">{project.stats.size}</span>
-                                    </div>
-                                </div>
-                                {project.stats.ipdc && (
-                                    <div className="compact-stat">
+                                {project.quickFacts && project.quickFacts.map(fact => (
+                                    <div key={fact.id} className="compact-stat">
                                         <div className="stat-icon-small">
-                                            <PresentationChartLineIcon className="hero-icon" />
+                                            {getIcon(fact.icon)}
                                         </div>
                                         <div className="stat-text">
-                                            <span className="label">{t('project_detail.ipdc', 'IPDC')}</span>
-                                            <span className="value">{project.stats.ipdc}%</span>
+                                            <span className="label">{fact.label}</span>
+                                            <span className="value">{fact.value}</span>
                                         </div>
                                     </div>
-                                )}
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -246,7 +273,7 @@ const ProjectDetailPage = () => {
             </section>
 
             {/* 2. Gallery & Narrative Section (Placeholder for implementation) */}
-            <section className="detail-gallery container">
+            <section className="detail-gallery container" id="vision">
                 <div className="section-header-flex">
                     <h2 className="section-title">{t('project_detail.gallery_title', 'The Vision')}</h2>
                     <div className="carousel-controls">
@@ -280,7 +307,7 @@ const ProjectDetailPage = () => {
             </section>
 
             {/* 3. Take a Look Section */}
-            <section className="detail-resources bg-secondary">
+            <section className="detail-resources bg-secondary" id="resources">
                 <div className="container">
                     <h2 className="section-title">{t('project_detail.resources_title', 'Take a Look')}</h2>
                     <p className="section-subtitle">{t('project_detail.resources_subtitle', 'Explore brochures, tours, and updates.')}</p>
@@ -317,7 +344,7 @@ const ProjectDetailPage = () => {
 
             {/* 4. Unit Availability Table */}
             {/* 4. Unit Availability Accordion */}
-            <section className="detail-units container">
+            <section className="detail-units container" id="availability">
                 <h2 className="section-title">{t('project_detail.units_title', 'Availability & Unit Types')}</h2>
                 <div className="units-accordion">
                     {project.units.map(unit => {
@@ -471,13 +498,13 @@ const ProjectDetailPage = () => {
 
             {/* 4.5. Comparison Table (Island Collection Only) */}
             {(project.collection === 'Island' || project.collection === 'island') && (
-                <section className="detail-comparison container">
+                <section className="detail-comparison container" id="comparison">
                     <ComparisonTable project={project} />
                 </section>
             )}
 
             {/* 5. Developer Section */}
-            <section className="detail-developer bg-secondary">
+            <section className="detail-developer bg-secondary" id="developer">
                 <div className="container developer-flex">
                     <div className="developer-info">
                         <h2 className="section-title">{t('project_detail.dev_title', 'The Developer')}</h2>
@@ -500,7 +527,7 @@ const ProjectDetailPage = () => {
             </section>
 
             {/* 6. Location Section */}
-            <section className="detail-location container">
+            <section className="detail-location container" id="location">
                 <h2 className="section-title">{t('project_detail.location_title', 'Location')}</h2>
                 <div className="location-grid">
                     <div className="hotspots-list">

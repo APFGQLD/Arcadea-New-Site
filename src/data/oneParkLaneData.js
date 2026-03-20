@@ -10,6 +10,11 @@ export const oneParkLaneProject = {
     statusTag: 'Pre-Launch',
     heroImage: 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/V03_FINAL_lowres.jpeg',
     description: "**Australia's Newest Icon Rises.**\n\nOne Park Lane represents the pinnacle of luxury living on the Gold Coast, featuring world-class design and premium finishes throughout.\n\n**Architectural Excellence**\n101 storey residential tower with 60 storey commercial tower connected by a stunning skybridge at level 22.\n\n**Premium Location**\nLocated at 1 Park Lane, Southport – the heart of Gold Coast’s premier business and lifestyle precinct.\n\n**Luxury Finishes**\nEvery apartment features premium finishes, floor to ceiling windows, and spectacular views.\n\n**World Class Amenities**\nIndulge in resort-style living with our comprehensive range of luxury amenities designed for the discerning resident.",
+    quickFacts: [
+        { id: 'beds', icon: 'MoonIcon', label: 'Bedrooms', value: '2 - 4+' },
+        { id: 'baths', icon: 'SparklesIcon', label: 'Bathrooms', value: '2 - 4.5' },
+        { id: 'size', icon: 'ArrowsPointingOutIcon', label: 'Unit Sizes', value: '90m2 - 326m2+' }
+    ],
     stats: {
         beds: '2 - 4+',
         baths: '2 - 4.5',

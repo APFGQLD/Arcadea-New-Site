@@ -9,6 +9,7 @@ const TABLES = {
     HOTSPOTS: 'tblcTTNvfRkwPZqjg',
     GALLERY: 'tblJx9nmpXuFiEMd7',
     RESOURCES: 'tblAzUDH46eh9ZPwy',
+    QUICK_FACTS: 'Quick Facts', // Using table name is more reliable for users
 };
 
 // Simple in-memory cache
@@ -89,11 +90,7 @@ export const fetchProjectsByCollection = async (collectionName) => {
             price: oneParkLaneProject.price,
             image: oneParkLaneProject.heroImage,
             tag: oneParkLaneProject.tag,
-            features: [
-                oneParkLaneProject.stats.beds + ' Bed',
-                oneParkLaneProject.stats.baths + ' Bath',
-                oneParkLaneProject.stats.size
-            ],
+            features: oneParkLaneProject.quickFacts.map(f => f.value),
             collection: 'Coastal',
             slug: oneParkLaneProject.slug,
         });
@@ -116,7 +113,10 @@ export const fetchProjectsByCollection = async (collectionName) => {
         CACHE.timestamp = now;
 
         // Filter and Map
-        const filteredRecords = airtableRecords.filter(p => p.fields['Collection'] === collectionName);
+        const filteredRecords = airtableRecords.filter(p => {
+            const col = getField(p.fields, 'Collection', 'Category');
+            return col && col.toLowerCase() === collectionName.toLowerCase();
+        });
         const mappedProjects = mapAirtableToApp(filteredRecords);
 
         return [...staticProjects, ...mappedProjects];
@@ -195,11 +195,13 @@ export const fetchProjectDetail = async (projectIdOrSlug) => {
         console.log('Debug: Project Record Found:', projectRecord.fields);
 
         // Fetch ALL linked data in parallel
-        const [units, hotspots, gallery, resources] = await Promise.all([
+        // Use a safe catch for QUICK_FACTS to avoid breakage if the table id is invalid/missing
+        const [units, hotspots, gallery, resources, quickFacts] = await Promise.all([
             fetchLinkedRecords(TABLES.UNITS, projectRecord.id),
             fetchLinkedRecords(TABLES.HOTSPOTS, projectRecord.id),
             fetchLinkedRecords(TABLES.GALLERY, projectRecord.id),
-            fetchLinkedRecords(TABLES.RESOURCES, projectRecord.id)
+            fetchLinkedRecords(TABLES.RESOURCES, projectRecord.id),
+            fetchLinkedRecords(TABLES.QUICK_FACTS, projectRecord.id).catch(() => [])
         ]);
 
         console.log(`Debug: Fetched ${units.length} units, ${gallery.length} gallery items, ${resources.length} resources`);
@@ -209,7 +211,7 @@ export const fetchProjectDetail = async (projectIdOrSlug) => {
             console.log('Debug: Sample Resource Fields:', Object.keys(resources[0].fields));
         }
 
-        return mapAirtableRecordToDetail(projectRecord, units, hotspots, gallery, resources);
+        return mapAirtableRecordToDetail(projectRecord, units, hotspots, gallery, resources, quickFacts);
 
     } catch (error) {
         console.error('Detail Fetch Error:', error);
@@ -243,7 +245,7 @@ function mapAirtableToApp(records) {
 
 
 // Helper to map Airtable Record to Full Detail View
-function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = [], resources = []) {
+function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = [], resources = [], quickFacts = []) {
     const f = record.fields;
 
     // Debug helper for images
@@ -322,6 +324,14 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
         time: getField(h.fields, 'Time', 'Duration'),
         category: getField(h.fields, 'Type', 'Category')
     }));
+    
+    const mappedQuickFacts = quickFacts.map(q => ({
+        id: q.id,
+        icon: getField(q.fields, 'Icon', 'icon', 'Icon Name', 'Fact Icon') || 'ChartBarIcon',
+        label: getField(q.fields, 'Label', 'Title', 'label', 'Fact Label', 'Name'),
+        value: getField(q.fields, 'Value', 'Text', 'value', 'Fact Value'),
+        order: getField(q.fields, 'Order', 'order', 'Sequence', 'Sort') || 0
+    })).sort((a, b) => a.order - b.order);
 
     return {
         id: record.id,
@@ -330,6 +340,13 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
         statusTag: getField(f, 'Status', 'Status Tag'),
         collection: getField(f, 'Collection', 'Category'),
         heroImage: getImageUrl(f, 'Hero Image', 'Image', 'Cover Image'),
+        quickFacts: mappedQuickFacts.length > 0 ? mappedQuickFacts : [
+            { id: 'beds', icon: 'MoonIcon', label: 'Bedrooms', value: getField(f, 'Bedrooms', 'Beds') },
+            { id: 'baths', icon: 'SparklesIcon', label: 'Bathrooms', value: getField(f, 'Bathrooms', 'Baths') },
+            { id: 'size', icon: 'ArrowsPointingOutIcon', label: 'Unit Sizes', value: getField(f, 'Unit Sizes', 'Size', 'Area') },
+            getField(f, 'IPDC', 'Yield') ? { id: 'ipdc', icon: 'PresentationChartLineIcon', label: 'IPDC', value: `${getField(f, 'IPDC', 'Yield')}%` } : null
+        ].filter(Boolean),
+        // Keep stats for backward compatibility with components like ComparisonTable
         stats: {
             beds: getField(f, 'Bedrooms', 'Beds'),
             baths: getField(f, 'Bathrooms', 'Baths'),

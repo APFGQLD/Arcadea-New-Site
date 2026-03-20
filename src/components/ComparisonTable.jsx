@@ -8,7 +8,7 @@ const ComparisonTable = ({ project }) => {
 
     // Data extraction with fallbacks
     const projectName = project.name;
-    const roi = project.stats.ipdc ? `${project.stats.ipdc}%` : '12 - 18%';
+    const roi = project.stats?.ipdc ? `${project.stats.ipdc}%` : '12 - 18%';
 
     // Find lowest price
     const entryPrice = project.units && project.units.length > 0
