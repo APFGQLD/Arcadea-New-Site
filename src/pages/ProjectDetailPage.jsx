@@ -290,7 +290,7 @@ const ProjectDetailPage = () => {
                                 onClick={() => setSelectedImageIndex(index)}
                             >
                                 <img
-                                    src={item.thumbnail || item.url}
+                                    src={item.thumbMedium || item.url}
                                     alt={item.caption}
                                     width="800"
                                     height="600"
@@ -599,28 +599,30 @@ const ProjectDetailPage = () => {
                             </button>
 
                             <div className="lightbox-image-container">
-                                <div
-                                    className="lightbox-slider-track"
-                                    style={{
-                                        transform: `translateX(-${selectedImageIndex * 100}%)`
-                                    }}
-                                >
+                                <div className="lightbox-slider-track">
                                     {project.gallery.map((item, index) => (
-                                        <div key={item.id || index} className="lightbox-slide">
-                                            <img
-                                                src={item.url}
-                                                alt={item.caption}
-                                                className="lightbox-image"
-                                                width="1200"
-                                                height="900"
-                                                loading={Math.abs(index - selectedImageIndex) <= 1 ? "eager" : "lazy"}
-                                                decoding="async"
-                                            />
-                                            {item.caption && (
-                                                <div className="lightbox-caption">
-                                                    {item.caption}
-                                                </div>
-                                            )}
+                                        <div 
+                                            key={item.id || index} 
+                                            className={`lightbox-slide ${index === selectedImageIndex ? 'active' : ''}`}
+                                        >
+                                            <div className="lightbox-image-wrapper">
+                                                {/* Progressive Loading: Show medium thumb as blurred background while full loads */}
+                                                <img 
+                                                    src={item.thumbMedium} 
+                                                    className="lightbox-placeholder" 
+                                                    alt="" 
+                                                    aria-hidden="true"
+                                                />
+                                                <img
+                                                    src={item.url}
+                                                    alt={item.caption}
+                                                    className="lightbox-image"
+                                                    // Eager load current and adjacent images for smoothness
+                                                    loading={Math.abs(index - selectedImageIndex) <= 1 ? "eager" : "lazy"}
+                                                    onLoad={(e) => e.target.classList.add('loaded')}
+                                                />
+                                            </div>
+                                            {item.caption && <p className="lightbox-caption">{item.caption}</p>}
                                         </div>
                                     ))}
                                 </div>

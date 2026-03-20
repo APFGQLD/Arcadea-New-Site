@@ -268,18 +268,28 @@ function mapAirtableRecordToDetail(record, units = [], hotspots = [], gallery = 
         };
     });
 
-    const mappedGallery = gallery.map(g => ({
-        id: g.id,
-        url: getImageUrl(g.fields, 'Image', 'Photo', 'File', 'Gallery Image'),
-        thumbnail: getOptimizedImageUrl(g.fields, 'Image', 'Photo', 'File', 'Gallery Image'),
-        caption: getField(g.fields, 'Name', 'Caption', 'Description') || ''
-    })).filter(g => g.url);
+    const mappedGallery = gallery.map(g => {
+        const gf = g.fields;
+        const mainImage = getField(gf, 'Image', 'Photo', 'File', 'Gallery Image');
+        const first = Array.isArray(mainImage) ? mainImage[0] : null;
+        
+        return {
+            id: g.id,
+            url: getImageUrl(gf, 'Image', 'Photo', 'File', 'Gallery Image'),
+            thumbSmall: first?.thumbnails?.small?.url || first?.url,
+            thumbMedium: first?.thumbnails?.large?.url || first?.url,
+            caption: getField(gf, 'Name', 'Caption', 'Description') || ''
+        };
+    }).filter(g => g.url);
 
     // If gallery table empty, fallback to hero (or empty)
     if (mappedGallery.length === 0 && getImageUrl(f, 'Hero Image')) {
+        const heroField = getField(f, 'Hero Image');
+        const firstHero = Array.isArray(heroField) ? heroField[0] : null;
         mappedGallery.push({
             url: getImageUrl(f, 'Hero Image'),
-            thumbnail: getOptimizedImageUrl(f, 'Hero Image'),
+            thumbSmall: firstHero?.thumbnails?.small?.url || firstHero?.url,
+            thumbMedium: firstHero?.thumbnails?.large?.url || firstHero?.url,
             caption: 'Main View'
         });
     }

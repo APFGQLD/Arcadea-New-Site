@@ -90,21 +90,29 @@ export const oneParkLaneProject = {
         {
             id: 'g1',
             url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1600',
+            thumbSmall: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=200',
+            thumbMedium: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800',
             caption: 'Iconic Facade'
         },
         {
             id: 'g2',
             url: 'https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&q=80&w=1600',
+            thumbSmall: 'https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&q=80&w=200',
+            thumbMedium: 'https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&q=80&w=800',
             caption: 'Panoramic Views'
         },
         {
             id: 'g3',
             url: 'https://images.unsplash.com/photo-1560185127-6a6a6d96a79e?auto=format&fit=crop&q=80&w=1600',
+            thumbSmall: 'https://images.unsplash.com/photo-1560185127-6a6a6d96a79e?auto=format&fit=crop&q=80&w=200',
+            thumbMedium: 'https://images.unsplash.com/photo-1560185127-6a6a6d96a79e?auto=format&fit=crop&q=80&w=800',
             caption: 'Luxury Interiors'
         },
         {
             id: 'g4',
             url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1600',
+            thumbSmall: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=200',
+            thumbMedium: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800',
             caption: 'Resort Amenities'
         }
     ],
