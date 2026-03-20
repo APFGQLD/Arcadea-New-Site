@@ -50,6 +50,27 @@ const CalculatorPage = () => {
                                 <h2 className="calculator-title">Superannuation Calculator</h2>
                                 <p className="calculator-subtitle">Estimate your superannuation growth and retirement outlook.</p>
                                 <div className="elfsight-app-5cd4c2c8-90cc-4eb9-bbac-981630d8ad7a" data-elfsight-app-lazy></div>
+                                
+                                <div className="calculator-disclaimer">
+                                    <span className="disclaimer-title">This is a model, not a prediction</span>
+                                    
+                                    <p className="disclaimer-text">
+                                        The results from this calculator are based on the limited information that you have provided and assumptions made about the future. 
+                                        The amounts projected are estimates only provided by this model and are not guaranteed.
+                                    </p>
+                                    
+                                    <p className="disclaimer-text">
+                                        Do not rely solely on this calculator to make decisions about your retirement, there may be other factors to take into account. 
+                                        Consider your own investment objectives, financial situation and needs. You may wish to get advice from a licensed financial adviser.
+                                    </p>
+                                    
+                                    <p className="disclaimer-text">
+                                        All investments involve risk which can lead to no or lower than expected returns, or a loss of part or all of your capital. 
+                                        Past performance of any product described on this site is not a reliable indication of future performance. 
+                                        Forecast returns are based on assumptions around operational performance, market conditions, and asset growth. 
+                                        Actual results may differ.
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>

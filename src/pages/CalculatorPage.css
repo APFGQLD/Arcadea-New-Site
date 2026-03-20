@@ -183,6 +183,35 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+.calculator-disclaimer {
+    margin-top: 4rem;
+    padding: 2.5rem;
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--accent-gold);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.disclaimer-title {
+    display: block;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1rem;
+}
+
+.disclaimer-text {
+    margin-bottom: 1.5rem;
+}
+
+.disclaimer-text:last-child {
+    margin-bottom: 0;
+}
+
 @media (max-width: 768px) {
     .calculator-page {
         padding-top: 6rem;
