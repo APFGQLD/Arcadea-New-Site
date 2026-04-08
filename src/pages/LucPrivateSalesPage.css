@@ -2,7 +2,6 @@
     background-color: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
-    padding-top: 80px; /* Offset for navbar */
     font-family: var(--font-main);
     transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -39,12 +38,13 @@
 /* Hero Section */
 .luc-hero {
     position: relative;
-    height: 70vh;
+    height: 85vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: url('https://cms.arcadea.com.au/wp-content/uploads/2026/04/ACC_AC133190918-TB-Berawa_Infinity-Pool_Details-105-scaled.jpg') center/cover no-repeat;
     text-align: center;
+    padding-top: 80px;
 }
 
 .hero-overlay {
