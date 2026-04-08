@@ -99,152 +99,160 @@ const LucPrivateSalesPage = () => {
             </section>
 
             {/* Information Section */}
-            <section className="luc-info container">
-                <div className="info-grid">
-                    <div className="info-text animate-in">
-                        <h2 className="luc-heading">Why Private Resale?</h2>
-                        <p className="luc-text">
-                            The Luc is one of the most sought-after developments in Bali. While developer stock is limited, 
-                            the private resale market offers a unique chance to enter the project at various price points and configurations. 
-                        </p>
-                        <div className="features-list">
-                            <div className="feature-item">
-                                <CheckBadgeIcon className="feature-icon" />
-                                <span>Immediate Capital Appreciation potential</span>
-                            </div>
-                            <div className="feature-item">
-                                <CheckBadgeIcon className="feature-icon" />
-                                <span>Specific Unit Locations often unavailable elsewere</span>
-                            </div>
-                            <div className="feature-item">
-                                <CheckBadgeIcon className="feature-icon" />
-                                <span>Flexible Pricing from motivated owners</span>
+            <section className="luc-info">
+                <div className="container">
+                    <div className="info-grid">
+                        <div className="info-text animate-in">
+                            <h2 className="luc-heading">Why Private Resale?</h2>
+                            <p className="luc-text">
+                                The Luc is one of the most sought-after developments in Bali. While developer stock is limited, 
+                                the private resale market offers a unique chance to enter the project at various price points and configurations. 
+                            </p>
+                            <div className="features-list">
+                                <div className="feature-item">
+                                    <CheckBadgeIcon className="feature-icon" />
+                                    <span>Immediate Capital Appreciation potential</span>
+                                </div>
+                                <div className="feature-item">
+                                    <CheckBadgeIcon className="feature-icon" />
+                                    <span>Specific Unit Locations often unavailable elsewere</span>
+                                </div>
+                                <div className="feature-item">
+                                    <CheckBadgeIcon className="feature-icon" />
+                                    <span>Flexible Pricing from motivated owners</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="info-image animate-in">
-                        <div className="glass-card">
-                            <img 
-                                src="https://cms.arcadea.com.au/wp-content/uploads/2026/04/ACC_AC133190918-TB-Berawa_3BedroomVilla_Bedroom1-009-scaled.jpg" 
-                                alt="The Luc Bedroom" 
-                                className="rounded-img"
-                            />
+                        <div className="info-image animate-in">
+                            <div className="glass-card">
+                                <img 
+                                    src="https://cms.arcadea.com.au/wp-content/uploads/2026/04/ACC_AC133190918-TB-Berawa_3BedroomVilla_Bedroom1-009-scaled.jpg" 
+                                    alt="The Luc Bedroom" 
+                                    className="rounded-img"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Unit Grid */}
-            <section className="luc-units container">
-                <h2 className="luc-heading centered">Available Configurations</h2>
-                <p className="luc-text centered max-w-700">
-                    We facilitate resales across the entire spectrum of The Luc's architecture. 
-                    From boutique hotel rooms to grand family villas.
-                </p>
-                <div className="unit-grid">
-                    {unitTypes.map((unit) => (
-                        <div key={unit.id} className={`unit-card glass-card animate-in ${unit.featured ? 'featured' : ''}`}>
-                            <div className="unit-icon-box">{unit.icon}</div>
-                            <div className="unit-status-tag">{unit.status}</div>
-                            <h3 className="unit-name">{unit.name}</h3>
-                            <div className="unit-beds">{unit.beds}</div>
-                            <p className="unit-desc">{unit.desc}</p>
-                        </div>
-                    ))}
+            <section className="luc-units">
+                <div className="container">
+                    <h2 className="luc-heading centered">Available Configurations</h2>
+                    <p className="luc-text centered max-w-700">
+                        We facilitate resales across the entire spectrum of The Luc's architecture. 
+                        From boutique hotel rooms to grand family villas.
+                    </p>
+                    <div className="unit-grid">
+                        {unitTypes.map((unit) => (
+                            <div key={unit.id} className={`unit-card glass-card animate-in ${unit.featured ? 'featured' : ''}`}>
+                                <div className="unit-icon-box">{unit.icon}</div>
+                                <div className="unit-status-tag">{unit.status}</div>
+                                <h3 className="unit-name">{unit.name}</h3>
+                                <div className="unit-beds">{unit.beds}</div>
+                                <p className="unit-desc">{unit.desc}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
             {/* Video Showcase Section */}
-            <section className="luc-video-section container">
-                <div className="video-grid animate-in">
-                    <div className="video-column glass-card">
-                        <div className="video-container">
-                            <iframe 
-                                width="560" 
-                                height="315" 
-                                src="https://www.youtube.com/embed/D8twbWrbsz4" 
-                                title="The Luc Showcase Video" 
-                                frameBorder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                allowFullScreen
-                            ></iframe>
-                        </div>
-                    </div>
-                    <div className="video-text-column">
-                        <h2 className="luc-heading">Experience the Quality</h2>
-                        <p className="luc-text">
-                            Take a drone tour of the newly finished hotel and explore the exquisite interiors of our Type E villas. 
-                            Our commitment to premium finishes and architectural excellence is visible in every frame.
-                        </p>
-                        <div className="video-features">
-                            <div className="feature-mini">
-                                <SparklesIcon className="mini-icon" />
-                                <span>Premium Finishes</span>
-                            </div>
-                            <div className="feature-mini">
-                                <SparklesIcon className="mini-icon" />
-                                <span>Architectural Excellence</span>
+            <section className="luc-video-section">
+                <div className="container">
+                    <div className="video-grid animate-in">
+                        <div className="video-column glass-card">
+                            <div className="video-container">
+                                <iframe 
+                                    width="560" 
+                                    height="315" 
+                                    src="https://www.youtube.com/embed/D8twbWrbsz4" 
+                                    title="The Luc Showcase Video" 
+                                    frameBorder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowFullScreen
+                                ></iframe>
                             </div>
                         </div>
-                        <a href="#eoi-form" className="btn-secondary">Ask About This Property</a>
+                        <div className="video-text-column">
+                            <h2 className="luc-heading">Experience the Quality</h2>
+                            <p className="luc-text">
+                                Take a drone tour of the newly finished hotel and explore the exquisite interiors of our Type E villas. 
+                                Our commitment to premium finishes and architectural excellence is visible in every frame.
+                            </p>
+                            <div className="video-features">
+                                <div className="feature-mini">
+                                    <SparklesIcon className="mini-icon" />
+                                    <span>Premium Finishes</span>
+                                </div>
+                                <div className="feature-mini">
+                                    <SparklesIcon className="mini-icon" />
+                                    <span>Architectural Excellence</span>
+                                </div>
+                            </div>
+                            <a href="#eoi-form" className="btn-secondary">Ask About This Property</a>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* EOI Form */}
-            <section id="eoi-form" className="luc-form-section container">
-                <div className="form-wrapper glass-card animate-in">
-                    <div className="form-header">
-                        <h2 className="luc-heading">Expression of Interest</h2>
-                        <p className="luc-text">Leave your details and unit preferences below. Our team will match you with current private listings.</p>
+            <section id="eoi-form" className="luc-form-section">
+                <div className="container">
+                    <div className="form-wrapper glass-card animate-in">
+                        <div className="form-header">
+                            <h2 className="luc-heading">Expression of Interest</h2>
+                            <p className="luc-text">Leave your details and unit preferences below. Our team will match you with current private listings.</p>
+                        </div>
+                        
+                        <form className="luc-form" onSubmit={handleSubmit}>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label><UserIcon className="input-icon" /> Full Name</label>
+                                    <input type="text" name="name" required placeholder="John Doe" />
+                                </div>
+                                <div className="form-group">
+                                    <label><EnvelopeIcon className="input-icon" /> Email Address</label>
+                                    <input type="email" name="email" required placeholder="john@example.com" />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label><PhoneIcon className="input-icon" /> WhatsApp / Phone</label>
+                                    <input type="tel" name="phone" required placeholder="+61 400 000 000" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Interested In</label>
+                                    <select name="unit_type_interest" required>
+                                        <option value="">Select Unit Type</option>
+                                        {unitTypes.map(u => (
+                                            <option key={u.id} value={u.name}>{u.name} ({u.beds})</option>
+                                        ))}
+                                        <option value="Any / Multiple">Any / Multiple</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="form-group full-width">
+                                <label>Preferred Price Range (Optional)</label>
+                                <input type="text" name="price_range" placeholder="e.g. $800k - $1.2m" />
+                            </div>
+
+                            <div className="form-group full-width">
+                                <label>Additional Notes</label>
+                                <textarea name="message" rows="4" placeholder="Any specific requirements or questions?"></textarea>
+                            </div>
+
+                            <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
+
+                            <button type="submit" className="btn-primary full-width" disabled={loading}>
+                                {loading ? 'Processing...' : 'Submit Interest'}
+                                <ArrowRightIcon className="btn-icon" />
+                            </button>
+                        </form>
                     </div>
-                    
-                    <form className="luc-form" onSubmit={handleSubmit}>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label><UserIcon className="input-icon" /> Full Name</label>
-                                <input type="text" name="name" required placeholder="John Doe" />
-                            </div>
-                            <div className="form-group">
-                                <label><EnvelopeIcon className="input-icon" /> Email Address</label>
-                                <input type="email" name="email" required placeholder="john@example.com" />
-                            </div>
-                        </div>
-
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label><PhoneIcon className="input-icon" /> WhatsApp / Phone</label>
-                                <input type="tel" name="phone" required placeholder="+61 400 000 000" />
-                            </div>
-                            <div className="form-group">
-                                <label>Interested In</label>
-                                <select name="unit_type_interest" required>
-                                    <option value="">Select Unit Type</option>
-                                    {unitTypes.map(u => (
-                                        <option key={u.id} value={u.name}>{u.name} ({u.beds})</option>
-                                    ))}
-                                    <option value="Any / Multiple">Any / Multiple</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="form-group full-width">
-                            <label>Preferred Price Range (Optional)</label>
-                            <input type="text" name="price_range" placeholder="e.g. $800k - $1.2m" />
-                        </div>
-
-                        <div className="form-group full-width">
-                            <label>Additional Notes</label>
-                            <textarea name="message" rows="4" placeholder="Any specific requirements or questions?"></textarea>
-                        </div>
-
-                        <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
-
-                        <button type="submit" className="btn-primary full-width" disabled={loading}>
-                            {loading ? 'Processing...' : 'Submit Interest'}
-                            <ArrowRightIcon className="btn-icon" />
-                        </button>
-                    </form>
                 </div>
             </section>
         </div>
