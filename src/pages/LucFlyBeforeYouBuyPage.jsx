@@ -21,7 +21,6 @@ import './LucFlyBeforeYouBuyPage.css';
 const LucFlyBeforeYouBuyPage = () => {
     const { t } = useTranslation();
     const [isTermsOpen, setIsTermsOpen] = useState(false);
-    const [unitsRemaining, setUnitsRemaining] = useState(7);
 
     const toggleTerms = () => {
         setIsTermsOpen(!isTermsOpen);
@@ -30,12 +29,6 @@ const LucFlyBeforeYouBuyPage = () => {
     // Scroll to top on mount
     useEffect(() => {
         window.scrollTo(0, 0);
-        
-        // Simulating a units remaining ticker
-        const timer = setInterval(() => {
-            setUnitsRemaining(prev => Math.max(3, prev - (Math.random() > 0.8 ? 1 : 0)));
-        }, 10000);
-        return () => clearInterval(timer);
     }, []);
 
     const investorPackage = [
@@ -87,9 +80,6 @@ const LucFlyBeforeYouBuyPage = () => {
                     </p>
                     <div className="hero-actions animate-slide-up delay-2">
                         <a href="#enquire" className="btn-gold large">Claim your Fly Before You Buy Experience</a>
-                        <div className="units-ticker">
-                            <span className="pulse-dot"></span> Only {unitsRemaining} Units Remaining in Current Phase
-                        </div>
                     </div>
                 </div>
             </header>
