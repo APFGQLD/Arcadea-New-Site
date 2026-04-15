@@ -86,7 +86,7 @@ const LucFlyBeforeYouBuyPage = () => {
                         We’ll handle the flights and the 5-star luxury—you just bring your vision.
                     </p>
                     <div className="hero-actions animate-slide-up delay-2">
-                        <a href="#enquire" className="btn-gold large">Claim Your Investor Experience</a>
+                        <a href="#enquire" className="btn-gold large">Claim your Fly Before You Buy Experience</a>
                         <div className="units-ticker">
                             <span className="pulse-dot"></span> Only {unitsRemaining} Units Remaining in Current Phase
                         </div>
@@ -106,13 +106,6 @@ const LucFlyBeforeYouBuyPage = () => {
                             <p>
                                 For a limited time, we are inviting serious investors to experience TUI BLUE Berawa first-hand. This isn't just a site visit; it's an immersion into the lifestyle that will drive your investment returns.
                             </p>
-                            <div className="rebate-hook">
-                                <SparklesIcon className="hook-icon" />
-                                <div>
-                                    <strong>The Arcadea Rebate:</strong>
-                                    <span>If you decide to purchase during or after your trip, the full cost of this experience is credited back to your purchase price.</span>
-                                </div>
-                            </div>
                         </div>
                         <Link to="/project/luc" className="video-placeholder-box">
                             <div className="glass-card centered-content">
@@ -291,7 +284,7 @@ const LucFlyBeforeYouBuyPage = () => {
                                 </select>
                             </div>
                             <button type="submit" className="btn-gold full-width">
-                                Claim Your Investor Experience
+                                Claim your Fly Before You Buy Experience
                                 <ArrowRightIcon className="btn-icon-inside" />
                             </button>
                         </form>
@@ -320,7 +313,8 @@ const LucFlyBeforeYouBuyPage = () => {
                         <p>Should a client proceed to unconditional exchange of contracts within 60 days of the experience completion, the direct costs incurred for the "Fly Before You Buy" package (up to an agreed cap) will be applied as a credit toward the final purchase settlement.</p>
 
                         <h4>2. Participation & Deposit</h4>
-                        <p>Participation requires a formal Expression of Interest and a $2,500 holding deposit. If you move forward with the purchase, this deposit is applied directly to your investment, and TUI BLUE Berawa covers the entirety of your travel and hospitality costs.</p>
+                        <p>Participation requires a formal Expression of Interest and a $2,500 holding deposit. Flights included in this package are from the nearest major Australian capital city hub.</p>
+                        <p>If you move forward with the purchase, this deposit is applied directly to your investment, and TUI BLUE Berawa covers the entirety of your travel and hospitality costs.</p>
                         <p>If you choose not to proceed, the actual cost of your flights plus a $600 suite and inclusions fee will be deducted from the deposit, with the remaining balance returned to you.</p>
 
                         <h4>3. ATLAS & Partner Benefits</h4>

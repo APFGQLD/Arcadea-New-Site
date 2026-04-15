@@ -60,6 +60,13 @@
     text-shadow: 0 0 20px rgba(133, 113, 77, 0.4);
 }
 
+.luc-hero p {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
 .badge {
     display: inline-block;
     padding: 8px 20px;
