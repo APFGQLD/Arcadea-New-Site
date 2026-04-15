@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { 
-    ChevronDownIcon, 
-    RocketLaunchIcon, 
-    HomeModernIcon, 
-    SparklesIcon, 
-    TicketIcon, 
+import {
+    ChevronDownIcon,
+    RocketLaunchIcon,
+    HomeModernIcon,
+    SparklesIcon,
+    TicketIcon,
     BuildingStorefrontIcon,
     CameraIcon,
     PresentationChartLineIcon,
@@ -111,7 +111,7 @@ const LucFlyBeforeYouBuyPage = () => {
                     <div className="badge animate-fade-in">Exclusive Opportunity</div>
                     <h1 className="animate-slide-up">Don't Just Invest in the Future of Bali. <span className="gold-text">Experience it.</span></h1>
                     <p className="animate-slide-up delay-1">
-                        Join us for an exclusive 3-Day Investor "Fly Before You Buy" Experience at TUI BLUE Berawa. 
+                        Join us for an exclusive 3-Day Investor "Fly Before You Buy" Experience at TUI BLUE Berawa.
                         We’ll handle the flights and the 5-star luxury—you just bring your vision.
                     </p>
                     <div className="hero-actions animate-slide-up delay-2">
@@ -166,14 +166,14 @@ const LucFlyBeforeYouBuyPage = () => {
                 <div className="container">
                     <div className="split-feature">
                         <div className="image-side">
-                            <img 
-                                src="http://thelucnews.com/wp-content/uploads/2026/04/ACC_AC133190918-TB-Berawa_Sky-Suite_Bedroom-240-scaled.jpg" 
+                            <img
+                                src="http://thelucnews.com/wp-content/uploads/2026/04/ACC_AC133190918-TB-Berawa_Sky-Suite_Bedroom-240-scaled.jpg"
                                 alt="Sky Suite Interior"
                                 className="main-img"
                             />
                         </div>
                         <div className="text-side">
-                            <h2 className="section-title">Elevated Living. <br/><span className="gold-text">High-Yield Potential.</span></h2>
+                            <h2 className="section-title">Elevated Living. <br /><span className="gold-text">High-Yield Potential.</span></h2>
                             <p>
                                 Your stay will be centered in our Sky Suite—an 88sqm masterclass in tropical modernism. Designed to command the highest nightly rates in the Berawa market.
                             </p>
@@ -315,9 +315,9 @@ const LucFlyBeforeYouBuyPage = () => {
                                         <label>Investment Intent</label>
                                         <select name="investment_intent" required>
                                             <option value="">Select Option</option>
-                                            <option value="individual">Full Unit Ownership</option>
-                                            <option value="fractional">Fractional Ownership</option>
-                                            <option value="portfolio">Portfolio/Commercial</option>
+                                            <option value="individual">Up to A$125k</option>
+                                            <option value="fractional">Up to A$250k</option>
+                                            <option value="portfolio">A$375k or more</option>
                                         </select>
                                     </div>
                                     <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
