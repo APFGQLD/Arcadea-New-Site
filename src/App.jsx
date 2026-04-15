@@ -11,6 +11,7 @@ import IPDCPage from './pages/IPDCPage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import FlyBeforeYouBuyPage from './pages/FlyBeforeYouBuyPage';
+import LucFlyBeforeYouBuyPage from './pages/LucFlyBeforeYouBuyPage';
 import EventReplayPage from './pages/EventReplayPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import AdminPage from './pages/AdminPage';
@@ -48,6 +49,7 @@ function App() {
           <Route path="/news" element={<BlogPage />} />
           <Route path="/news/:slug" element={<BlogPostPage />} />
           <Route path="/campaigns/fly-before-you-buy" element={<FlyBeforeYouBuyPage />} />
+          <Route path="/campaigns/luc-fly-before-you-buy" element={<LucFlyBeforeYouBuyPage />} />
           <Route path="/campaign/pertama" element={<PertamaInvestPage />} />
           <Route path="/event/replay" element={<EventReplayPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
