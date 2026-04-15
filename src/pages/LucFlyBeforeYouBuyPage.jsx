@@ -21,9 +21,45 @@ import './LucFlyBeforeYouBuyPage.css';
 const LucFlyBeforeYouBuyPage = () => {
     const { t } = useTranslation();
     const [isTermsOpen, setIsTermsOpen] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const toggleTerms = () => {
         setIsTermsOpen(!isTermsOpen);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const form = e.target;
+        const formData = new FormData(form);
+
+        formData.append("access_key", "85e4172e-f3c6-4036-a366-7d50f8719832");
+        formData.append("subject", "New Lead: Luc Fly Before You Buy Experience");
+        formData.append("from_name", "The Luc Campaign");
+
+        try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                setSubmitted(true);
+                // Scroll to form top for success message
+                const formSection = document.getElementById('enquire');
+                if (formSection) {
+                    formSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                alert("Something went wrong. Please try again.");
+            }
+        } catch (error) {
+            console.error("Form error:", error);
+            alert("Connection error. Please check your internet.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Scroll to top on mount
@@ -241,43 +277,61 @@ const LucFlyBeforeYouBuyPage = () => {
             <section id="enquire" className="lead-capture">
                 <div className="container">
                     <div className="form-container glass-card">
-                        <div className="form-header">
-                            <h2>Start Your Discovery</h2>
-                            <p>Spaces for our "Fly Before You Buy" program are strictly limited. Contact our team to verify eligibility.</p>
-                        </div>
-                        <form className="campaign-form">
-                            <div className="form-row">
-                                <div className="input-group">
-                                    <label>First Name</label>
-                                    <input type="text" placeholder="John" required />
+                        {submitted ? (
+                            <div className="form-success-message animate-fade-in">
+                                <div className="success-icon-box">
+                                    <SparklesIcon className="pkg-icon" style={{ color: 'var(--gold-primary)', width: '48px', height: '48px' }} />
                                 </div>
-                                <div className="input-group">
-                                    <label>Last Name</label>
-                                    <input type="text" placeholder="Doe" required />
+                                <h2>Application Received</h2>
+                                <p>Thank you for your interest in the "Fly Before You Buy" experience. Our investment team will review your eligibility and contact you within 24 hours.</p>
+                                <button onClick={() => setSubmitted(false)} className="btn-gold">Send Another Discovery Request</button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="form-header">
+                                    <h2>Start Your Discovery</h2>
+                                    <p>Spaces for our "Fly Before You Buy" program are strictly limited. Contact our team to verify eligibility.</p>
                                 </div>
-                            </div>
-                            <div className="input-group">
-                                <label>Email Address</label>
-                                <input type="email" placeholder="john@example.com" required />
-                            </div>
-                            <div className="input-group">
-                                <label>WhatsApp / Phone</label>
-                                <input type="tel" placeholder="+61 400 000 000" required />
-                            </div>
-                            <div className="input-group">
-                                <label>Investment Intent</label>
-                                <select required>
-                                    <option value="">Select Option</option>
-                                    <option value="individual">Full Unit Ownership</option>
-                                    <option value="fractional">Fractional Ownership</option>
-                                    <option value="portfolio">Portfolio/Commercial</option>
-                                </select>
-                            </div>
-                            <button type="submit" className="btn-gold full-width">
-                                Claim your Fly Before You Buy Experience
-                                <ArrowRightIcon className="btn-icon-inside" />
-                            </button>
-                        </form>
+                                <form className="campaign-form" onSubmit={handleSubmit}>
+                                    <div className="form-row">
+                                        <div className="input-group">
+                                            <label>First Name</label>
+                                            <input type="text" name="first_name" placeholder="John" required />
+                                        </div>
+                                        <div className="input-group">
+                                            <label>Last Name</label>
+                                            <input type="text" name="last_name" placeholder="Doe" required />
+                                        </div>
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Email Address</label>
+                                        <input type="email" name="email" placeholder="john@example.com" required />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>WhatsApp / Phone</label>
+                                        <input type="tel" name="phone" placeholder="+61 400 000 000" required />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Investment Intent</label>
+                                        <select name="investment_intent" required>
+                                            <option value="">Select Option</option>
+                                            <option value="individual">Full Unit Ownership</option>
+                                            <option value="fractional">Fractional Ownership</option>
+                                            <option value="portfolio">Portfolio/Commercial</option>
+                                        </select>
+                                    </div>
+                                    <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
+                                    <button type="submit" className="btn-gold full-width" disabled={loading}>
+                                        {loading ? 'Processing...' : (
+                                            <>
+                                                Claim your Fly Before You Buy Experience
+                                                <ArrowRightIcon className="btn-icon-inside" />
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </>
+                        )}
                     </div>
                 </div>
             </section>
