@@ -357,7 +357,7 @@ const LucFlyBeforeYouBuyPage = () => {
                         <p>Should a client proceed to unconditional exchange of contracts within 60 days of the experience completion, the direct costs incurred for the "Fly Before You Buy" package (up to an agreed cap) will be applied as a credit toward the final purchase settlement.</p>
 
                         <h4>2. Participation & Deposit</h4>
-                        <p>Participation requires a formal Expression of Interest and a $2,500 holding deposit. Flights included in this package are from the nearest major Australian capital city hub.</p>
+                        <p>Participation requires a formal Expression of Interest and a $2,500 holding deposit. Flights included in this package are economy tickets from the nearest major Australian capital city hub.</p>
                         <p>If you move forward with the purchase, this deposit is applied directly to your investment, and TUI BLUE Berawa covers the entirety of your travel and hospitality costs.</p>
                         <p>If you choose not to proceed, the actual cost of your flights plus a $600 suite and inclusions fee will be deducted from the deposit, with the remaining balance returned to you.</p>
 
