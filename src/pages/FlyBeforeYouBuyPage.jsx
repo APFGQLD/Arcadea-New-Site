@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon, ArrowRightIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -9,9 +9,45 @@ import './FlyBeforeYouBuyPage.css';
 const FlyBeforeYouBuyPage = () => {
     const { t } = useTranslation();
     const [isTermsOpen, setIsTermsOpen] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const toggleTerms = () => {
         setIsTermsOpen(!isTermsOpen);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const form = e.target;
+        const formData = new FormData(form);
+
+        formData.append("access_key", "9c254b58-ce4a-412d-b82a-c854756430ee");
+        formData.append("subject", "New Lead: Fly Before You Buy Campaign");
+        formData.append("from_name", "Fly Before You Buy");
+
+        try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                setSubmitted(true);
+                // Scroll to form top for success message
+                const formSection = document.getElementById('enquire');
+                if (formSection) {
+                    formSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                alert("Something went wrong. Please try again.");
+            }
+        } catch (error) {
+            console.error("Form error:", error);
+            alert("Connection error. Please check your internet.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Scroll to top on mount
@@ -113,14 +149,66 @@ const FlyBeforeYouBuyPage = () => {
                 </div>
             </section>
 
-            {/* Final CTA */}
-            <section id="enquire" className="fly-cta">
+            {/* Final CTA / Form */}
+            <section id="enquire" className="lead-capture">
                 <div className="container">
-                    <h2>Ready to secure your slice of paradise?</h2>
-                    <p style={{ marginBottom: '2rem', color: 'var(--text-secondary)' }}>
-                        Limited time offer for new inquiries.
-                    </p>
-                    <Link to="/#contact" className="btn-gold">Enquire With Arcadea Today</Link>
+                    <div className="form-container glass-card">
+                        {submitted ? (
+                            <div className="form-success-message animate-fade-in">
+                                <div className="success-icon-box">
+                                    <SparklesIcon className="pkg-icon" style={{ color: 'var(--accent-gold)', width: '48px', height: '48px' }} />
+                                </div>
+                                <h2>Application Received</h2>
+                                <p>Thank you for your interest in the "Fly Before You Buy" experience. Our investment team will review your eligibility and contact you within 24 hours.</p>
+                                <button onClick={() => setSubmitted(false)} className="btn-gold">Send Another Discovery Request</button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="form-header">
+                                    <h2>Start Your Discovery</h2>
+                                    <p>Spaces for our "Fly Before You Buy" program are strictly limited. Contact our team to verify eligibility.</p>
+                                </div>
+                                <form className="campaign-form" onSubmit={handleSubmit}>
+                                    <div className="form-row">
+                                        <div className="input-group">
+                                            <label>First Name</label>
+                                            <input type="text" name="first_name" placeholder="John" required />
+                                        </div>
+                                        <div className="input-group">
+                                            <label>Last Name</label>
+                                            <input type="text" name="last_name" placeholder="Doe" required />
+                                        </div>
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Email Address</label>
+                                        <input type="email" name="email" placeholder="john@example.com" required />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>WhatsApp / Phone</label>
+                                        <input type="tel" name="phone" placeholder="+61 400 000 000" required />
+                                    </div>
+                                    <div className="input-group">
+                                        <label>Investment Intent</label>
+                                        <select name="investment_intent" required>
+                                            <option value="">Select Option</option>
+                                            <option value="individual">Up to A$125k</option>
+                                            <option value="fractional">Up to A$250k</option>
+                                            <option value="portfolio">A$375k or more</option>
+                                        </select>
+                                    </div>
+                                    <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
+                                    <button type="submit" className="btn-gold full-width" disabled={loading}>
+                                        {loading ? 'Processing...' : (
+                                            <>
+                                                Claim your Fly Before You Buy Experience
+                                                <ArrowRightIcon className="btn-icon-inside" />
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </>
+                        )}
+                    </div>
                 </div>
             </section>
 
