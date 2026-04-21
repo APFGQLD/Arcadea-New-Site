@@ -191,9 +191,9 @@ const FlyBeforeYouBuyPage = () => {
                                         <label>Investment Intent</label>
                                         <select name="investment_intent" required>
                                             <option value="">Select Option</option>
-                                            <option value="individual">Up to A$125k</option>
-                                            <option value="fractional">Up to A$250k</option>
-                                            <option value="portfolio">A$375k or more</option>
+                                            <option value="up to 125k">Up to A$125k</option>
+                                            <option value="up to 250k">Up to A$250k</option>
+                                            <option value="375+">A$375k or more</option>
                                         </select>
                                     </div>
                                     <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
