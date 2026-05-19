@@ -1501,7 +1501,7 @@
     background: radial-gradient(circle at 50% 50%,
             rgba(133, 113, 77, 0.15) 0%,
             transparent 70%);
-    animation: pulse 4s ease-in-out infinite;
+    animation: project-loading-pulse 4s ease-in-out infinite;
 }
 
 .loading-content {
@@ -1557,7 +1557,7 @@
     }
 }
 
-@keyframes pulse {
+@keyframes project-loading-pulse {
 
     0%,
     100% {

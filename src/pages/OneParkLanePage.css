@@ -97,7 +97,7 @@
     font-family: var(--opl-font-heading);
     font-size: 5rem;
     font-weight: 400;
-    color: var(--opl-gold);
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }

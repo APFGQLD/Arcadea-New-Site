@@ -63,10 +63,10 @@
     font-family: var(--font-body);
     font-size: 1.125rem;
     color: var(--text-secondary);
-    animation: pulse 1.5s ease-in-out infinite;
+    animation: spinner-text-pulse 1.5s ease-in-out infinite;
 }
 
-@keyframes pulse {
+@keyframes spinner-text-pulse {
 
     0%,
     100% {
