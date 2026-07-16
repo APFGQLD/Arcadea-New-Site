@@ -36,7 +36,6 @@ const Footer = () => {
                             <li><Link to="/services">{t('nav.services', 'Services')}</Link></li>
                             <li><Link to="/about">{t('nav.about', 'About')}</Link></li>
                             <li><Link to="/news">{t('footer.news', 'News')}</Link></li>
-                            <li><Link to="/calculator">{t('footer.calculator', 'Calculators')}</Link></li>
                         </ul>
                     </div>
 
@@ -55,7 +54,7 @@ const Footer = () => {
                 {/* Copyright */}
                 <div className="footer-bottom">
                     <p className="copyright">
-                        &copy; {new Date().getFullYear()} Arcadea Property. {t('footer.rights', 'All rights reserved.')}
+                        &copy; {new Date().getFullYear()} Arcadea Property. Licensed Real Estate Agent No. 4857148. {t('footer.rights', 'All rights reserved.')}
                     </p>
                 </div>
             </div>

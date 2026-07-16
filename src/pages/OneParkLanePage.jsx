@@ -34,7 +34,23 @@ const OneParkLanePage = () => {
         window.addEventListener('scroll', handleScroll, { passive: true });
         handleScroll();
 
-        return () => window.removeEventListener('scroll', handleScroll);
+        const handleMouseMove = (e) => {
+            if (!contentRef.current) return;
+            const { clientX, clientY } = e;
+            // Calculate distance from center of window (-50 to 50)
+            const x = (clientX / window.innerWidth - 0.5) * 100;
+            const y = (clientY / window.innerHeight - 0.5) * 100;
+            
+            contentRef.current.style.setProperty('--mouse-x', `${x}`);
+            contentRef.current.style.setProperty('--mouse-y', `${y}`);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('mousemove', handleMouseMove);
+        };
     }, []);
 
     // Animation Helpers
@@ -55,13 +71,14 @@ const OneParkLanePage = () => {
             <div ref={trackRef} className="opl-hero-track">
                 <div ref={contentRef} className="opl-js-sticky-content">
 
-                    {/* Background Layer 1: Initial Image */}
+                    {/* Background Layer 1: Animated Gradient & Glassmorphism */}
                     <div className="opl-hero-bg" style={{ opacity: getFadeOut(0.25, 0.45) }}>
-                        <img
-                            src="https://1parklane.au/wp-content/uploads/2025/09/mid-section-croppedd.jpg"
-                            alt="One Park Lane Exterior"
-                        />
-                        <div className="opl-overlay"></div>
+                        <div className="opl-hero-gradient-bg">
+                            <div className="opl-gradient-blob blob-1"></div>
+                            <div className="opl-gradient-blob blob-2"></div>
+                            <div className="opl-gradient-blob blob-3"></div>
+                            <div className="opl-glass-overlay"></div>
+                        </div>
                     </div>
 
                     {/* Background Layer 2: Final Image (Fades In) */}
@@ -198,7 +215,7 @@ const OneParkLanePage = () => {
                     <div className="opl-amenities-grid">
                         <div className="opl-amenity-card">
                             <div className="opl-amenity-img">
-                                <img src="https://1parklane.au/wp-content/uploads/2025/04/1-park-lane-overview-bridgeview.jpg" alt="Signature Restaurant & Bar" />
+                                <img src="https://cms.arcadea.com.au/wp-content/uploads/2026/02/V04_FINAL_lowres.jpeg" alt="Signature Restaurant & Bar" />
                             </div>
                             <div className="opl-amenity-content">
                                 <h3>Signature Restaurant & Bar</h3>
@@ -207,7 +224,7 @@ const OneParkLanePage = () => {
                         </div>
                         <div className="opl-amenity-card">
                             <div className="opl-amenity-img">
-                                <img src="https://1parklane.au/wp-content/uploads/2025/04/1park-lane-unparalled-living.jpg" alt="Infinity Pool & Sky Deck" />
+                                <img src="https://cms.arcadea.com.au/wp-content/uploads/2026/07/V07_FINAL_lowres.jpeg" alt="Infinity Pool & Sky Deck" />
                             </div>
                             <div className="opl-amenity-content">
                                 <h3>Infinity Pool & Sky Deck</h3>
@@ -216,7 +233,7 @@ const OneParkLanePage = () => {
                         </div>
                         <div className="opl-amenity-card">
                             <div className="opl-amenity-img">
-                                <img src="https://1parklane.au/wp-content/uploads/2025/04/1-park-lane-bottom-closeup.jpg" alt="Cutting Edge Fitness Centre" />
+                                <img src="https://cms.arcadea.com.au/wp-content/uploads/2026/07/V11_FINAL_lowres.jpeg" alt="Cutting Edge Fitness Centre" />
                             </div>
                             <div className="opl-amenity-content">
                                 <h3>Cutting Edge Fitness Centre</h3>

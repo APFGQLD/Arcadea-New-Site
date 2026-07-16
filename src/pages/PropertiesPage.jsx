@@ -17,6 +17,43 @@ const PropertiesPage = () => {
     const [listings, setListings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [scrollY, setScrollY] = useState(0);
+
+    // Track scroll for cinematic effect
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrollY(window.scrollY);
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Setup intersection observer for scroll animations
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+        );
+
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        animateElements.forEach((el) => observer.observe(el));
+        
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            observer.disconnect();
+        };
+    }, []);
+
+    // Calculate cinematic transform values
+    const scrollProgress = Math.min(scrollY / 600, 1); // 0 to 1 over 600px of scroll
+    const heroScale = 1 - (scrollProgress * 0.15); // Scales from 1 to 0.85
+    const heroRadius = scrollProgress * 40; // Border radius from 0 to 40px
+    const textOpacity = 1 - (scrollProgress * 2); // Fades out faster
+    const textTranslate = scrollProgress * -100; // Moves up
 
     // Fetch listings when collection changes
     useEffect(() => {
@@ -69,54 +106,106 @@ const PropertiesPage = () => {
     return (
         <div className="properties-page">
             {!selectedCollection ? (
-                <div className="container">
-                    <div className="selection-view animate-in">
-                        <h1 className="page-title">{t('properties.explore_title', 'Explore Our Collections')}</h1>
-                        <p className="page-subtitle">{t('properties.explore_subtitle', 'Select a destination to view our exclusive listings.')}</p>
+                <div className="selection-view-cinematic">
+                    
+                    {/* Spacer to allow scrolling */}
+                    <div className="cinematic-scroll-container">
+                        <div className="cinematic-sticky-wrapper">
+                            
+                            <div 
+                                className="cinematic-hero-bg"
+                                style={{
+                                    transform: `scale(${heroScale})`,
+                                    borderRadius: `${heroRadius}px`,
+                                }}
+                            >
+                                <img 
+                                    src="https://cms.arcadea.com.au/wp-content/uploads/2026/02/V03_FINAL_lowres.jpeg" 
+                                    alt="One Park Lane" 
+                                    className="cinematic-hero-image"
+                                />
+                                <div className="cinematic-hero-overlay"></div>
+                            </div>
+                            
+                            <div 
+                                className="cinematic-text-wrapper"
+                                style={{
+                                    opacity: Math.max(0, textOpacity),
+                                    transform: `translate(-50%, calc(-50% + ${textTranslate}px))`
+                                }}
+                            >
+                                <div className="cinematic-tag">Exclusive Pre-Launch</div>
+                                <h1 className="cinematic-title">One Park Lane</h1>
+                                <p className="cinematic-location">Southport, Gold Coast</p>
+                                
+                                <button 
+                                    className="btn cinematic-btn"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate('/project/one-park-lane');
+                                    }}
+                                >
+                                    Explore the Masterpiece
+                                </button>
+                            </div>
+                            
+                            {/* Scroll Indicator */}
+                            <div className="scroll-indicator" style={{ opacity: Math.max(0, textOpacity) }}>
+                                <span>Scroll to Explore</span>
+                                <div className="scroll-line"></div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div className="collections-grid">
-                            {collections.map((col) => (
-                                <div
+                    {/* Global Collections - Stacked Cards */}
+                    <div className="stacked-collections-section relative-content">
+                        
+                        <div className="properties-intro-block animate-on-scroll">
+                            <p>
+                                Arcadea represents a new paradigm in luxury real estate, curating the world's most exceptional coastal and island properties. We deliver uncompromising architectural brilliance and guaranteed returns in pristine, sought-after destinations.
+                            </p>
+                        </div>
+
+                        <div className="collections-header-editorial animate-on-scroll">
+                            <h2 className="editorial-title">{t('properties.explore_title', 'Global Collections')}</h2>
+                            <p className="editorial-subtitle">{t('properties.explore_subtitle', 'Curated luxury across the world’s most sought-after destinations.')}</p>
+                        </div>
+                        
+                        <div className="stacked-collections-list">
+                            {collections.map((col, index) => (
+                                <div 
                                     key={col.id}
-                                    className="collection-card"
+                                    className="stacked-collection-card animate-on-scroll"
+                                    style={{ transitionDelay: `${index * 0.2}s` }}
                                     onClick={() => handleSelectCollection(col.id)}
                                 >
-                                    <div className="collection-image">
-                                        <img
-                                            src={col.image}
-                                            alt={`${col.title} - Premium property collection`}
-                                            loading="lazy"
-                                            decoding="async"
-                                            width="800"
-                                            height="600"
-                                        />
-                                        <div className="collection-overlay"></div>
+                                    <div className="stacked-collection-image-wrapper">
+                                        <img src={col.image} className="stacked-collection-bg" alt={col.title} loading="lazy" />
+                                        <div className="stacked-collection-overlay"></div>
                                     </div>
-                                    <div className="collection-info">
+                                    <div className="stacked-collection-content">
                                         {col.logoLight && col.logoDark ? (
-                                            <div className="collection-logo-container">
+                                            <div className="stacked-collection-logo-container">
                                                 <img
-                                                    src={theme === 'dark' ? col.logoLight : col.logoDark}
+                                                    src={col.logoLight}
                                                     alt={`${col.title} logo`}
-                                                    className="collection-brand-logo"
-                                                    width="200"
-                                                    height="100"
+                                                    className="stacked-collection-logo"
                                                 />
                                             </div>
                                         ) : (
-                                            <h2 className="collection-title">{col.title}</h2>
+                                            <h3 className="stacked-collection-title">{col.title}</h3>
                                         )}
-                                        <span className="collection-location">{col.location}</span>
-                                        <p className="collection-desc">{col.description}</p>
-                                        <div className="collection-cta">
-                                            <button className="btn btn-secondary btn-sm">{t('properties.actions.view_details', 'View Listings')}</button>
+                                        <p className="stacked-collection-location">{col.location}</p>
+                                        <div className="stacked-collection-reveal">
+                                            <p className="stacked-collection-desc">{col.description}</p>
+                                            <span className="stacked-collection-link">View Listings &rarr;</span>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-
                     </div>
+
                 </div>
             ) : (
                 <div className="listing-view">

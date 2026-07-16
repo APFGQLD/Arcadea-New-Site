@@ -13,7 +13,7 @@
 .service-card {
     background-color: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+    border-radius: 40px;
     padding: 2.5rem;
     transition: all var(--transition-normal);
     height: 100%;

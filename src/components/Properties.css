@@ -116,26 +116,36 @@
 
 /* Collection Showcase Styles */
 .collections-showcase {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    width: 100%;
     margin-bottom: 4rem;
 }
 
 .collection-showcase-card {
     position: relative;
-    height: 500px;
-    border-radius: var(--radius-sm);
+    height: 60vh;
+    border-radius: 40px;
     overflow: hidden;
     cursor: pointer;
     transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border: none;
+}
+
+.collection-showcase-card:nth-child(1) {
+    flex: 4; /* Island Collection */
+    order: 2;
+}
+
+.collection-showcase-card:nth-child(2) {
+    flex: 6; /* Coastal Collection */
+    order: 1;
 }
 
 .collection-showcase-card:hover {
-    transform: translateY(-10px);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    border-color: var(--accent-gold);
 }
 
 .collection-showcase-image {
@@ -145,17 +155,20 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+    border-radius: 40px;
+    overflow: hidden;
 }
 
 .collection-showcase-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform var(--transition-normal);
+    transform: scale(1.05);
+    transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .collection-showcase-card:hover .collection-showcase-image img {
-    transform: scale(1.05);
+    transform: scale(1);
 }
 
 .collection-showcase-overlay {
@@ -165,19 +178,15 @@
     width: 100%;
     height: 100%;
     z-index: 2;
+    transition: background 0.8s ease;
 }
 
-/* Theme-aware gradients */
-.collection-showcase-card[data-theme="dark"] .collection-showcase-overlay {
-    background: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0.3) 0%,
-            rgba(0, 0, 0, 0.7) 100%);
+.collection-showcase-overlay {
+    background: rgba(0, 0, 0, 0.6);
 }
 
-.collection-showcase-card[data-theme="light"] .collection-showcase-overlay {
-    background: linear-gradient(to bottom,
-            rgba(255, 255, 255, 0.2) 0%,
-            rgba(255, 255, 255, 0.6) 100%);
+.collection-showcase-card:hover .collection-showcase-overlay {
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .collection-showcase-content {
@@ -247,12 +256,20 @@
     }
 
     .collections-showcase {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 2rem;
     }
 
-    .collection-showcase-card {
+    .collection-showcase-card,
+    .collection-showcase-card:nth-child(1),
+    .collection-showcase-card:nth-child(2) {
         height: 450px;
+        width: 100%;
+        flex: auto;
+        border-radius: 20px;
+    }
+    .collection-showcase-image {
+        border-radius: 20px;
     }
 }
 

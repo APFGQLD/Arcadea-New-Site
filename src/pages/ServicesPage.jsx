@@ -19,18 +19,18 @@ const ServicesPage = () => {
 
     const services = [
         {
-            id: 'hotel',
-            icon: BuildingOffice2Icon,
-            title: t('services.pillars.hotel.title'),
-            subtitle: 'High-Yield International Investments',
-            description: 'Access premium hotel and resort investment opportunities with guaranteed returns and globally respected brands.',
+            id: 'australian',
+            icon: HomeIcon,
+            title: t('services.pillars.australian.title'),
+            subtitle: 'Premium Coastal Living',
+            description: 'Curated selection of high-quality Australian properties with transparent sales processes and exclusive access.',
             benefits: [
-                'Guaranteed Returns on property',
-                'Strong ROI',
-                'Access to globally respected brands',
-                'Access to experienced and trusted developers'
+                'High Quality & Curated Australian Property',
+                'Transparent Sales Process',
+                'CoPosit and Deposit Bonds',
+                'Exclusive Listings and Developments'
             ],
-            image: 'https://tuiblueberawa.com/assets/img/room_detail/2bedroompremier/2.jpg',
+            image: 'https://cms.arcadea.com.au/wp-content/uploads/2026/07/caleb-mKwBMtDSZes-unsplash-2-scaled.jpg',
             color: '#c5a065'
         },
         {
@@ -50,18 +50,18 @@ const ServicesPage = () => {
             color: '#c5a065'
         },
         {
-            id: 'australian',
-            icon: HomeIcon,
-            title: t('services.pillars.australian.title'),
-            subtitle: 'Premium Coastal Living',
-            description: 'Curated selection of high-quality Australian properties with transparent sales processes and exclusive access.',
+            id: 'hotel',
+            icon: BuildingOffice2Icon,
+            title: t('services.pillars.hotel.title'),
+            subtitle: 'High-Yield International Investments',
+            description: 'Access premium hotel and resort investment opportunities with guaranteed returns and globally respected brands.',
             benefits: [
-                'High Quality & Curated Australian Property',
-                'Transparent Sales Process',
-                'CoPosit and Deposit Bonds',
-                'Exclusive Listings and Developments'
+                'Guaranteed Returns on property',
+                'Strong ROI',
+                'Access to globally respected brands',
+                'Access to experienced and trusted developers'
             ],
-            image: 'https://1907eve.com.au/wp-content/uploads/2025/08/31-1024x770.jpg',
+            image: 'https://cms.arcadea.com.au/wp-content/uploads/2026/07/259qM.jpg',
             color: '#c5a065'
         }
     ];

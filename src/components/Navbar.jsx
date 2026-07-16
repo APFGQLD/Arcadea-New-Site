@@ -59,7 +59,7 @@ const Navbar = () => {
                         <li><Link to="/" onClick={closeMenu}>{t('nav.home')}</Link></li>
                         <li><Link to="/properties" onClick={closeMenu}>{t('nav.properties')}</Link></li>
                         <li><Link to="/services" onClick={closeMenu}>{t('nav.services')}</Link></li>
-                        <li><Link to="/calculator" onClick={closeMenu}>{t('nav.calculators', 'Calculators')}</Link></li>
+
                         <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>
                         <li><Link to="/#contact" className="btn-nav" onClick={closeMenu}>{t('nav.contact')}</Link></li>
                     </ul>

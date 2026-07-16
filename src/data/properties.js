@@ -57,7 +57,7 @@ export const propertyCollections = {
         logoDark: coastalLogoBlack,
         location: 'Australia',
         description: 'Premium curated residences in Australia\'s most sought-after coastal markets.',
-        image: 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/yousef-espanioly-2RcNhJLmFhQ-unsplash-scaled.jpg',
+        image: 'https://cms.arcadea.com.au/wp-content/uploads/2026/07/caleb-mKwBMtDSZes-unsplash-2-scaled.jpg',
         properties: [
             {
                 id: 'aus-sydney-1',
