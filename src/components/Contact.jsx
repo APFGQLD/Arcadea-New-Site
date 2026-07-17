@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useScrollReveal from '../hooks/useScrollReveal';
 import './Contact.css';
 
 const Contact = () => {
     const { t } = useTranslation();
-    useScrollReveal();
+    const sectionRef = useRef(null);
+    useScrollReveal(sectionRef);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -59,9 +60,9 @@ const Contact = () => {
     };
 
     return (
-        <section id="contact" className="section-padding">
+        <section ref={sectionRef} id="contact" className="section-padding">
             <div className="container">
-                <div className="section-header reveal reveal-fade">
+                <div className="section-header reveal reveal-up">
                     <h2 className="section-title">
                         {t('contact.title').split(' ')[0]} <span className="text-gold">{t('contact.title').split(' ')[1]}</span>
                     </h2>

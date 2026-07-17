@@ -578,34 +578,4 @@
         background-attachment: scroll;
     }
 }
-
-.opl-back-link {
-    position: absolute;
-    top: 150px;
-    left: 2rem;
-    z-index: 50;
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    cursor: pointer;
-    transition: color 0.3s ease, opacity 0.3s ease;
-    opacity: 0.7;
-    padding: 0;
-}
-
-.opl-back-link:hover {
-    color: var(--opl-gold);
-    opacity: 1;
-}
-
-@media (max-width: 768px) {
-    .opl-back-link {
-        top: 100px;
-        left: 1rem;
-        font-size: 0.7rem;
-    }
-}
+

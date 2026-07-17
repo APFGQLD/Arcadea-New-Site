@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
@@ -9,13 +10,14 @@ const Properties = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const navigate = useNavigate();
+    const sectionRef = useRef(null);
 
-    useScrollReveal();
+    useScrollReveal(sectionRef);
 
     const collections = Object.values(propertyCollections);
 
     return (
-        <section id="properties" className="properties section-padding">
+        <section ref={sectionRef} id="properties" className="properties section-padding">
             <div className="container">
                 <div className="section-header reveal reveal-up">
                     <h2 className="section-title">{t('properties.title').split(' ')[0]} <span className="text-gold">{t('properties.title').split(' ')[1]}</span></h2>
@@ -66,7 +68,7 @@ const Properties = () => {
                     ))}
                 </div>
 
-                <div className="properties-action reveal reveal-fade delay-300">
+                <div className="properties-action reveal reveal-up delay-300">
                     <Link to="/properties" className="btn btn-secondary">{t('properties.cta')}</Link>
                 </div>
             </div>

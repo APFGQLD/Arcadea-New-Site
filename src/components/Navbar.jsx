@@ -33,7 +33,7 @@ const Navbar = () => {
     // 1. If we are on Home and NOT scrolled, we are over the dark Hero -> white logo/text
     // 2. If we are on ANY OTHER page, or we ARE scrolled, or theme is dark -> check theme
     const forceScrolled = scrolled;
-    const showWhiteLogo = (isHomePage && !scrolled && !isMenuOpen) || theme === 'dark';
+    const showWhiteLogo = (!scrolled && !isMenuOpen) || theme === 'dark';
 
     return (
         <nav className={`navbar ${forceScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''} ${isHomePage ? 'is-home' : ''}`}>

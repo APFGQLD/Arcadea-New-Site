@@ -70,7 +70,7 @@ const OneParkLanePage = () => {
         <div className="opl-page">
             <div ref={trackRef} className="opl-hero-track">
                 <div ref={contentRef} className="opl-js-sticky-content">
-                    <button className="opl-back-link" onClick={() => navigate('/properties')}>
+                    <button className="shared-back-link" onClick={() => navigate('/properties')}>
                         &larr; Back to Portfolio
                     </button>
 

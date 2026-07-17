@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 
 const About = () => {
     const { t } = useTranslation();
-    useScrollReveal();
+    const sectionRef = useRef(null);
+    useScrollReveal(sectionRef);
 
     return (
-        <section id="about" className="section-padding" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <section ref={sectionRef} id="about" className="section-padding" style={{ backgroundColor: 'var(--bg-secondary)' }}>
             <div className="container">
-                <div className="section-header reveal reveal-fade" style={{ marginBottom: 0 }}>
+                <div className="section-header reveal reveal-up" style={{ marginBottom: 0 }}>
                     <h2 className="section-title">
                         {t('about.title').split(' ')[0]} <span className="text-gold">{t('about.title').split(' ')[1]}</span>
                     </h2>

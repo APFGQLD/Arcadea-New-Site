@@ -211,7 +211,7 @@ const ProjectDetailPage = () => {
                     />
                     <div className="hero-overlay"></div>
                 </div>
-                <button className="back-link-floating" onClick={() => navigate('/properties')}>
+                <button className="shared-back-link" onClick={() => navigate('/properties')}>
                     &larr; {t('common.back', 'Back to Portfolio')}
                 </button>
                 <div className="hero-content container">

@@ -13,6 +13,7 @@ const Hero = () => {
                 loop
                 muted
                 playsInline
+                preload="none"
                 poster="/fallback.png"
                 src="https://cms.arcadea.com.au/wp-content/uploads/2026/07/Timeline-1.mp4"
             />

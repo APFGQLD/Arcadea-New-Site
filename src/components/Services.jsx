@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useScrollReveal from '../hooks/useScrollReveal';
 import './Services.css';
 
 const Services = () => {
     const { t } = useTranslation();
-    useScrollReveal();
+    const sectionRef = useRef(null);
+    useScrollReveal(sectionRef);
 
     const sections = ['hotel', 'financial', 'australian'];
 
     return (
-        <section id="services" className="services section-padding">
+        <section ref={sectionRef} id="services" className="services section-padding">
             <div className="container">
                 <div className="section-header reveal reveal-up">
                     <h2 className="section-title">

@@ -8,10 +8,10 @@
     transition: all var(--transition-normal);
 }
 
-.navbar.is-home:not(.scrolled):not(.menu-open) .logo-text,
-.navbar.is-home:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
-.navbar.is-home:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
-.navbar.is-home:not(.scrolled):not(.menu-open) .lang-selected:not(:hover),
+.navbar:not(.scrolled):not(.menu-open) .logo-text,
+.navbar:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
+.navbar:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
+.navbar:not(.scrolled):not(.menu-open) .lang-selected:not(:hover),
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .logo-text,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
@@ -20,13 +20,13 @@
 }
 
 /* White button styling when navbar is transparent over dark hero */
-.navbar.is-home:not(.scrolled):not(.menu-open) .btn-nav,
+.navbar:not(.scrolled):not(.menu-open) .btn-nav,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav {
     border-color: #ffffff !important;
     color: #ffffff !important;
 }
 
-.navbar.is-home:not(.scrolled):not(.menu-open) .btn-nav:hover,
+.navbar:not(.scrolled):not(.menu-open) .btn-nav:hover,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav:hover {
     background-color: #ffffff;
     color: #000000 !important;
@@ -85,7 +85,7 @@
 }
 
 /* Force hamburger bars to white when over dark hero */
-.navbar.is-home:not(.scrolled):not(.menu-open) .hamburger .bar,
+.navbar:not(.scrolled):not(.menu-open) .hamburger .bar,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .hamburger .bar {
     background-color: #ffffff !important;
 }
