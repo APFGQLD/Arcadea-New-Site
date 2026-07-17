@@ -219,9 +219,31 @@ ul {
   padding: 8rem 0;
 }
 
+/* Scroll Reveal Animations */
+.reveal {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
+.reveal-up {
+  transform: translateY(40px);
+}
 
-/* Heroicon Utilities */
+.reveal-fade {
+  transform: translateY(0);
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-100 { transition-delay: 100ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-300 { transition-delay: 300ms; }
+.delay-400 { transition-delay: 400ms; }
+.delay-500 { transition-delay: 500ms; }/* Heroicon Utilities */
 .hero-icon {
   width: 1em;
   height: 1em;

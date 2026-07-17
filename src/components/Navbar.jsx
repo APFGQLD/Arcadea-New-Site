@@ -32,11 +32,11 @@ const Navbar = () => {
     // Logic to determine which logo/color to show
     // 1. If we are on Home and NOT scrolled, we are over the dark Hero -> white logo/text
     // 2. If we are on ANY OTHER page, or we ARE scrolled, or theme is dark -> check theme
-    const forceScrolled = !isHomePage || scrolled;
-    const showWhiteLogo = (!forceScrolled && !isMenuOpen) || theme === 'dark';
+    const forceScrolled = scrolled;
+    const showWhiteLogo = (isHomePage && !scrolled && !isMenuOpen) || theme === 'dark';
 
     return (
-        <nav className={`navbar ${forceScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''}`}>
+        <nav className={`navbar ${forceScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''} ${isHomePage ? 'is-home' : ''}`}>
             <div className="container nav-container">
                 <Link to="/" className="logo" onClick={closeMenu}>
                     <img

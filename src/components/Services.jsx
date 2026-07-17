@@ -1,16 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import useScrollReveal from '../hooks/useScrollReveal';
 import './Services.css';
 
 const Services = () => {
     const { t } = useTranslation();
+    useScrollReveal();
 
     const sections = ['hotel', 'financial', 'australian'];
 
     return (
         <section id="services" className="services section-padding">
             <div className="container">
-                <div className="section-header">
+                <div className="section-header reveal reveal-up">
                     <h2 className="section-title">
                         {t('services.title').split(' ')[0]} <span className="text-gold">{t('services.title').split(' ')[1]}</span>
                     </h2>
@@ -20,8 +22,8 @@ const Services = () => {
                 </div>
 
                 <div className="services-grid">
-                    {sections.map((key) => (
-                        <div key={key} className="service-card">
+                    {sections.map((key, index) => (
+                        <div key={key} className={`service-card reveal reveal-up delay-${(index % 3 + 1) * 100}`}>
                             <div className="service-card-content">
                                 <h3 className="service-card-title">{t(`services.pillars.${key}.title`)}</h3>
                                 {key === 'financial' && (

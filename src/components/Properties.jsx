@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { propertyCollections } from '../data/properties';
+import useScrollReveal from '../hooks/useScrollReveal';
 import './Properties.css';
 
 const Properties = () => {
@@ -9,12 +10,14 @@ const Properties = () => {
     const { theme } = useTheme();
     const navigate = useNavigate();
 
+    useScrollReveal();
+
     const collections = Object.values(propertyCollections);
 
     return (
         <section id="properties" className="properties section-padding">
             <div className="container">
-                <div className="section-header">
+                <div className="section-header reveal reveal-up">
                     <h2 className="section-title">{t('properties.title').split(' ')[0]} <span className="text-gold">{t('properties.title').split(' ')[1]}</span></h2>
                     <p className="section-description">
                         {t('properties.description')}
@@ -22,14 +25,14 @@ const Properties = () => {
                 </div>
 
                 <div className="collections-showcase">
-                    {collections.map(collection => (
+                    {collections.map((collection, index) => (
                         <div
                             key={collection.id}
-                            className="collection-showcase-card"
+                            className={`collection-showcase-card reveal reveal-up delay-${(index % 3 + 1) * 100}`}
                             data-theme={theme}
                             onClick={() => navigate(`/properties#${collection.id}`)}
                         >
-                            <div className="collection-showcase-image">
+                            <div className="collection-showcase-image" style={{ overflow: 'hidden' }}>
                                 <img
                                     src={collection.image}
                                     alt={`${collection.title} - Premium property collection`}
@@ -63,7 +66,7 @@ const Properties = () => {
                     ))}
                 </div>
 
-                <div className="properties-action">
+                <div className="properties-action reveal reveal-fade delay-300">
                     <Link to="/properties" className="btn btn-secondary">{t('properties.cta')}</Link>
                 </div>
             </div>

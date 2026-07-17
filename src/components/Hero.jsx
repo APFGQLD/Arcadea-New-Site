@@ -7,6 +7,15 @@ const Hero = () => {
 
     return (
         <section id="hero" className="hero">
+            <video
+                className="hero-video-bg"
+                autoPlay
+                loop
+                muted
+                playsInline
+                poster="/fallback.png"
+                src="https://cms.arcadea.com.au/wp-content/uploads/2026/07/Timeline-1.mp4"
+            />
             <div className="hero-overlay"></div>
             <div className="container hero-container">
                 <div className="hero-content">

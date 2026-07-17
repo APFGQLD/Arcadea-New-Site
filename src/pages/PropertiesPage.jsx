@@ -187,7 +187,7 @@ const PropertiesPage = () => {
                                         {col.logoLight && col.logoDark ? (
                                             <div className="stacked-collection-logo-container">
                                                 <img
-                                                    src={col.logoLight}
+                                                    src={theme === 'dark' ? col.logoLight : col.logoDark}
                                                     alt={`${col.title} logo`}
                                                     className="stacked-collection-logo"
                                                 />

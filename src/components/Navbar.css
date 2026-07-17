@@ -8,20 +8,26 @@
     transition: all var(--transition-normal);
 }
 
-.navbar:not(.scrolled):not(.menu-open) .logo-text,
-.navbar:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
-.navbar:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
-.navbar:not(.scrolled):not(.menu-open) .lang-selected:not(:hover) {
+.navbar.is-home:not(.scrolled):not(.menu-open) .logo-text,
+.navbar.is-home:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
+.navbar.is-home:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
+.navbar.is-home:not(.scrolled):not(.menu-open) .lang-selected:not(:hover),
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .logo-text,
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .lang-selected:not(:hover) {
     color: #ffffff !important;
 }
 
-/* White button styling when navbar is transparent over hero */
-.navbar:not(.scrolled):not(.menu-open) .btn-nav {
+/* White button styling when navbar is transparent over dark hero */
+.navbar.is-home:not(.scrolled):not(.menu-open) .btn-nav,
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav {
     border-color: #ffffff !important;
     color: #ffffff !important;
 }
 
-.navbar:not(.scrolled):not(.menu-open) .btn-nav:hover {
+.navbar.is-home:not(.scrolled):not(.menu-open) .btn-nav:hover,
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav:hover {
     background-color: #ffffff;
     color: #000000 !important;
 }
@@ -78,8 +84,9 @@
     transition: all var(--transition-normal);
 }
 
-/* Force hamburger bars to white when not scrolled over dark hero */
-.navbar:not(.scrolled):not(.menu-open) .hamburger .bar {
+/* Force hamburger bars to white when over dark hero */
+.navbar.is-home:not(.scrolled):not(.menu-open) .hamburger .bar,
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .hamburger .bar {
     background-color: #ffffff !important;
 }
 

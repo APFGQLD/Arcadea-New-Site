@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useScrollReveal from '../hooks/useScrollReveal';
 import './Contact.css';
 
 const Contact = () => {
     const { t } = useTranslation();
+    useScrollReveal();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -59,7 +61,7 @@ const Contact = () => {
     return (
         <section id="contact" className="section-padding">
             <div className="container">
-                <div className="section-header">
+                <div className="section-header reveal reveal-fade">
                     <h2 className="section-title">
                         {t('contact.title').split(' ')[0]} <span className="text-gold">{t('contact.title').split(' ')[1]}</span>
                     </h2>
@@ -68,7 +70,7 @@ const Contact = () => {
                     </p>
                 </div>
 
-                <div className="contact-form-wrapper">
+                <div className="contact-form-wrapper reveal reveal-up delay-200">
                     <form onSubmit={handleSubmit} className="contact-form">
                         <div className="form-row">
                             <div className="form-group">

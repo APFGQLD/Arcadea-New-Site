@@ -70,6 +70,9 @@ const OneParkLanePage = () => {
         <div className="opl-page">
             <div ref={trackRef} className="opl-hero-track">
                 <div ref={contentRef} className="opl-js-sticky-content">
+                    <button className="opl-back-link" onClick={() => navigate('/properties')}>
+                        &larr; Back to Portfolio
+                    </button>
 
                     {/* Background Layer 1: Animated Gradient & Glassmorphism */}
                     <div className="opl-hero-bg" style={{ opacity: getFadeOut(0.25, 0.45) }}>
@@ -260,6 +263,7 @@ const OneParkLanePage = () => {
                 <div className="opl-container">
                     <h2 className="opl-heading-lux">Next Steps</h2>
                     <div className="opl-cta-wrapper">
+                        <button className="opl-btn-cta" onClick={() => window.open('https://1parklane.au/invitation', '_blank')}>Visit Project Website</button>
                         <button className="opl-btn-cta" onClick={() => navigate('/#contact')}>Request Brochure</button>
                         <button className="opl-btn-cta" onClick={() => window.open('https://portal.apfg.au/pricelist', '_blank')}>View Pricelist</button>
                         <button className="opl-btn-cta" onClick={() => navigate('/#contact')}>Request Call Back</button>
@@ -267,9 +271,6 @@ const OneParkLanePage = () => {
                 </div>
             </section>
 
-            <button className="back-link-floating" onClick={() => navigate('/properties')} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 100, border: 'none', background: 'transparent', color: 'white', cursor: 'pointer', fontSize: '1.2rem', padding: '10px' }}>
-                ←
-            </button>
         </div>
     );
 };
