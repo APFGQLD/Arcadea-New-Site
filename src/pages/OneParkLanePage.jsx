@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import usePageTitle from '../hooks/usePageTitle';
+import { fetchPageAssets } from '../services/sanityService';
 import './OneParkLanePage.css';
 
 const OneParkLanePage = () => {
@@ -10,7 +11,19 @@ const OneParkLanePage = () => {
     const trackRef = useRef(null);
     const contentRef = useRef(null);
     const [progress, setProgress] = useState(0);
+    const [assets, setAssets] = useState({});
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const loadAssets = async () => {
+            const fetched = await fetchPageAssets(['oneparklane-v03', 'oneparklane-v04', 'oneparklane-v07', 'oneparklane-v11']);
+            const assetMap = {};
+            fetched.forEach(a => { assetMap[a.identifier] = a.url; });
+            setAssets(assetMap);
+        };
+        loadAssets();
+        window.scrollTo(0, 0);
+    }, []);
 
     // Manual JS Sticky Logic
     useEffect(() => {
@@ -71,7 +84,7 @@ const OneParkLanePage = () => {
     };
 
     return (
-        <div className="opl-page">
+        <div className="opl-page" style={assets['oneparklane-v04'] ? { '--hero-bg-image': `url(${assets['oneparklane-v04']})` } : {}}>
             <div ref={trackRef} className="opl-hero-track">
                 <div ref={contentRef} className="opl-js-sticky-content">
                     <button className="shared-back-link" onClick={() => navigate('/properties')}>
@@ -90,13 +103,13 @@ const OneParkLanePage = () => {
 
                     {/* Background Layer 2: Final Image (Fades In) */}
                     <div className="opl-hero-bg" style={{ opacity: getOpacity(0.25, 0.45) }}>
-                        <img
-                            src="https://cms.arcadea.com.au/wp-content/uploads/2026/02/V03_FINAL_lowres.jpeg"
-                            alt="One Park Lane Interior"
-                            onError={(e) => {
-                                console.warn("Image load failed");
-                            }}
-                        />
+                        {assets['oneparklane-v03'] && (
+                            <img
+                                src={assets['oneparklane-v03']}
+                                alt="One Park Lane Exterior"
+                                className="opl-main-image"
+                            />
+                        )}
                         <div className="opl-overlay"></div>
                     </div>
 
@@ -222,7 +235,7 @@ const OneParkLanePage = () => {
                     <div className="opl-amenities-grid">
                         <div className="opl-amenity-card">
                             <div className="opl-amenity-img">
-                                <img src="https://cms.arcadea.com.au/wp-content/uploads/2026/02/V04_FINAL_lowres.jpeg" alt="Signature Restaurant & Bar" />
+                                {assets['oneparklane-v04'] && <img src={assets['oneparklane-v04']} alt="Signature Restaurant & Bar" />}
                             </div>
                             <div className="opl-amenity-content">
                                 <h3>Signature Restaurant & Bar</h3>
@@ -231,7 +244,7 @@ const OneParkLanePage = () => {
                         </div>
                         <div className="opl-amenity-card">
                             <div className="opl-amenity-img">
-                                <img src="https://cms.arcadea.com.au/wp-content/uploads/2026/07/V07_FINAL_lowres.jpeg" alt="Infinity Pool & Sky Deck" />
+                                {assets['oneparklane-v07'] && <img src={assets['oneparklane-v07']} alt="Infinity Pool & Sky Deck" />}
                             </div>
                             <div className="opl-amenity-content">
                                 <h3>Infinity Pool & Sky Deck</h3>
@@ -240,7 +253,7 @@ const OneParkLanePage = () => {
                         </div>
                         <div className="opl-amenity-card">
                             <div className="opl-amenity-img">
-                                <img src="https://cms.arcadea.com.au/wp-content/uploads/2026/07/V11_FINAL_lowres.jpeg" alt="Cutting Edge Fitness Centre" />
+                                {assets['oneparklane-v11'] && <img src={assets['oneparklane-v11']} alt="Cutting Edge Fitness Centre" />}
                             </div>
                             <div className="opl-amenity-content">
                                 <h3>Cutting Edge Fitness Centre</h3>

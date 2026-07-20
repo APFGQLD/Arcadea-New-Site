@@ -5,8 +5,8 @@ import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
 
-const brandLogoWhite = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/brand-logo-white.png';
-const brandLogoBlack = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/brand-logo-black.png';
+import brandLogoWhite from '../assets/brand-logo-white.png';
+import brandLogoBlack from '../assets/brand-logo-black.png';
 import './Navbar.css';
 
 const Navbar = () => {

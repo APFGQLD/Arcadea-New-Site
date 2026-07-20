@@ -135,13 +135,11 @@
 }
 
 .collection-showcase-card:nth-child(1) {
-    flex: 4; /* Island Collection */
-    order: 2;
+    flex: 6; /* Coastal Collection */
 }
 
 .collection-showcase-card:nth-child(2) {
-    flex: 6; /* Coastal Collection */
-    order: 1;
+    flex: 4; /* Island Collection */
 }
 
 .collection-showcase-card:hover {

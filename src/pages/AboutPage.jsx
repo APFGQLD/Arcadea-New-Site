@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/24/solid';
 import './AboutPage.css';
 import usePageTitle from '../hooks/usePageTitle';
+import { fetchPageAssets } from '../services/sanityService';
 
 const AboutPage = () => {
     usePageTitle('About Us', {
@@ -17,6 +18,19 @@ const AboutPage = () => {
     });
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const [assets, setAssets] = useState({});
+
+    useEffect(() => {
+        const loadAssets = async () => {
+            const fetched = await fetchPageAssets(['about-1', 'about-2', 'about-3', 'about-hero']);
+            const assetMap = {};
+            fetched.forEach(a => { assetMap[a.identifier] = a.url; });
+            setAssets(assetMap);
+        };
+        loadAssets();
+        window.scrollTo(0, 0);
+    }, []);
+
     const [visibleSteps, setVisibleSteps] = useState([]);
     const processRefs = useRef([]);
     const statsRef = useRef(null);
@@ -29,7 +43,7 @@ const AboutPage = () => {
             tagline: t('about_page.collections.island.tagline'),
             description: t('about_page.collections.island.description'),
             keywords: ['Yield', 'Growth', 'Turnkey', 'Passive', 'Managed'],
-            image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&h=600&auto=format&fit=crop&q=80'
+            image: assets['about-1'] || ''
         },
         {
             id: 'coastal',
@@ -37,7 +51,7 @@ const AboutPage = () => {
             tagline: t('about_page.collections.coastal.tagline'),
             description: t('about_page.collections.coastal.description'),
             keywords: ['Unrivaled', 'Sanctuary', 'Panoramas', 'Iconic', 'Prestige'],
-            image: 'https://images.pexels.com/photos/4618495/pexels-photo-4618495.jpeg?_gl=1*uqo9nj*_ga*MTEwMDQxNjI0OS4xNzY5MDQxNzMx*_ga_8JE65Q40S6*czE3NzAwOTc0MTEkbzMkZzEkdDE3NzAwOTc1OTYkajIxJGwwJGgw'
+            image: assets['about-2'] || ''
         }
     ];
 
@@ -156,7 +170,7 @@ const AboutPage = () => {
     };
 
     return (
-        <div className="about-page">
+        <div className="about-page" style={assets['about-hero'] ? { '--hero-bg-image': `url(${assets['about-hero']})` } : {}}>
             {/* Hero Section */}
             <section className="about-hero" data-theme={theme}>
                 <div className="about-hero-overlay"></div>
@@ -189,7 +203,7 @@ const AboutPage = () => {
                         </div>
                         <div className="about-story-image">
                             <img
-                                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&auto=format&fit=crop&q=80"
+                                src={assets['about-3'] || ''}
                                 alt="Luxury architecture"
                                 width="800"
                                 height="600"

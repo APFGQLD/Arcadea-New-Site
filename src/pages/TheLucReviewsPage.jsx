@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './TheLucReviewsPage.css';
+import { fetchPageAssets } from '../services/sanityService';
 
 const TheLucReviewsPage = () => {
+    const [assets, setAssets] = useState({});
     const [activeWidget, setActiveWidget] = useState('all'); // 'all' or 'tripadvisor'
 
     useEffect(() => {
+        const loadAssets = async () => {
+            const fetched = await fetchPageAssets(['luc-reviews-bg']);
+            const assetMap = {};
+            fetched.forEach(a => { assetMap[a.identifier] = a.url; });
+            setAssets(assetMap);
+        };
+        loadAssets();
+
         // Load Elfsight script if it's not already there
         if (!document.querySelector('script[src="https://elfsightcdn.com/platform.js"]')) {
             const script = document.createElement('script');
@@ -22,7 +32,7 @@ const TheLucReviewsPage = () => {
 
     return (
         <div className="the-luc-reviews-page">
-            <div className="reviews-hero">
+            <div className="reviews-hero" style={assets['luc-reviews-bg'] ? { '--hero-bg-image': `url(${assets['luc-reviews-bg']})` } : {}}>
                 <div className="container">
                     <h1 className="reviews-title">The Luc Reviews</h1>
                     <p className="reviews-subtitle">What our guests are saying about their experience.</p>

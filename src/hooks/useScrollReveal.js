@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const useScrollReveal = (selectorOrRef = '.reveal', threshold = 0.15) => {
+const useScrollReveal = (selectorOrRef = '.reveal', threshold = 0.15, dependencies = []) => {
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -32,7 +32,7 @@ const useScrollReveal = (selectorOrRef = '.reveal', threshold = 0.15) => {
         return () => {
             elements.forEach((el) => observer.unobserve(el));
         };
-    }, [selectorOrRef, threshold]);
+    }, [selectorOrRef, threshold, ...dependencies]);
 };
 
 export default useScrollReveal;

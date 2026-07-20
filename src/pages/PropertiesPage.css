@@ -264,15 +264,13 @@
 }
 
 .stacked-collection-card:nth-child(1) {
-    flex: 4;
-    /* Island Collection (40%) */
-    order: 2;
+    flex: 6;
+    /* Coastal Collection (60%) */
 }
 
 .stacked-collection-card:nth-child(2) {
-    flex: 6;
-    /* Coastal Collection (60%) */
-    order: 1;
+    flex: 4;
+    /* Island Collection (40%) */
 }
 
 .stacked-collection-image-wrapper {

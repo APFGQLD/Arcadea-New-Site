@@ -17,12 +17,25 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './LucFlyBeforeYouBuyPage.css';
+import { fetchPageAssets } from '../services/sanityService';
 
 const LucFlyBeforeYouBuyPage = () => {
     const { t } = useTranslation();
     const [isTermsOpen, setIsTermsOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [assets, setAssets] = useState({});
+
+    useEffect(() => {
+        const loadAssets = async () => {
+            const fetched = await fetchPageAssets(['luc-fly-padel', 'luc-fly-atlas', 'luc-fly-hero']);
+            const assetMap = {};
+            fetched.forEach(a => { assetMap[a.identifier] = a.url; });
+            setAssets(assetMap);
+        };
+        loadAssets();
+        window.scrollTo(0, 0);
+    }, []);
 
     const toggleTerms = () => {
         setIsTermsOpen(!isTermsOpen);
@@ -62,11 +75,6 @@ const LucFlyBeforeYouBuyPage = () => {
         }
     };
 
-    // Scroll to top on mount
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
     const investorPackage = [
         {
             title: "Return Flights for 2",
@@ -101,7 +109,7 @@ const LucFlyBeforeYouBuyPage = () => {
     ];
 
     return (
-        <div className="fly-campaign-page luc-theme">
+        <div className="fly-campaign-page luc-theme" style={assets['luc-fly-hero'] ? { '--hero-bg-image': `url(${assets['luc-fly-hero']})`, '--atlas-bg-image': `url(${assets['luc-fly-atlas']})` } : {}}>
             <Navbar />
 
             {/* Hero Section */}
@@ -209,7 +217,7 @@ const LucFlyBeforeYouBuyPage = () => {
                         </div>
                         <div className="eco-card glass-card">
                             <div className="eco-img-box">
-                                <img src="https://thelucnews.com/wp-content/uploads/2026/04/Bachelor-Padel-celebration-for-Ben-Ana-%F0%9F%8E%BE%E2%9C%A8Fun-rallies-great-laughs-and-unforgettable-moments.jpg" alt="Sport" />
+                                {assets['luc-fly-padel'] && <img src={assets['luc-fly-padel']} alt="Sport" />}
                             </div>
                             <div className="eco-info">
                                 <h3>Sport & Social</h3>
@@ -227,7 +235,7 @@ const LucFlyBeforeYouBuyPage = () => {
                         </div>
                         <div className="eco-card glass-card">
                             <div className="eco-img-box">
-                                <img src="https://atlasbeachfest.com/images/about/highlight.jpg" alt="Atlas" />
+                                {assets['luc-fly-atlas'] && <img src={assets['luc-fly-atlas']} alt="Atlas" />}
                             </div>
                             <div className="eco-info">
                                 <h3>The Atlas Advantage</h3>

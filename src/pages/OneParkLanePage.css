@@ -365,7 +365,7 @@
     width: 100%;
     height: 100vh;
     /* Full viewport height */
-    background-image: url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/V04_FINAL_lowres.jpeg');
+    background-image: var(--hero-bg-image);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

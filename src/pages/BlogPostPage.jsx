@@ -6,7 +6,8 @@ import {
     UserIcon,
     ArrowLeftIcon
 } from '@heroicons/react/24/solid';
-import { fetchBlogPost } from '../services/wordpressService';
+import { fetchBlogPost } from '../services/sanityService';
+import { PortableText } from '@portabletext/react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import usePageTitle from '../hooks/usePageTitle';
 import './BlogPostPage.css';
@@ -110,10 +111,13 @@ const BlogPostPage = () => {
                         )}
                     </header>
 
-                    <div
-                        className="blog-post-body"
-                        dangerouslySetInnerHTML={{ __html: post.content }}
-                    />
+                    <div className="blog-post-body">
+                        {Array.isArray(post.content) ? (
+                            <PortableText value={post.content} />
+                        ) : (
+                            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                        )}
+                    </div>
 
                     {/* Call to Action */}
                     <div className="blog-post-cta">

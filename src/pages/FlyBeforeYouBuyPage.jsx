@@ -5,12 +5,24 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './FlyBeforeYouBuyPage.css';
+import { fetchPageAssets } from '../services/sanityService';
 
 const FlyBeforeYouBuyPage = () => {
     const { t } = useTranslation();
     const [isTermsOpen, setIsTermsOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [assets, setAssets] = useState({});
+
+    useEffect(() => {
+        const loadAssets = async () => {
+            const fetched = await fetchPageAssets(['fly-campaign-hero', 'fly-campaign-exterior', 'fly-voucher']);
+            const assetMap = {};
+            fetched.forEach(a => { assetMap[a.identifier] = a.url; });
+            setAssets(assetMap);
+        };
+        loadAssets();
+    }, []);
 
     const toggleTerms = () => {
         setIsTermsOpen(!isTermsOpen);
@@ -56,7 +68,7 @@ const FlyBeforeYouBuyPage = () => {
     }, []);
 
     return (
-        <div className="fly-campaign-page">
+        <div className="fly-campaign-page" style={assets['fly-bg'] ? { '--hero-bg-image': `url(${assets['fly-bg']})` } : {}}>
             <Navbar />
 
             {/* Hero Section */}
@@ -111,11 +123,13 @@ const FlyBeforeYouBuyPage = () => {
                     </div>
                     <div className="fly-image-content">
                         {/* Placeholder for an experience/luxury image */}
-                        <img
-                            src="https://cms.arcadea.com.au/wp-content/uploads/2026/02/EXTERIOR-VIEW-2-scaled.png"
-                            alt="Luxury Accommodation"
-                            style={{ width: '100%', borderRadius: '8px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
-                        />
+                        {assets['fly-exterior'] && (
+                            <img
+                                src={assets['fly-exterior']}
+                                alt="Luxury Accommodation"
+                                style={{ width: '100%', borderRadius: '8px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
+                            />
+                        )}
                     </div>
                 </div>
             </section>
@@ -125,11 +139,7 @@ const FlyBeforeYouBuyPage = () => {
                 <div className="fly-split-layout">
                     <div className="fly-image-content">
                         {/* Placeholder for voucher/travel image */}
-                        <img
-                            src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-                            alt="Travel Plane Wing"
-                            style={{ width: '100%', borderRadius: '8px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
-                        />
+                        {assets['fly-voucher'] && <img src={assets['fly-voucher']} alt="Gift Voucher" style={{ width: '100%', borderRadius: '8px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }} />}
                     </div>
                     <div className="fly-text-content">
                         <h3>The Freedom Voucher</h3>

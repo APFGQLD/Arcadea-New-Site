@@ -23,7 +23,7 @@
 /* Hero Section */
 .luc-hero {
     height: 85vh;
-    background: url('https://images.unsplash.com/photo-1544124499-58912cbddaad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') no-repeat center/cover;
+    background: var(--hero-bg-image) no-repeat center/cover;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -378,7 +378,7 @@
 /* Lead Capture */
 .lead-capture {
     padding: 100px 0;
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://atlasbeachfest.com/images/about/highlight.jpg') no-repeat center/cover fixed;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), var(--atlas-bg-image) no-repeat center/cover fixed;
 }
 
 .form-container {

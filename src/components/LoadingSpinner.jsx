@@ -1,5 +1,5 @@
 import React from 'react';
-const bigALogo = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/big-a.png';
+import bigALogo from '../assets/big-a.png';
 import './LoadingSpinner.css';
 
 const LoadingSpinner = ({ message = 'Loading...' }) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PageLoader.css';
 
-const brandLogoWhite = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/brand-logo-white.png';
+import brandLogoWhite from '../assets/brand-logo-white.png';
 
 const PageLoader = () => {
     const [loading, setLoading] = useState(true);

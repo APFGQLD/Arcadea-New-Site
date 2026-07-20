@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-const bigALogo = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/big-a.png';
+import bigALogo from '../assets/big-a.png';
 import './Footer.css';
 
 const Footer = () => {

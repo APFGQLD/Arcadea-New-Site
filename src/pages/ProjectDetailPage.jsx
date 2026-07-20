@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
-import { fetchProjectDetail } from '../services/airtableService';
+import { fetchProjectDetail } from '../services/sanityService';
 import {
     MoonIcon,
     SparklesIcon,
@@ -258,7 +258,7 @@ const ProjectDetailPage = () => {
                         <div className="project-stats-card">
                             <h4 className="stats-card-title">{t('project_detail.quick_facts', 'Quick Facts')}</h4>
                             <div className="stats-inner-grid">
-                                {project.quickFacts && project.quickFacts.map(fact => (
+                                {project.quickFacts?.map(fact => (
                                     <div key={fact.id} className="compact-stat">
                                         <div className="stat-icon-small">
                                             {getIcon(fact.icon)}
@@ -286,7 +286,7 @@ const ProjectDetailPage = () => {
                 </div>
                 <div className="carousel-container">
                     <div className="carousel-track" ref={carouselRef}>
-                        {project.gallery.map((item, index) => (
+                        {project.gallery?.map((item, index) => (
                             <div
                                 key={item.id}
                                 className="gallery-item carousel-item"
@@ -316,7 +316,7 @@ const ProjectDetailPage = () => {
                     <p className="section-subtitle">{t('project_detail.resources_subtitle', 'Explore brochures, tours, and updates.')}</p>
 
                     <div className="resources-grid">
-                        {project.resources.map((res) => (
+                        {project.resources?.map((res) => (
                             <a key={res.id} href={res.link} target="_blank" rel="noopener noreferrer" className={`resource-card ${res.image ? 'has-image' : ''}`}>
                                 {res.image ? (
                                     <div className="resource-card-image">
@@ -350,7 +350,7 @@ const ProjectDetailPage = () => {
             <section className="detail-units container" id="availability">
                 <h2 className="section-title">{t('project_detail.units_title', 'Availability & Unit Types')}</h2>
                 <div className="units-accordion">
-                    {project.units.map(unit => {
+                    {project.units?.map(unit => {
                         const total = unit.totalUnits || 0;
                         const sold = unit.soldUnits || 0;
                         const available = Math.max(0, total - sold);
@@ -511,10 +511,10 @@ const ProjectDetailPage = () => {
                 <div className="container developer-flex">
                     <div className="developer-info">
                         <h2 className="section-title">{t('project_detail.dev_title', 'The Developer')}</h2>
-                        <h3>{project.developer.name}</h3>
-                        <p>{formatAirtableText(project.developer.description)}</p>
+                        <h3>{project.developer?.name}</h3>
+                        <p>{formatAirtableText(project.developer?.description)}</p>
                     </div>
-                    {project.developer.image && (
+                    {project.developer?.image && (
                         <div className="developer-image border-accent">
                             <img
                                 src={project.developer.image}
@@ -536,7 +536,7 @@ const ProjectDetailPage = () => {
                     <div className="hotspots-list">
                         {(() => {
                             // Sort hotspots by distance (low to high)
-                            const sortedHotspots = [...project.hotspots].sort((a, b) => {
+                            const sortedHotspots = [...(project.hotspots || [])].sort((a, b) => {
                                 return (parseFloat(a.distance) || 0) - (parseFloat(b.distance) || 0);
                             });
 
@@ -571,22 +571,24 @@ const ProjectDetailPage = () => {
                             });
                         })()}
                     </div>
-                    <div className="map-container border-accent">
-                        <iframe
-                            width="100%"
-                            height="100%"
-                            src={`https://maps.google.com/maps?q=${project.map.lat},${project.map.lng}&z=15&output=embed`}
-                            title="Project Location"
-                            frameBorder="0"
-                            style={{ border: 0, filter: 'grayscale(100%) invert(90%) contrast(80%)' }} // Custom dark mode attempt
-                            allowFullScreen
-                        ></iframe>
-                    </div>
+                    {project.map && (
+                        <div className="map-container border-accent">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src={`https://maps.google.com/maps?q=${project.map.lat},${project.map.lng}&z=15&output=embed`}
+                                title="Project Location"
+                                frameBorder="0"
+                                style={{ border: 0, filter: 'grayscale(100%) invert(90%) contrast(80%)' }} // Custom dark mode attempt
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    )}
                 </div>
             </section >
             {/* 7. Lightbox Overlay */}
             {
-                selectedImageIndex !== null && project.gallery[selectedImageIndex] && (
+                selectedImageIndex !== null && project.gallery?.[selectedImageIndex] && (
                     <div className="lightbox-overlay" onClick={() => setSelectedImageIndex(null)}>
                         <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
                             <button className="lightbox-close" onClick={() => setSelectedImageIndex(null)}>×</button>

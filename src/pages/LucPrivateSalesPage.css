@@ -42,7 +42,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: url('https://cms.arcadea.com.au/wp-content/uploads/2026/04/ACC_AC133190918-TB-Berawa_Infinity-Pool_Details-105-scaled.jpg') center/cover no-repeat;
+    background: var(--hero-bg-image) center/cover no-repeat;
     text-align: center;
     padding-top: 80px;
 }

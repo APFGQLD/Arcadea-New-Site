@@ -3,8 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { SunIcon } from '@heroicons/react/24/solid';
-import { propertyCollections } from '../data/properties';
-import { fetchProjectsByCollection } from '../services/airtableService';
+import { fetchPropertyCollections, fetchProperties, fetchPageAssets } from '../services/sanityService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './PropertiesPage.css';
 import usePageTitle from '../hooks/usePageTitle';
@@ -18,10 +17,33 @@ const PropertiesPage = () => {
     const location = useLocation();
     const { theme } = useTheme();
     const [selectedCollection, setSelectedCollection] = useState(null);
+    const [collections, setCollections] = useState([]);
     const [listings, setListings] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [assets, setAssets] = useState({});
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [scrollY, setScrollY] = useState(0);
+
+    // Fetch data on mount
+    useEffect(() => {
+        const loadInitialData = async () => {
+            try {
+                const [collectionsData, fetchedAssets] = await Promise.all([
+                    fetchPropertyCollections(),
+                    fetchPageAssets(['oneparklane-v03'])
+                ]);
+                setCollections(collectionsData);
+                const assetMap = {};
+                fetchedAssets.forEach(a => { assetMap[a.identifier] = a.url; });
+                setAssets(assetMap);
+            } catch (err) {
+                console.error("Failed to load initial data", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadInitialData();
+    }, []);
 
     // Track scroll for cinematic effect
     useEffect(() => {
@@ -50,7 +72,7 @@ const PropertiesPage = () => {
             window.removeEventListener('scroll', handleScroll);
             observer.disconnect();
         };
-    }, []);
+    }, [collections]);
 
     // Calculate cinematic transform values
     const scrollProgress = Math.min(scrollY / 600, 1); // 0 to 1 over 600px of scroll
@@ -70,9 +92,9 @@ const PropertiesPage = () => {
             setLoading(true);
             setError(null);
             try {
-                const collectionName = selectedCollection === 'island' ? 'Island' : 'Coastal';
-                const data = await fetchProjectsByCollection(collectionName);
-                setListings(data);
+                // Fetch the properties from the selected collection from Sanity
+                const data = await fetchProperties(selectedCollection);
+                setListings(data ? data.properties || [] : []);
             } catch (err) {
                 console.error('Data loading error:', err);
                 setError(t('properties.error_loading', 'Failed to load properties. Please check your configuration.'));
@@ -105,7 +127,7 @@ const PropertiesPage = () => {
         setSelectedCollection(null);
     };
 
-    const collections = Object.values(propertyCollections);
+    // Removed static collections object
 
     return (
         <div className="properties-page">
@@ -123,11 +145,13 @@ const PropertiesPage = () => {
                                     borderRadius: `${heroRadius}px`,
                                 }}
                             >
-                                <img 
-                                    src="https://cms.arcadea.com.au/wp-content/uploads/2026/02/V03_FINAL_lowres.jpeg" 
-                                    alt="One Park Lane" 
-                                    className="cinematic-hero-image"
-                                />
+                                {assets['oneparklane-v03'] && (
+                                    <img 
+                                        src={assets['oneparklane-v03']}
+                                        alt="One Park Lane" 
+                                        className="cinematic-hero-image"
+                                    />
+                                )}
                                 <div className="cinematic-hero-overlay"></div>
                             </div>
                             
@@ -216,16 +240,16 @@ const PropertiesPage = () => {
                 <div className="listing-view">
                     <div className="listing-header wave-header slide-down">
                         <div className="container header-content">
-                            {propertyCollections[selectedCollection].logoLight && propertyCollections[selectedCollection].logoDark ? (
+                            {collections.find(c => c.id === selectedCollection)?.logoLight && collections.find(c => c.id === selectedCollection)?.logoDark ? (
                                 <div className="listing-logo-container">
                                     <img
-                                        src={theme === 'dark' ? propertyCollections[selectedCollection].logoLight : propertyCollections[selectedCollection].logoDark}
-                                        alt={propertyCollections[selectedCollection].title}
+                                        src={theme === 'dark' ? collections.find(c => c.id === selectedCollection)?.logoLight : collections.find(c => c.id === selectedCollection)?.logoDark}
+                                        alt={collections.find(c => c.id === selectedCollection)?.title}
                                         className="listing-brand-logo"
                                     />
                                 </div>
                             ) : (
-                                <h1 className="page-title">{propertyCollections[selectedCollection].title}</h1>
+                                <h1 className="page-title">{collections.find(c => c.id === selectedCollection)?.title}</h1>
                             )}
                         </div>
 
@@ -270,7 +294,7 @@ const PropertiesPage = () => {
                                 </div>
                                 <h2 className="empty-state-title">No Properties Available</h2>
                                 <p className="empty-state-message">
-                                    We're currently updating our {propertyCollections[selectedCollection].title} collection.
+                                    We're currently updating our {collections.find(c => c.id === selectedCollection)?.title} collection.
                                     <br />
                                     Check back soon for new exclusive listings.
                                 </p>
@@ -280,45 +304,48 @@ const PropertiesPage = () => {
                             </div>
                         ) : (
                             <div className="property-grid">
-                                {listings.map((property) => (
-                                    <div
-                                        key={property.id}
-                                        className="property-card"
-                                        onClick={() => navigate(`/project/${property.slug || property.id}`)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <div className="property-image">
-                                            <img
-                                                src={property.image}
-                                                alt={`${property.title} - ${property.location}`}
-                                                loading="lazy"
-                                                decoding="async"
-                                                width="600"
-                                                height="400"
-                                            />
-                                            {property.tag && <span className="property-tag">{property.tag}</span>}
+                                {listings.map((property) => {
+                                    if (!property) return null;
+                                    return (
+                                        <div
+                                            key={property.id}
+                                            className="property-card"
+                                            onClick={() => navigate(`/project/${property.slug || property.id}`)}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            <div className="property-image">
+                                                <img
+                                                    src={property.image}
+                                                    alt={`${property.title} - ${property.location}`}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    width="600"
+                                                    height="400"
+                                                />
+                                                {property.tag && <span className="property-tag">{property.tag}</span>}
+                                            </div>
+                                            <div className="property-info">
+                                                <div className="property-location">{property.location}</div>
+                                                <h3 className="property-title">{property.title}</h3>
+                                                <p className="property-price">{property.price}</p>
+                                                <ul className="property-features">
+                                                    {property.features?.map((feat, idx) => (
+                                                        <li key={idx}>{feat}</li>
+                                                    ))}
+                                                </ul>
+                                                <button
+                                                    className="property-link"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        navigate(`/project/${property.slug || property.id}`);
+                                                    }}
+                                                >
+                                                    {t('properties.exploreDetails', 'Explore Details')}
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="property-info">
-                                            <div className="property-location">{property.location}</div>
-                                            <h3 className="property-title">{property.title}</h3>
-                                            <p className="property-price">{property.price}</p>
-                                            <ul className="property-features">
-                                                {property.features.map((feat, idx) => (
-                                                    <li key={idx}>{feat}</li>
-                                                ))}
-                                            </ul>
-                                            <button
-                                                className="property-link"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    navigate(`/project/${property.slug || property.id}`);
-                                                }}
-                                            >
-                                                {t('properties.exploreDetails', 'Explore Details')}
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>

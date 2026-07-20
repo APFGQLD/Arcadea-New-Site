@@ -13,12 +13,23 @@ import {
 } from '@heroicons/react/24/outline';
 import './LucPrivateSalesPage.css';
 
+import { fetchPageAssets } from '../services/sanityService';
+
 const LucPrivateSalesPage = () => {
     const { t } = useTranslation();
+    const [isFormOpen, setIsFormOpen] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [assets, setAssets] = useState({});
 
     useEffect(() => {
+        const loadAssets = async () => {
+            const fetched = await fetchPageAssets(['luc-pool', 'luc-bedroom']);
+            const assetMap = {};
+            fetched.forEach(a => { assetMap[a.identifier] = a.url; });
+            setAssets(assetMap);
+        };
+        loadAssets();
         window.scrollTo(0, 0);
     }, []);
 
@@ -83,7 +94,7 @@ const LucPrivateSalesPage = () => {
     }
 
     return (
-        <div className="luc-private-page">
+        <div className="luc-private-sales-page" style={assets['luc-pool'] ? { '--hero-bg-image': `url(${assets['luc-pool']})` } : {}}>
             {/* Hero Section */}
             <section className="luc-hero">
                 <div className="hero-overlay"></div>
@@ -125,11 +136,13 @@ const LucPrivateSalesPage = () => {
                         </div>
                         <div className="info-image animate-in">
                             <div className="glass-card">
-                                <img 
-                                    src="https://cms.arcadea.com.au/wp-content/uploads/2026/04/ACC_AC133190918-TB-Berawa_3BedroomVilla_Bedroom1-009-scaled.jpg" 
-                                    alt="The Luc Bedroom" 
-                                    className="rounded-img"
-                                />
+                                {assets['luc-bedroom'] && (
+                                    <img
+                                        src={assets['luc-bedroom']}
+                                        alt="Master Bedroom"
+                                        className="luc-visual"
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>

@@ -1,8 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { propertyCollections } from '../data/properties';
+import { fetchPropertyCollections } from '../services/sanityService';
 import useScrollReveal from '../hooks/useScrollReveal';
 import './Properties.css';
 
@@ -12,9 +12,17 @@ const Properties = () => {
     const navigate = useNavigate();
     const sectionRef = useRef(null);
 
-    useScrollReveal(sectionRef);
+    const [collections, setCollections] = useState([]);
+    
+    useScrollReveal(sectionRef, 0.15, [collections]);
 
-    const collections = Object.values(propertyCollections);
+    useEffect(() => {
+        const loadCollections = async () => {
+            const data = await fetchPropertyCollections();
+            setCollections(data);
+        };
+        loadCollections();
+    }, []);
 
     return (
         <section ref={sectionRef} id="properties" className="properties section-padding">

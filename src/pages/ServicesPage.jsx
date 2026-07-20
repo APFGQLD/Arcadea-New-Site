@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/24/solid';
 import './ServicesPage.css';
 import usePageTitle from '../hooks/usePageTitle';
+import { fetchPageAssets } from '../services/sanityService';
 
 const ServicesPage = () => {
     usePageTitle('Our Services', {
@@ -20,6 +21,18 @@ const ServicesPage = () => {
     });
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const [assets, setAssets] = useState({});
+
+    useEffect(() => {
+        const loadAssets = async () => {
+            const fetched = await fetchPageAssets(['services-hero', 'services-secondary', 'services-3', 'services-hero-bg']);
+            const assetMap = {};
+            fetched.forEach(a => { assetMap[a.identifier] = a.url; });
+            setAssets(assetMap);
+        };
+        loadAssets();
+        window.scrollTo(0, 0);
+    }, []);
 
     const services = [
         {
@@ -34,7 +47,7 @@ const ServicesPage = () => {
                 'CoPosit and Deposit Bonds',
                 'Exclusive Listings and Developments'
             ],
-            image: 'https://cms.arcadea.com.au/wp-content/uploads/2026/07/caleb-mKwBMtDSZes-unsplash-2-scaled.jpg',
+            image: assets['services-hero'] || '',
             color: '#c5a065'
         },
         {
@@ -50,7 +63,7 @@ const ServicesPage = () => {
                 'Tax effective ownership',
                 'Fractional Investing'
             ],
-            image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&h=600&auto=format&fit=crop&q=80',
+            image: assets['services-3'] || '',
             color: '#c5a065'
         },
         {
@@ -65,7 +78,7 @@ const ServicesPage = () => {
                 'Access to globally respected brands',
                 'Access to experienced and trusted developers'
             ],
-            image: 'https://cms.arcadea.com.au/wp-content/uploads/2026/07/259qM.jpg',
+            image: assets['services-secondary'] || '',
             color: '#c5a065'
         }
     ];
@@ -89,7 +102,7 @@ const ServicesPage = () => {
     ];
 
     return (
-        <div className="services-page">
+        <div className="services-page" style={assets['services-hero-bg'] ? { '--hero-bg-image': `url(${assets['services-hero-bg']})` } : {}}>
             {/* Hero Section */}
             <section className="services-hero" data-theme={theme}>
                 <div className="services-hero-overlay"></div>

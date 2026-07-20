@@ -15,7 +15,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: var(--hero-gradient), url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/foundry-fly-869595_1920.jpg') no-repeat center/cover;
+    background: var(--hero-gradient), var(--hero-bg-image) no-repeat center/cover;
     overflow: hidden;
 }
 
@@ -197,7 +197,7 @@
 .lead-capture {
     padding: 100px 20px;
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                url('https://cms.arcadea.com.au/wp-content/uploads/2026/02/foundry-fly-869595_1920.jpg') no-repeat center/cover fixed;
+                var(--hero-bg-image) no-repeat center/cover fixed;
 }
 
 .form-container {

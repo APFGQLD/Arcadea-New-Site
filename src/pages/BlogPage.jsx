@@ -6,7 +6,7 @@ import {
     UserIcon,
     ArrowRightIcon
 } from '@heroicons/react/24/solid';
-import { fetchBlogPosts } from '../services/wordpressService';
+import { fetchBlogPosts } from '../services/sanityService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import usePageTitle from '../hooks/usePageTitle';
 import './BlogPage.css';
