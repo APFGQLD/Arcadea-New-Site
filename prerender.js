@@ -173,26 +173,24 @@ function generateBlogPostHTML(post, baseHTML) {
 /**
  * Generate SEO-friendly HTML for static routes
  */
-function generateStaticPageHTML(route, baseHTML) {
-    const url = `${SITE_URL}${route}`;
-    // Provide some basic meta tags with the correct canonical for static routes.
-    // The client-side JS (usePageTitle) will still update the title, but this ensures
-    // the canonical and OG tags in the raw HTML are correct for Google.
-    
-    // Convert route to a simple title (e.g. /about -> About)
-    let pageTitle = 'Arcadea Property | Exquisite Living, Refined Investments';
-    let titlePart = route.split('/').pop().replace(/-/g, ' ');
-    if (titlePart) {
-        titlePart = titlePart.charAt(0).toUpperCase() + titlePart.slice(1);
-        pageTitle = `${titlePart} | Arcadea Property`;
-    }
+function generateStaticPageHTML(routeObj, baseHTML) {
+    const url = `${SITE_URL}${routeObj.path}`;
+    const pageTitle = routeObj.title ? `${routeObj.title} | Arcadea Property` : 'Arcadea Property | Exquisite Living, Refined Investments';
+    const description = escapeAttr(routeObj.description || 'Discover premium off-plan investment properties in Bali and Australia. Arcadea Property offers curated coastal and island collections with expert guidance.');
+    const image = `${SITE_URL}/og-image.jpg`;
 
     const metaTags = `
     <title>${pageTitle}</title>
+    <meta name="description" content="${description}">
     <meta property="og:title" content="${pageTitle}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:image" content="${image}">
     <meta property="og:url" content="${url}">
     <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${pageTitle}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${image}">
     <link rel="canonical" href="${url}">
 `;
 
@@ -267,8 +265,32 @@ async function prerender() {
 
     // Generate HTML for static routes
     const staticRoutes = [
-        '/properties', '/about', '/services', '/services/ipdc', '/news', '/join', '/privacy-policy',
-        '/project/one-park-lane', '/project/luc/reviews', '/project/luc/private-sales'
+        { 
+            path: '/properties', 
+            title: 'Our Collections', 
+            description: 'Explore the Coastal Collection in Australia and the Island Collection in Bali — curated off-plan residences and investment properties in sought-after locations.' 
+        },
+        { 
+            path: '/about', 
+            title: 'About Us', 
+            description: 'Arcadea Property curates exceptional coastal and island real estate, bridging high-yield accessibility and ultra-luxury living across Australia and Bali.' 
+        },
+        { 
+            path: '/services', 
+            title: 'Our Services', 
+            description: 'End-to-end property and financial solutions: Australian property, hotel and resort investments, and financial service partnerships through trusted advisors.' 
+        },
+        { path: '/services/ipdc', title: 'IPDC Program' },
+        { 
+            path: '/news', 
+            title: 'News & Insights', 
+            description: 'Expert insights on luxury property investment, market trends, and lifestyle destinations across Australia and Bali from the Arcadea Property team.' 
+        },
+        { path: '/join', title: 'Join' },
+        { path: '/privacy-policy', title: 'Privacy Policy' },
+        { path: '/project/one-park-lane', title: 'One Park Lane' },
+        { path: '/project/luc/reviews', title: 'The Luc Reviews' },
+        { path: '/project/luc/private-sales', title: 'The Luc Private Sales' }
     ];
 
     console.log('\n📡 Generating static routes...');
@@ -277,7 +299,7 @@ async function prerender() {
         
         // Create directory
         // Remove leading slash to make it relative to distPath
-        const relativePath = route.startsWith('/') ? route.slice(1) : route;
+        const relativePath = route.path.startsWith('/') ? route.path.slice(1) : route.path;
         const routeDir = path.join(distPath, relativePath);
         fs.mkdirSync(routeDir, { recursive: true });
 
@@ -286,7 +308,7 @@ async function prerender() {
         fs.writeFileSync(htmlPath, routeHTML);
 
         generated++;
-        console.log(`  ✓ Generated: ${route}/index.html`);
+        console.log(`  ✓ Generated: ${route.path}/index.html`);
     }
 
     console.log(`\n✅ Pre-rendering complete! Generated ${generated} pages (Projects + Blog Posts + Static Routes).`);

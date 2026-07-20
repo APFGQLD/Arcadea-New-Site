@@ -34,10 +34,13 @@ const usePageTitle = (title, { description, noindex = false } = {}) => {
 
         // Meta description (reset to default when a page doesn't provide one,
         // so a previous page's description never leaks across routes)
-        const desc = document.querySelector('meta[name="description"]');
-        if (desc) {
-            desc.setAttribute('content', description || DEFAULT_DESCRIPTION);
+        let desc = document.querySelector('meta[name="description"]');
+        if (!desc) {
+            desc = document.createElement('meta');
+            desc.setAttribute('name', 'description');
+            document.head.appendChild(desc);
         }
+        desc.setAttribute('content', description || DEFAULT_DESCRIPTION);
 
         // Robots: only render the tag when a page opts out of indexing
         let robots = document.querySelector('meta[name="robots"]');
