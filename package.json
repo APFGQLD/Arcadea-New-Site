@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node prerender.js && node generate-sitemap.js",
+    "build:app": "vite build",
     "prerender": "node prerender.js",
     "sitemap": "node generate-sitemap.js",
-    "rebuild": "npm run build && npm run prerender && npm run sitemap",
+    "rebuild": "npm run build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run rebuild",

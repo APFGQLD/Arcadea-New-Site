@@ -1,94 +1,13 @@
-import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { fetchAllProjects, fetchAllBlogPosts, EXCLUDED_ROUTES } from './cms.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
-
-const BASE_URL = 'https://api.airtable.com/v0';
-const PAT = process.env.VITE_AIRTABLE_PAT;
-const BASE_ID = process.env.VITE_AIRTABLE_BASE_ID;
-const PROJECTS_TABLE = process.env.VITE_AIRTABLE_TABLE_PROJECTS || 'Projects';
-const WP_API_URL = process.env.VITE_WP_API_URL || 'https://cms.arcadea.com.au/wp-json/wp/v2';
 const SITE_URL = 'https://arcadea.com.au'; // Update with your actual domain
 
-/**
- * Fetch all projects from Airtable
- */
-async function fetchAllProjects() {
-    if (!BASE_ID || !PAT) {
-        console.warn('⚠️  Airtable credentials not configured.');
-        return [];
-    }
-
-    try {
-        const headers = {
-            'Authorization': `Bearer ${PAT}`,
-            'Content-Type': 'application/json',
-        };
-
-        const response = await fetch(`${BASE_URL}/${BASE_ID}/${PROJECTS_TABLE}`, { headers });
-
-        if (!response.ok) {
-            console.error('Failed to fetch projects');
-            return [];
-        }
-
-        const data = await response.json();
-        return data.records;
-    } catch (error) {
-        console.error('Error fetching projects:', error);
-        return [];
-    }
-}
-
-/**
- * Fetch all blog posts from WordPress
- */
-async function fetchAllBlogPosts() {
-    try {
-        let allPosts = [];
-        let page = 1;
-        let totalPages = 1;
-
-        console.log('📡 Fetching blog posts from WordPress...');
-
-        // Loop to fetch all pages of posts
-        while (page <= totalPages) {
-            const response = await fetch(`${WP_API_URL}/posts?page=${page}&per_page=100&_embed=false`);
-
-            if (!response.ok) {
-                console.error(`Failed to fetch blog posts page ${page}`);
-                break;
-            }
-
-            // Get total pages from headers on first request
-            if (page === 1) {
-                const totalPagesHeader = response.headers.get('x-wp-totalpages');
-                if (totalPagesHeader) {
-                    totalPages = parseInt(totalPagesHeader, 10);
-                }
-            }
-
-            const posts = await response.json();
-            allPosts = [...allPosts, ...posts];
-            page++;
-        }
-
-        console.log(`✅ Found ${allPosts.length} blog posts`);
-        return allPosts;
-    } catch (error) {
-        console.error('Error fetching blog posts:', error);
-        return [];
-    }
-}
-
-/**
- * Generate XML sitemap
- */
 /**
  * Parse App.jsx to find static routes
  */
@@ -104,8 +23,11 @@ function getStaticRoutesFromApp() {
 
         while ((match = routeRegex.exec(appContent)) !== null) {
             const routePath = match[1];
-            // Exclude dynamic routes, wildcards, and admin routes
-            if (!routePath.includes(':') && !routePath.includes('*') && !routePath.startsWith('/admin')) {
+            // Exclude dynamic routes, wildcards, and any internal-only routes
+            const isExcluded = EXCLUDED_ROUTES.some(
+                (excluded) => routePath === excluded || routePath.startsWith(`${excluded}/`)
+            );
+            if (!routePath.includes(':') && !routePath.includes('*') && !isExcluded) {
                 matches.push(routePath);
             }
         }
@@ -152,13 +74,12 @@ function generateSitemapXML(projects, blogPosts) {
         addUrl(route, priority, changefreq);
     });
 
-    // 2. Dynamic project pages (Airtable)
+    // 2. Dynamic project pages (Sanity)
     projects.forEach(project => {
-        const slug = project.fields['Slug'] || project.id;
-        addUrl(`/project/${slug}`, '0.8', 'monthly');
+        addUrl(`/project/${project.slug}`, '0.8', 'monthly');
     });
 
-    // 3. Dynamic blog pages (WordPress)
+    // 3. Dynamic blog pages (Sanity)
     blogPosts.forEach(post => {
         addUrl(`/news/${post.slug}`, '0.7', 'weekly');
     });
@@ -194,23 +115,37 @@ async function generateSitemap() {
     }
 
     // Fetch all projects
-    console.log('📡 Fetching projects from Airtable...');
+    console.log('📡 Fetching projects from Sanity...');
     const projects = await fetchAllProjects();
     console.log(`✅ Found ${projects.length} projects\n`);
 
     // Fetch all blog posts
+    console.log('📡 Fetching blog posts from Sanity...');
     const blogPosts = await fetchAllBlogPosts();
+    console.log(`✅ Found ${blogPosts.length} blog posts\n`);
 
     // Generate sitemap XML
     const sitemapXML = generateSitemapXML(projects, blogPosts);
 
-    // Write sitemap.xml to public folder
+    // Write sitemap.xml to public/ (the source of truth for the next build).
     const sitemapPath = path.join(publicPath, 'sitemap.xml');
     fs.writeFileSync(sitemapPath, sitemapXML);
-
     console.log('✅ Sitemap generated successfully!');
     console.log(`📄 Location: ${sitemapPath}`);
-    console.log(`📊 Total URLs: ${projects.length + blogPosts.length + 3}\n`);
+
+    // Also write straight into dist/. Vite copies public/ into dist/ during
+    // `vite build`, which has already finished by the time this script runs —
+    // so without this the deployed sitemap is always one build out of date.
+    const distPath = path.join(__dirname, 'dist');
+    if (fs.existsSync(distPath)) {
+        const distSitemapPath = path.join(distPath, 'sitemap.xml');
+        fs.writeFileSync(distSitemapPath, sitemapXML);
+        console.log(`📄 Location: ${distSitemapPath}`);
+    }
+
+    // Count what was actually written rather than estimating
+    const totalUrls = (sitemapXML.match(/<loc>/g) || []).length;
+    console.log(`📊 Total URLs: ${totalUrls}\n`);
 }
 
 // Run the sitemap generation

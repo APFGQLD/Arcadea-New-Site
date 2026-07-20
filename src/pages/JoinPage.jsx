@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import usePageTitle from '../hooks/usePageTitle';
 import './JoinPage.css';
 
 const JoinPage = () => {
+    // noindex: this page lists internal Zoom rooms and displays the shared
+    // meeting password, so it must never appear in search results.
+    usePageTitle('Join Virtual Meeting', { noindex: true });
     const { t } = useTranslation();
     const [selectedRepId, setSelectedRepId] = useState('');
     const [isRedirecting, setIsRedirecting] = useState(false);

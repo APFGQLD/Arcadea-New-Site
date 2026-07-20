@@ -1,89 +1,10 @@
-import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { fetchAllProjects, fetchAllBlogPosts } from './cms.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-dotenv.config();
-
-const BASE_URL = 'https://api.airtable.com/v0';
-const PAT = process.env.VITE_AIRTABLE_PAT;
-const BASE_ID = process.env.VITE_AIRTABLE_BASE_ID;
-const PROJECTS_TABLE = process.env.VITE_AIRTABLE_TABLE_PROJECTS || 'Projects';
-const WP_API_URL = process.env.VITE_WP_API_URL || 'https://cms.arcadea.com.au/wp-json/wp/v2';
-
-/**
- * Fetch all projects from Airtable
- */
-async function fetchAllProjects() {
-    if (!BASE_ID || !PAT) {
-        console.warn('⚠️  Airtable credentials not configured.');
-        return [];
-    }
-
-    try {
-        const headers = {
-            'Authorization': `Bearer ${PAT}`,
-            'Content-Type': 'application/json',
-        };
-
-        const response = await fetch(`${BASE_URL}/${BASE_ID}/${PROJECTS_TABLE}`, { headers });
-
-        if (!response.ok) {
-            console.error('Failed to fetch projects');
-            return [];
-        }
-
-        const data = await response.json();
-        return data.records;
-    } catch (error) {
-        console.error('Error fetching projects:', error);
-        return [];
-    }
-}
-
-/**
- * Fetch all blog posts from WordPress
- */
-async function fetchAllBlogPosts() {
-    try {
-        let allPosts = [];
-        let page = 1;
-        let totalPages = 1;
-
-        console.log('📡 Fetching blog posts from WordPress...');
-
-        // Loop to fetch all pages of posts
-        while (page <= totalPages) {
-            const response = await fetch(`${WP_API_URL}/posts?page=${page}&per_page=100&_embed=true`);
-
-            if (!response.ok) {
-                console.error(`Failed to fetch blog posts page ${page}`);
-                break;
-            }
-
-            // Get total pages from headers on first request
-            if (page === 1) {
-                const totalPagesHeader = response.headers.get('x-wp-totalpages');
-                if (totalPagesHeader) {
-                    totalPages = parseInt(totalPagesHeader, 10);
-                }
-            }
-
-            const posts = await response.json();
-            allPosts = [...allPosts, ...posts];
-            page++;
-        }
-
-        console.log(`✅ Found ${allPosts.length} blog posts`);
-        return allPosts;
-    } catch (error) {
-        console.error('Error fetching blog posts:', error);
-        return [];
-    }
-}
 
 const SITE_URL = 'https://arcadea.com.au';
 
@@ -98,6 +19,22 @@ function stripBaseMetaTags(html) {
         .replace(/<meta\s+name="(?:title|description)"[\s\S]*?\/>\s*/gi, '')
         .replace(/<meta\s+property="(?:og|twitter):[^"]*"[\s\S]*?\/>\s*/gi, '')
         .replace(/<link\s+rel="canonical"[^>]*\/>\s*/gi, '');
+}
+
+const DEFAULT_DESCRIPTION = 'Discover premium off-plan investment properties in Bali and Australia. Arcadea Property offers curated coastal and island collections with expert guidance.';
+
+/**
+ * Trim CMS copy to a search-snippet-friendly length, cutting on a word
+ * boundary rather than mid-word. Returns '' for empty/missing input so
+ * callers can fall back rather than emitting an empty description tag.
+ */
+function truncate(text, maxLength) {
+    const clean = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!clean) return '';
+    if (clean.length <= maxLength) return clean;
+    const cut = clean.slice(0, maxLength);
+    const lastSpace = cut.lastIndexOf(' ');
+    return `${(lastSpace > 0 ? cut.slice(0, lastSpace) : cut).replace(/[,;:.\s]+$/, '')}…`;
 }
 
 /**
@@ -115,11 +52,10 @@ function escapeAttr(text) {
  * Generate SEO-friendly HTML for a project
  */
 function generateProjectHTML(project, baseHTML) {
-    const fields = project.fields;
-    const slug = fields['Slug'] || project.id;
-    const title = escapeAttr(fields['Name'] || 'Project');
-    const description = escapeAttr((fields['Description'] || '').substring(0, 160));
-    const image = fields['Hero Image']?.[0]?.url || `${SITE_URL}/og-image.jpg`;
+    const slug = project.slug;
+    const title = escapeAttr(project.title || 'Project');
+    const description = escapeAttr(truncate(project.description, 160) || DEFAULT_DESCRIPTION);
+    const image = project.image || `${SITE_URL}/og-image.jpg`;
     const url = `${SITE_URL}/project/${slug}`;
 
     const metaTags = `
@@ -145,11 +81,9 @@ function generateProjectHTML(project, baseHTML) {
  */
 function generateBlogPostHTML(post, baseHTML) {
     const slug = post.slug;
-    const title = escapeAttr(post.title.rendered);
-    // Strip HTML tags from excerpt for description
-    const excerptRaw = post.excerpt.rendered || '';
-    const description = escapeAttr(excerptRaw.replace(/<[^>]*>?/gm, '').substring(0, 160));
-    const image = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || `${SITE_URL}/og-image.jpg`;
+    const title = escapeAttr(post.title || 'Article');
+    const description = escapeAttr(truncate(post.excerpt, 160) || DEFAULT_DESCRIPTION);
+    const image = post.image || `${SITE_URL}/og-image.jpg`;
     const url = `${SITE_URL}/news/${slug}`;
 
     const metaTags = `
@@ -175,8 +109,8 @@ function generateBlogPostHTML(post, baseHTML) {
  */
 function generateStaticPageHTML(routeObj, baseHTML) {
     const url = `${SITE_URL}${routeObj.path}`;
-    const pageTitle = routeObj.title ? `${routeObj.title} | Arcadea Property` : 'Arcadea Property | Exquisite Living, Refined Investments';
-    const description = escapeAttr(routeObj.description || 'Discover premium off-plan investment properties in Bali and Australia. Arcadea Property offers curated coastal and island collections with expert guidance.');
+    const pageTitle = escapeAttr(routeObj.title ? `${routeObj.title} | Arcadea Property` : 'Arcadea Property | Exquisite Living, Refined Investments');
+    const description = escapeAttr(routeObj.description || DEFAULT_DESCRIPTION);
     const image = `${SITE_URL}/og-image.jpg`;
 
     const metaTags = `
@@ -221,17 +155,19 @@ async function prerender() {
     console.log('✅ Loaded base HTML template\n');
 
     // Fetch all projects
-    console.log('📡 Fetching projects from Airtable...');
+    console.log('📡 Fetching projects from Sanity...');
     const projects = await fetchAllProjects();
     console.log(`✅ Found ${projects.length} projects\n`);
 
     // Fetch all blog posts
+    console.log('📡 Fetching blog posts from Sanity...');
     const blogPosts = await fetchAllBlogPosts();
+    console.log(`✅ Found ${blogPosts.length} blog posts\n`);
 
     // Generate HTML for each project
     let generated = 0;
     for (const project of projects) {
-        const slug = project.fields['Slug'] || project.id;
+        const slug = project.slug;
         const projectHTML = generateProjectHTML(project, baseHTML);
 
         // Create project directory
@@ -280,17 +216,39 @@ async function prerender() {
             title: 'Our Services', 
             description: 'End-to-end property and financial solutions: Australian property, hotel and resort investments, and financial service partnerships through trusted advisors.' 
         },
-        { path: '/services/ipdc', title: 'IPDC Program' },
+        {
+            path: '/services/ipdc',
+            title: 'IPDC Program',
+            description: 'Interest Paid During Construction explained: how IPDC arrangements can pay a return on your capital while an off-plan property is still being built.'
+        },
         { 
             path: '/news', 
             title: 'News & Insights', 
             description: 'Expert insights on luxury property investment, market trends, and lifestyle destinations across Australia and Bali from the Arcadea Property team.' 
         },
-        { path: '/join', title: 'Join' },
-        { path: '/privacy-policy', title: 'Privacy Policy' },
-        { path: '/project/one-park-lane', title: 'One Park Lane' },
-        { path: '/project/luc/reviews', title: 'The Luc Reviews' },
-        { path: '/project/luc/private-sales', title: 'The Luc Private Sales' }
+        // NOTE: /join is deliberately excluded. It is an internal Zoom room
+        // selector that displays the shared meeting password on the page, so
+        // it is marked noindex and kept out of the sitemap.
+        {
+            path: '/privacy-policy',
+            title: 'Privacy Policy',
+            description: 'How Arcadea Property collects, uses, stores and protects your personal information, and how to contact us about your data.'
+        },
+        {
+            path: '/project/one-park-lane',
+            title: 'One Park Lane',
+            description: 'One Park Lane, Southport — a 101 storey residential tower joined to a 60 storey commercial tower by a skybridge at level 22, in the heart of the Gold Coast.'
+        },
+        {
+            path: '/project/luc/reviews',
+            title: 'The Luc Reviews',
+            description: 'Guest reviews and first-hand experiences from visitors to The Luc.'
+        },
+        {
+            path: '/project/luc/private-sales',
+            title: 'The Luc Private Sales',
+            description: 'Private resale listings at The Luc. Share your unit preferences and our team will match you with current availability.'
+        }
     ];
 
     console.log('\n📡 Generating static routes...');

@@ -26,4 +26,12 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  {
+    // Build-time scripts run in Node, not the browser, so they need Node globals
+    // (process, __dirname via fileURLToPath, etc.) rather than browser ones.
+    files: ['prerender.js', 'generate-sitemap.js', 'cms.js', 'vite.config.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])
