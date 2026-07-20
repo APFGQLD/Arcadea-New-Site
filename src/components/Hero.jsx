@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import './Hero.css';
 
+import heroVideo from '../assets/Timeline-1.mp4';
+
 const Hero = () => {
     const { t } = useTranslation();
 
@@ -9,7 +11,7 @@ const Hero = () => {
         <section id="hero" className="hero">
             <video autoPlay loop muted playsInline className="hero-video-bg">
                 <source
-                    src="/src/assets/Timeline-1.mp4"
+                    src={heroVideo}
                     type="video/mp4"
                 />
             </video>
