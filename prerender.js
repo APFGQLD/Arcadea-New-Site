@@ -171,6 +171,35 @@ function generateBlogPostHTML(post, baseHTML) {
 }
 
 /**
+ * Generate SEO-friendly HTML for static routes
+ */
+function generateStaticPageHTML(route, baseHTML) {
+    const url = `${SITE_URL}${route}`;
+    // Provide some basic meta tags with the correct canonical for static routes.
+    // The client-side JS (usePageTitle) will still update the title, but this ensures
+    // the canonical and OG tags in the raw HTML are correct for Google.
+    
+    // Convert route to a simple title (e.g. /about -> About)
+    let pageTitle = 'Arcadea Property | Exquisite Living, Refined Investments';
+    let titlePart = route.split('/').pop().replace(/-/g, ' ');
+    if (titlePart) {
+        titlePart = titlePart.charAt(0).toUpperCase() + titlePart.slice(1);
+        pageTitle = `${titlePart} | Arcadea Property`;
+    }
+
+    const metaTags = `
+    <title>${pageTitle}</title>
+    <meta property="og:title" content="${pageTitle}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:title" content="${pageTitle}">
+    <link rel="canonical" href="${url}">
+`;
+
+    return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
+}
+
+/**
  * Main pre-rendering function
  */
 async function prerender() {
@@ -236,7 +265,31 @@ async function prerender() {
         console.log(`  ✓ Generated: /news/${slug}/index.html`);
     }
 
-    console.log(`\n✅ Pre-rendering complete! Generated ${generated} pages (Projects + Blog Posts).`);
+    // Generate HTML for static routes
+    const staticRoutes = [
+        '/properties', '/about', '/services', '/services/ipdc', '/news', '/join', '/privacy-policy',
+        '/project/one-park-lane', '/project/luc/reviews', '/project/luc/private-sales'
+    ];
+
+    console.log('\n📡 Generating static routes...');
+    for (const route of staticRoutes) {
+        const routeHTML = generateStaticPageHTML(route, baseHTML);
+        
+        // Create directory
+        // Remove leading slash to make it relative to distPath
+        const relativePath = route.startsWith('/') ? route.slice(1) : route;
+        const routeDir = path.join(distPath, relativePath);
+        fs.mkdirSync(routeDir, { recursive: true });
+
+        // Write HTML file
+        const htmlPath = path.join(routeDir, 'index.html');
+        fs.writeFileSync(htmlPath, routeHTML);
+
+        generated++;
+        console.log(`  ✓ Generated: ${route}/index.html`);
+    }
+
+    console.log(`\n✅ Pre-rendering complete! Generated ${generated} pages (Projects + Blog Posts + Static Routes).`);
     console.log('📦 Your site is ready for deployment with SEO-friendly HTML!\n');
 }
 
