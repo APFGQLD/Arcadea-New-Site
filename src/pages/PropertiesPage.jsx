@@ -190,7 +190,7 @@ const PropertiesPage = () => {
                         
                         <div className="properties-intro-block animate-on-scroll">
                             <p>
-                                Arcadea represents a new paradigm in luxury real estate, curating the world's most exceptional coastal and island properties. We deliver uncompromising architectural brilliance and guaranteed returns in pristine, sought-after destinations.
+                                Arcadea represents a new paradigm in luxury real estate, curating the world's most exceptional coastal and island properties. We deliver uncompromising architectural brilliance in pristine, sought-after destinations.
                             </p>
                         </div>
 

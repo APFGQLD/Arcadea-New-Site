@@ -32,7 +32,7 @@ const Home = () => {
             "@context": "https://schema.org",
             "@type": "RealEstateAgent",
             "name": "Arcadea Property",
-            "description": "Premium off-plan investment properties in Bali and Australia. Curated coastal and island collections with guaranteed returns.",
+            "description": "Premium off-plan investment properties in Bali and Australia. Curated coastal and island collections.",
             "url": "https://arcadea.com.au",
             "logo": "https://arcadea.com.au/logo.png",
             "sameAs": [

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 const BASE_TITLE = 'Arcadea Property';
 const DEFAULT_TITLE = `${BASE_TITLE} | Exquisite Living, Refined Investments`;
-const DEFAULT_DESCRIPTION = "Discover premium off-plan investment properties in Bali and Australia. Arcadea Property offers curated coastal and island collections with guaranteed returns and expert guidance.";
+const DEFAULT_DESCRIPTION = "Discover premium off-plan investment properties in Bali and Australia. Arcadea Property offers curated coastal and island collections with expert guidance.";
 const SITE_URL = 'https://arcadea.com.au';
 
 /**

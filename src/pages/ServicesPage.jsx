@@ -71,9 +71,9 @@ const ServicesPage = () => {
             icon: BuildingOffice2Icon,
             title: t('services.pillars.hotel.title'),
             subtitle: 'High-Yield International Investments',
-            description: 'Access premium hotel and resort investment opportunities with guaranteed returns and globally respected brands.',
+            description: 'Access premium hotel and resort investment opportunities with globally respected brands.',
             benefits: [
-                'Guaranteed Returns on property',
+
                 'Strong ROI',
                 'Access to globally respected brands',
                 'Access to experienced and trusted developers'
