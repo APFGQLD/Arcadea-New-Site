@@ -12,8 +12,10 @@ import {
     CheckCircleIcon
 } from '@heroicons/react/24/solid';
 import './ServicesPage.css';
+import usePageTitle from '../hooks/usePageTitle';
 
 const ServicesPage = () => {
+    usePageTitle('Our Services');
     const { t } = useTranslation();
     const { theme } = useTheme();
 

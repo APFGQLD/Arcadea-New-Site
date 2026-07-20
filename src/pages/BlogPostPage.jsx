@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { fetchBlogPost } from '../services/wordpressService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import usePageTitle from '../hooks/usePageTitle';
 import './BlogPostPage.css';
 
 const BlogPostPage = () => {
@@ -15,6 +16,8 @@ const BlogPostPage = () => {
     const { t } = useTranslation();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    usePageTitle(post?.title);
 
     useEffect(() => {
         loadPost();

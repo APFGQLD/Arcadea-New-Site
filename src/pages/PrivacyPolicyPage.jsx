@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import usePageTitle from '../hooks/usePageTitle';
 import './PrivacyPolicyPage.css';
 
 const PrivacyPolicyPage = () => {
+    usePageTitle('Privacy Policy');
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -22,7 +24,7 @@ const PrivacyPolicyPage = () => {
                     <section>
                         <h2>1. Introduction</h2>
                         <p>
-                            At Arcadea Property ("we," "our," or "us"), we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website arcadeaproperty.com or engage with our services.
+                            At Arcadea Property ("we," "our," or "us"), we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website arcadea.com.au or engage with our services.
                         </p>
                     </section>
 

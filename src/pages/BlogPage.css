@@ -48,6 +48,46 @@
     animation: fadeInUp 0.8s ease-out 0.2s backwards;
 }
 
+/* Empty / error state */
+.blog-status {
+    text-align: center;
+    padding: 6rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.blog-status-title {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.blog-status-message {
+    font-family: var(--font-body);
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.blog-status-btn {
+    padding: 0.8rem 2rem;
+    border: 1px solid var(--accent-gold);
+    background: transparent;
+    color: var(--accent-gold);
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.blog-status-btn:hover {
+    background: var(--accent-gold);
+    color: #ffffff;
+}
+
 /* Blog Grid */
 .blog-grid {
     display: grid;

@@ -48,8 +48,9 @@ const Properties = () => {
                             <div className="collection-showcase-content">
                                 {collection.logoLight && collection.logoDark ? (
                                     <div className="collection-showcase-logo">
+                                        {/* Cards keep a dark scrim in both themes, so always use the white logo */}
                                         <img
-                                            src={theme === 'dark' ? collection.logoLight : collection.logoDark}
+                                            src={collection.logoLight}
                                             alt={`${collection.title} logo`}
                                             width="300"
                                             height="150"

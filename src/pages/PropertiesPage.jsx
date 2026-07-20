@@ -7,8 +7,10 @@ import { propertyCollections } from '../data/properties';
 import { fetchProjectsByCollection } from '../services/airtableService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './PropertiesPage.css';
+import usePageTitle from '../hooks/usePageTitle';
 
 const PropertiesPage = () => {
+    usePageTitle('Our Collections');
     const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
@@ -186,8 +188,9 @@ const PropertiesPage = () => {
                                     <div className="stacked-collection-content">
                                         {col.logoLight && col.logoDark ? (
                                             <div className="stacked-collection-logo-container">
+                                                {/* Cards keep a dark scrim in both themes, so always use the white logo */}
                                                 <img
-                                                    src={theme === 'dark' ? col.logoLight : col.logoDark}
+                                                    src={col.logoLight}
                                                     alt={`${col.title} logo`}
                                                     className="stacked-collection-logo"
                                                 />

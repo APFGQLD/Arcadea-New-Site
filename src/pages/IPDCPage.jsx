@@ -13,6 +13,7 @@ import {
     ChartBarIcon,
     CheckBadgeIcon
 } from '@heroicons/react/24/outline';
+import usePageTitle from '../hooks/usePageTitle';
 import './IPDCPage.css';
 
 // Helper component for animated timeline steps
@@ -63,6 +64,7 @@ const TimelineStep = ({ icon, title, description, isLast, isSuccess }) => {
 };
 
 const IPDCPage = () => {
+    usePageTitle('IPDC Program');
     const { t } = useTranslation();
 
     useEffect(() => {

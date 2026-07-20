@@ -7,9 +7,11 @@ import {
     InformationCircleIcon,
     EnvelopeIcon
 } from '@heroicons/react/24/solid';
+import usePageTitle from '../hooks/usePageTitle';
 import './NotFoundPage.css';
 
 const NotFoundPage = () => {
+    usePageTitle('Page Not Found');
     const { t } = useTranslation();
 
     const quickLinks = [
@@ -34,7 +36,7 @@ const NotFoundPage = () => {
         {
             icon: EnvelopeIcon,
             label: 'Contact',
-            path: '/contact',
+            path: '/#contact',
             description: 'Get in touch'
         }
     ];

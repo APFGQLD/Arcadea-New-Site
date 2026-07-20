@@ -9,8 +9,10 @@ import {
     GlobeAltIcon
 } from '@heroicons/react/24/solid';
 import './AboutPage.css';
+import usePageTitle from '../hooks/usePageTitle';
 
 const AboutPage = () => {
+    usePageTitle('About Us');
     const { t } = useTranslation();
     const { theme } = useTheme();
     const [visibleSteps, setVisibleSteps] = useState([]);

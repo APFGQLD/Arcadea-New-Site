@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import usePageTitle from '../hooks/usePageTitle';
 import './OneParkLanePage.css';
 
 const OneParkLanePage = () => {
+    usePageTitle('One Park Lane');
     const trackRef = useRef(null);
     const contentRef = useRef(null);
     const [progress, setProgress] = useState(0);

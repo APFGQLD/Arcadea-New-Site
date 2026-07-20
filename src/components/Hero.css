@@ -59,6 +59,10 @@
     animation: fadeInUp 0.8s forwards;
 }
 
+[data-theme='light'] .hero .hero-subtitle {
+    color: #0a0a0a;
+}
+
 .hero-title {
     font-size: clamp(2rem, 8vw, 5rem);
     line-height: 1.1;
@@ -165,6 +169,14 @@
     animation: scrollWheel 2s infinite;
 }
 
+[data-theme='light'] .mouse {
+    border-color: #0a0a0a;
+}
+
+[data-theme='light'] .wheel {
+    background: #0a0a0a;
+}
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -190,6 +202,17 @@
 }
 
 @media (max-width: 768px) {
+    /* Clear the fixed navbar so the eyebrow doesn't crowd the logo */
+    .hero-container {
+        padding-top: 7rem;
+    }
+
+    .hero .hero-subtitle {
+        font-size: 0.8rem;
+        letter-spacing: 0.25em;
+        margin-bottom: 1rem;
+    }
+
     .hero-cta {
         flex-direction: column;
         gap: 1rem;

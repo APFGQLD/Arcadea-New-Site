@@ -26,6 +26,7 @@ import {
 } from '@heroicons/react/24/solid';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
+import usePageTitle from '../hooks/usePageTitle';
 import './ProjectDetailPage.css';
 
 const ProjectDetailPage = () => {
@@ -39,6 +40,8 @@ const ProjectDetailPage = () => {
     const [error, setError] = useState(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
     const carouselRef = useRef(null);
+
+    usePageTitle(project?.name);
 
     useEffect(() => {
         const loadProject = async () => {

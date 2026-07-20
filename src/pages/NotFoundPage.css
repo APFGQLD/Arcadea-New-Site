@@ -82,12 +82,15 @@
     margin: 0 auto;
 }
 
-/* Quick Links */
+/* Quick Links — 2x2 so the four links never wrap into an orphan row */
 .notfound-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-top: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .notfound-link {

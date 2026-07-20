@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChartBarIcon, BanknotesIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import usePageTitle from '../hooks/usePageTitle';
 import './CalculatorPage.css';
 
 const CalculatorPage = () => {
+    usePageTitle('Financial Tools');
     const { t } = useTranslation();
     const [activeCalculator, setActiveCalculator] = useState(null);
 

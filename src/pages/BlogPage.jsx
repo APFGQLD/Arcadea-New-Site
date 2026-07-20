@@ -8,12 +8,15 @@ import {
 } from '@heroicons/react/24/solid';
 import { fetchBlogPosts } from '../services/wordpressService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import usePageTitle from '../hooks/usePageTitle';
 import './BlogPage.css';
 
 const BlogPage = () => {
+    usePageTitle('News & Insights');
     const { t } = useTranslation();
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -23,12 +26,14 @@ const BlogPage = () => {
 
     const loadPosts = async (page) => {
         setLoading(true);
+        setLoadError(false);
         try {
             const data = await fetchBlogPosts(page, 9);
             setPosts(data.posts);
             setTotalPages(data.totalPages);
         } catch (error) {
             console.error('Failed to load blog posts:', error);
+            setLoadError(true);
         } finally {
             setLoading(false);
         }
@@ -65,6 +70,23 @@ const BlogPage = () => {
             <div className="container">
                 {loading ? (
                     <LoadingSpinner message="Loading articles..." />
+                ) : loadError ? (
+                    <div className="blog-status">
+                        <h2 className="blog-status-title">We couldn't load our articles</h2>
+                        <p className="blog-status-message">
+                            Something went wrong on our end. Please try again in a moment.
+                        </p>
+                        <button className="blog-status-btn" onClick={() => loadPosts(currentPage)}>
+                            Try Again
+                        </button>
+                    </div>
+                ) : posts.length === 0 ? (
+                    <div className="blog-status">
+                        <h2 className="blog-status-title">Articles coming soon</h2>
+                        <p className="blog-status-message">
+                            We're preparing expert insights on luxury property investment and market trends. Check back soon.
+                        </p>
+                    </div>
                 ) : (
                     <>
                         <div className="blog-grid">

@@ -308,13 +308,7 @@
     background: rgba(0, 0, 0, 0.4);
 }
 
-[data-theme='light'] .stacked-collection-overlay {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.7) 100%);
-}
-
-[data-theme='light'] .stacked-collection-card:hover .stacked-collection-overlay {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.5) 100%);
-}
+/* Collection cards keep their dark scrim and white text in both themes. */
 
 .stacked-collection-content {
     position: absolute;
@@ -327,10 +321,6 @@
     color: #ffffff;
     z-index: 2;
     padding: 3rem;
-}
-
-[data-theme='light'] .stacked-collection-content {
-    color: var(--text-primary);
 }
 
 .stacked-collection-logo-container {
@@ -360,11 +350,10 @@
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: var(--accent-gold);
-}
-
-[data-theme='light'] .stacked-collection-location {
-    color: #000000;
+    /* Brighter gold than --accent-gold: this text sits on photography,
+       so it needs more contrast than gold-on-black UI accents. */
+    color: #d6c08a;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
 }
 
 .stacked-collection-reveal {

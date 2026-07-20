@@ -8,10 +8,8 @@
     transition: all var(--transition-normal);
 }
 
-.navbar:not(.scrolled):not(.menu-open) .logo-text,
-.navbar:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
-.navbar:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
-.navbar:not(.scrolled):not(.menu-open) .lang-selected:not(:hover),
+/* Dark theme only: force white nav text when transparent over a dark hero.
+   In light theme the hero is light-washed, so nav text keeps its theme color. */
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .logo-text,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
@@ -20,13 +18,11 @@
 }
 
 /* White button styling when navbar is transparent over dark hero */
-.navbar:not(.scrolled):not(.menu-open) .btn-nav,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav {
     border-color: #ffffff !important;
     color: #ffffff !important;
 }
 
-.navbar:not(.scrolled):not(.menu-open) .btn-nav:hover,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav:hover {
     background-color: #ffffff;
     color: #000000 !important;
@@ -84,8 +80,7 @@
     transition: all var(--transition-normal);
 }
 
-/* Force hamburger bars to white when over dark hero */
-.navbar:not(.scrolled):not(.menu-open) .hamburger .bar,
+/* Force hamburger bars to white when over dark hero (dark theme only) */
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .hamburger .bar {
     background-color: #ffffff !important;
 }
@@ -137,7 +132,7 @@
     color: var(--text-primary) !important;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
     .nav-links {
         gap: 1.5rem;
     }
@@ -147,7 +142,9 @@
     }
 }
 
-@media (max-width: 768px) {
+/* The full desktop nav doesn't fit below ~1024px, so switch to the
+   hamburger menu before the logo and links start colliding. */
+@media (max-width: 1024px) {
     .hamburger {
         display: flex;
     }

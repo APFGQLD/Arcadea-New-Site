@@ -220,7 +220,10 @@
 }
 
 .collection-showcase-location {
-    color: var(--accent-gold);
+    /* Brighter gold than --accent-gold: this text sits on photography,
+       so it needs more contrast than gold-on-black UI accents. */
+    color: #d6c08a;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
@@ -250,36 +253,8 @@
     transform: translateX(5px);
 }
 
-[data-theme='light'] .collection-showcase-overlay {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.8) 100%);
-}
-
-[data-theme='light'] .collection-showcase-card:hover .collection-showcase-overlay {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.6) 100%);
-}
-
-[data-theme='light'] .collection-showcase-title {
-    color: var(--text-primary);
-}
-
-[data-theme='light'] .collection-showcase-location {
-    color: #000000;
-}
-
-[data-theme='light'] .collection-showcase-description {
-    color: var(--text-secondary);
-}
-
-[data-theme='light'] .collection-showcase-card .btn {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--accent-gold);
-    color: #ffffff;
-}
-
-[data-theme='light'] .collection-showcase-card:hover .btn {
-    background: var(--accent-gold);
-    color: #ffffff;
-}
+/* The collection cards keep their dark scrim and white text in BOTH themes —
+   a white overlay washes out the photography and kills text contrast. */
 
 @media (max-width: 1024px) {
     .property-grid {

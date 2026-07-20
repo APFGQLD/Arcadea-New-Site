@@ -5,9 +5,12 @@ import Properties from '../components/Properties';
 import Services from '../components/Services';
 import About from '../components/About';
 import Contact from '../components/Contact';
+import usePageTitle from '../hooks/usePageTitle';
 
 const Home = () => {
     const { hash } = useLocation();
+
+    usePageTitle(); // default site title
 
     useEffect(() => {
         if (hash) {
@@ -30,8 +33,8 @@ const Home = () => {
             "@type": "RealEstateAgent",
             "name": "Arcadea Property",
             "description": "Premium off-plan investment properties in Bali and Australia. Curated coastal and island collections with guaranteed returns.",
-            "url": "https://arcadeaproperty.com",
-            "logo": "https://arcadeaproperty.com/logo.png",
+            "url": "https://arcadea.com.au",
+            "logo": "https://arcadea.com.au/logo.png",
             "sameAs": [
                 "https://www.facebook.com/arcadeaproperty",
                 "https://www.instagram.com/arcadeaproperty"
