@@ -12,7 +12,9 @@ import usePageTitle from '../hooks/usePageTitle';
 import './BlogPage.css';
 
 const BlogPage = () => {
-    usePageTitle('News & Insights');
+    usePageTitle('News & Insights', {
+        description: 'Expert insights on luxury property investment, market trends, and lifestyle destinations across Australia and Bali from the Arcadea Property team.'
+    });
     const { t } = useTranslation();
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);

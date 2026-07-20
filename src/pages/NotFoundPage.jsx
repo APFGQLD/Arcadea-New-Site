@@ -11,7 +11,7 @@ import usePageTitle from '../hooks/usePageTitle';
 import './NotFoundPage.css';
 
 const NotFoundPage = () => {
-    usePageTitle('Page Not Found');
+    usePageTitle('Page Not Found', { noindex: true });
     const { t } = useTranslation();
 
     const quickLinks = [

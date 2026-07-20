@@ -12,7 +12,9 @@ import './AboutPage.css';
 import usePageTitle from '../hooks/usePageTitle';
 
 const AboutPage = () => {
-    usePageTitle('About Us');
+    usePageTitle('About Us', {
+        description: 'Arcadea Property curates exceptional coastal and island real estate, bridging high-yield accessibility and ultra-luxury living across Australia and Bali.'
+    });
     const { t } = useTranslation();
     const { theme } = useTheme();
     const [visibleSteps, setVisibleSteps] = useState([]);

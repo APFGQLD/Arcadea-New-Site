@@ -4,7 +4,9 @@ import usePageTitle from '../hooks/usePageTitle';
 import './OneParkLanePage.css';
 
 const OneParkLanePage = () => {
-    usePageTitle('One Park Lane');
+    usePageTitle('One Park Lane', {
+        description: "One Park Lane, Southport — 101-storey residential tower with 157 premium apartments in the heart of the Gold Coast's premier business and lifestyle precinct."
+    });
     const trackRef = useRef(null);
     const contentRef = useRef(null);
     const [progress, setProgress] = useState(0);

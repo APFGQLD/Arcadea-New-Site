@@ -85,34 +85,59 @@ async function fetchAllBlogPosts() {
     }
 }
 
+const SITE_URL = 'https://arcadea.com.au';
+
+/**
+ * Remove the base template's title, description, canonical, and social meta
+ * tags so the page-specific set injected below is the ONLY set. Duplicate
+ * titles/canonicals make search engines ignore both.
+ */
+function stripBaseMetaTags(html) {
+    return html
+        .replace(/<title>[\s\S]*?<\/title>\s*/i, '')
+        .replace(/<meta\s+name="(?:title|description)"[\s\S]*?\/>\s*/gi, '')
+        .replace(/<meta\s+property="(?:og|twitter):[^"]*"[\s\S]*?\/>\s*/gi, '')
+        .replace(/<link\s+rel="canonical"[^>]*\/>\s*/gi, '');
+}
+
+/**
+ * Escape text destined for HTML attribute values
+ */
+function escapeAttr(text) {
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 /**
  * Generate SEO-friendly HTML for a project
  */
 function generateProjectHTML(project, baseHTML) {
     const fields = project.fields;
     const slug = fields['Slug'] || project.id;
-    const title = fields['Name'] || 'Project';
-    const description = fields['Description'] || '';
-    const image = fields['Hero Image']?.[0]?.url || '';
+    const title = escapeAttr(fields['Name'] || 'Project');
+    const description = escapeAttr((fields['Description'] || '').substring(0, 160));
+    const image = fields['Hero Image']?.[0]?.url || `${SITE_URL}/og-image.jpg`;
+    const url = `${SITE_URL}/project/${slug}`;
 
-    // Create meta tags
     const metaTags = `
-    <title>${title} | ARCADEA PROPERTY</title>
-    <meta name="description" content="${description.substring(0, 160)}">
+    <title>${title} | Arcadea Property</title>
+    <meta name="description" content="${description}">
     <meta property="og:title" content="${title}">
-    <meta property="og:description" content="${description.substring(0, 160)}">
+    <meta property="og:description" content="${description}">
     <meta property="og:image" content="${image}">
-    <meta property="og:url" content="https://arcadeaproperty.com/project/${slug}">
+    <meta property="og:url" content="${url}">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
-    <meta name="twitter:description" content="${description.substring(0, 160)}">
+    <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${image}">
-    <link rel="canonical" href="https://arcadeaproperty.com/project/${slug}">
+    <link rel="canonical" href="${url}">
 `;
 
-    // Inject meta tags into HTML
-    return baseHTML.replace('</head>', `${metaTags}\n  </head>`);
+    return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
 }
 
 /**
@@ -120,30 +145,29 @@ function generateProjectHTML(project, baseHTML) {
  */
 function generateBlogPostHTML(post, baseHTML) {
     const slug = post.slug;
-    const title = post.title.rendered;
+    const title = escapeAttr(post.title.rendered);
     // Strip HTML tags from excerpt for description
     const excerptRaw = post.excerpt.rendered || '';
-    const description = excerptRaw.replace(/<[^>]*>?/gm, '').substring(0, 160);
-    const image = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
+    const description = escapeAttr(excerptRaw.replace(/<[^>]*>?/gm, '').substring(0, 160));
+    const image = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || `${SITE_URL}/og-image.jpg`;
+    const url = `${SITE_URL}/news/${slug}`;
 
-    // Create meta tags
     const metaTags = `
-    <title>${title} | ARCADEA NEWS</title>
+    <title>${title} | Arcadea Property</title>
     <meta name="description" content="${description}">
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description}">
     <meta property="og:image" content="${image}">
-    <meta property="og:url" content="https://arcadeaproperty.com/news/${slug}">
+    <meta property="og:url" content="${url}">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
     <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${image}">
-    <link rel="canonical" href="https://arcadeaproperty.com/news/${slug}">
+    <link rel="canonical" href="${url}">
 `;
 
-    // Inject meta tags into HTML
-    return baseHTML.replace('</head>', `${metaTags}\n  </head>`);
+    return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
 }
 
 /**

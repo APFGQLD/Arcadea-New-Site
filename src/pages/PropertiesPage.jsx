@@ -10,7 +10,9 @@ import './PropertiesPage.css';
 import usePageTitle from '../hooks/usePageTitle';
 
 const PropertiesPage = () => {
-    usePageTitle('Our Collections');
+    usePageTitle('Our Collections', {
+        description: 'Explore the Coastal Collection in Australia and the Island Collection in Bali — curated off-plan residences and investment properties in sought-after locations.'
+    });
     const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();

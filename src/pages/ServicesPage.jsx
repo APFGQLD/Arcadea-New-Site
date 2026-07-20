@@ -15,7 +15,9 @@ import './ServicesPage.css';
 import usePageTitle from '../hooks/usePageTitle';
 
 const ServicesPage = () => {
-    usePageTitle('Our Services');
+    usePageTitle('Our Services', {
+        description: 'End-to-end property and financial solutions: Australian property, hotel and resort investments, and financial service partnerships through trusted advisors.'
+    });
     const { t } = useTranslation();
     const { theme } = useTheme();
 

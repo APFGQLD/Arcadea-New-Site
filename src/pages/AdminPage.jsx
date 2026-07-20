@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { linkService } from '../services/linkService';
+import usePageTitle from '../hooks/usePageTitle';
 import './AdminPage.css';
 
 const AdminPage = () => {
+    usePageTitle('Admin', { noindex: true });
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
     const [activeTab, setActiveTab] = useState('links');
