@@ -144,7 +144,7 @@
 }
 
 .notfound-link:hover .notfound-link-icon {
-    transform: scale(1.1) rotate(5deg);
+    background: var(--accent-gold-light);
 }
 
 .notfound-link-text {

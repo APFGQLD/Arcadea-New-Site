@@ -28,7 +28,7 @@ const AboutPage = () => {
             setAssets(assetMap);
         };
         loadAssets();
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, []);
 
     const [visibleSteps, setVisibleSteps] = useState([]);
@@ -203,14 +203,16 @@ const AboutPage = () => {
                             </p>
                         </div>
                         <div className="about-story-image">
-                            <img
-                                src={assets['about-3'] || ''}
-                                alt="Luxury architecture"
-                                width="800"
-                                height="600"
-                                loading="lazy"
-                                decoding="async"
-                            />
+                            {assets['about-3'] && (
+                                <img
+                                    src={assets['about-3']}
+                                    alt="Luxury architecture"
+                                    width="800"
+                                    height="600"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -234,14 +236,16 @@ const AboutPage = () => {
                             >
                                 <div className="collection-card-image">
                                     {collection.featured && <span className="collection-card-badge">Signature Collection</span>}
-                                    <img
-                                        src={collection.image}
-                                        alt={collection.title}
-                                        width="800"
-                                        height="600"
-                                        loading="lazy"
-                                        decoding="async"
-                                    />
+                                    {collection.image && (
+                                        <img
+                                            src={collection.image}
+                                            alt={collection.title}
+                                            width="800"
+                                            height="600"
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    )}
                                     <div className="collection-card-overlay"></div>
                                 </div>
                                 <div className="collection-card-content">

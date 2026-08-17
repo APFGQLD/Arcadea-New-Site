@@ -22,7 +22,7 @@ const OneParkLanePage = () => {
             setAssets(assetMap);
         };
         loadAssets();
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, []);
 
     // Manual JS Sticky Logic

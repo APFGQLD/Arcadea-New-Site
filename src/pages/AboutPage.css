@@ -105,6 +105,17 @@
     height: 100%;
     object-fit: cover;
     transition: transform var(--transition-normal);
+    animation: imageFadeIn 0.5s ease;
+}
+
+@keyframes imageFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .about-story-image:hover img {
@@ -175,6 +186,7 @@
     object-fit: cover;
     transition: transform var(--transition-normal);
     will-change: transform;
+    animation: imageFadeIn 0.5s ease;
 }
 
 .collection-card-about:hover .collection-card-image img {

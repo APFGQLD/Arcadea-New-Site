@@ -31,7 +31,7 @@ const ServicesPage = () => {
             setAssets(assetMap);
         };
         loadAssets();
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, []);
 
     const services = [
@@ -127,14 +127,16 @@ const ServicesPage = () => {
                             className={`service-detail-card ${index % 2 === 1 ? 'reverse' : ''}`}
                         >
                             <div className="service-detail-image">
-                                <img
-                                    src={service.image}
-                                    alt={service.title}
-                                    width="800"
-                                    height="600"
-                                    loading="lazy"
-                                    decoding="async"
-                                />
+                                {service.image && (
+                                    <img
+                                        src={service.image}
+                                        alt={service.title}
+                                        width="800"
+                                        height="600"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                )}
                                 <div className="service-detail-overlay"></div>
                             </div>
                             <div className="service-detail-content">
