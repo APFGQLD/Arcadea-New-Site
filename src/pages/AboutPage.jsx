@@ -38,20 +38,21 @@ const AboutPage = () => {
 
     const collections = [
         {
+            id: 'coastal',
+            title: t('about_page.collections.coastal.title'),
+            tagline: t('about_page.collections.coastal.tagline'),
+            description: t('about_page.collections.coastal.description'),
+            keywords: ['Unrivaled', 'Sanctuary', 'Panoramas', 'Iconic', 'Prestige'],
+            image: assets['about-2'] || '',
+            featured: true
+        },
+        {
             id: 'island',
             title: t('about_page.collections.island.title'),
             tagline: t('about_page.collections.island.tagline'),
             description: t('about_page.collections.island.description'),
             keywords: ['Yield', 'Growth', 'Turnkey', 'Passive', 'Managed'],
             image: assets['about-1'] || ''
-        },
-        {
-            id: 'coastal',
-            title: t('about_page.collections.coastal.title'),
-            tagline: t('about_page.collections.coastal.tagline'),
-            description: t('about_page.collections.coastal.description'),
-            keywords: ['Unrivaled', 'Sanctuary', 'Panoramas', 'Iconic', 'Prestige'],
-            image: assets['about-2'] || ''
         }
     ];
 
@@ -228,10 +229,11 @@ const AboutPage = () => {
                             <Link
                                 to={`/properties#${collection.id}`}
                                 key={collection.id}
-                                className="collection-card-about"
+                                className={`collection-card-about ${collection.featured ? 'featured' : ''}`}
                                 style={{ display: 'block', textDecoration: 'none' }}
                             >
                                 <div className="collection-card-image">
+                                    {collection.featured && <span className="collection-card-badge">Signature Collection</span>}
                                     <img
                                         src={collection.image}
                                         alt={collection.title}

@@ -88,7 +88,7 @@
 .service-detail-image {
     position: relative;
     height: 500px;
-    border-radius: 8px;
+    border-radius: 40px;
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
@@ -195,7 +195,7 @@
     text-align: center;
     padding: 2rem;
     background: var(--card-bg);
-    border-radius: 8px;
+    border-radius: 40px;
     border: 1px solid var(--border-color);
     transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
@@ -245,6 +245,7 @@
 
     .service-detail-image {
         height: 350px;
+        border-radius: 20px;
     }
 
     .why-grid {

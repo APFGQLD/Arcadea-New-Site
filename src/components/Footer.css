@@ -120,12 +120,6 @@
     height: 60px;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 4px 12px rgba(197, 160, 101, 0.3));
-    transition: transform var(--transition-normal);
-}
-
-.footer-logo-img:hover {
-    transform: scale(1.05) rotate(5deg);
 }
 
 .footer-tagline {
