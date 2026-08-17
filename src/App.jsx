@@ -15,6 +15,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import AdminPage from './pages/AdminPage';
 
 import JoinPage from './pages/JoinPage';
+import OffThePlanCalculatorPage from './pages/OffThePlanCalculatorPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TheLucReviewsPage from './pages/TheLucReviewsPage';
 import LucPrivateSalesPage from './pages/LucPrivateSalesPage';
@@ -50,6 +51,9 @@ function App() {
 
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/join" element={<JoinPage />} />
+
+          {/* Hidden calculator — accessible by direct link only, not in nav */}
+          <Route path="/tools/off-the-plan-calculator" element={<OffThePlanCalculatorPage />} />
 
           {/* Catch-all for short links - MUST be last before 404 */}
           <Route path="/:slug" element={<ShortLinkRedirect />} />

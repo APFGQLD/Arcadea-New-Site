@@ -66,5 +66,6 @@ export async function fetchAllBlogPosts() {
  * Routes that must never enter the sitemap or be prerendered.
  * /admin  — internal tooling.
  * /join   — internal Zoom room selector; displays the shared meeting password.
+ * /tools  — hidden calculators/tools, shared by direct backlink only.
  */
-export const EXCLUDED_ROUTES = ['/admin', '/join'];
+export const EXCLUDED_ROUTES = ['/admin', '/join', '/tools'];
