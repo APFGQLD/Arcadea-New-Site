@@ -193,7 +193,7 @@
 }
 
 .unit-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
     background: var(--bg-tertiary);
     border-color: var(--accent-gold);
 }
@@ -423,7 +423,6 @@
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(133, 113, 77, 0.3);
 }
 
 .btn-primary:disabled {

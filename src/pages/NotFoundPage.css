@@ -118,9 +118,8 @@
 }
 
 .notfound-link:hover {
-    transform: translateY(-4px);
+    transform: translateY(-8px);
     border-color: var(--accent-gold);
-    box-shadow: 0 8px 24px rgba(197, 160, 101, 0.2);
 }
 
 .notfound-link:hover::before {

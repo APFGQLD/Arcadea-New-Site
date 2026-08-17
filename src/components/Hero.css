@@ -116,8 +116,7 @@
 
 .hero .btn-primary:hover {
     background-color: var(--accent-gold-light);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(133, 113, 77, 0.2);
+    transform: translateY(-2px);
 }
 
 .hero .btn-secondary {
@@ -128,7 +127,7 @@
 .hero .btn-secondary:hover {
     background-color: #ffffff;
     color: #0a0a0a;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 [data-theme='light'] .hero .btn-secondary {

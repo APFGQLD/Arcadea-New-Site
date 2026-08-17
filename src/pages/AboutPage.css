@@ -142,7 +142,8 @@
 
 .collection-card-about:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(197, 160, 101, 0.2);
+    border-color: var(--accent-gold);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .collection-card-about.featured {
@@ -151,7 +152,7 @@
 }
 
 .collection-card-about.featured:hover {
-    box-shadow: 0 24px 55px rgba(197, 160, 101, 0.3);
+    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.35);
 }
 
 .collection-card-image {

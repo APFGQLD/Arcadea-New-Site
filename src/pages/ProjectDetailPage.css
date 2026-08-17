@@ -686,7 +686,7 @@
 }
 
 .resource-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     border-color: var(--accent-gold);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }

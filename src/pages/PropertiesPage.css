@@ -423,7 +423,7 @@
 }
 
 .collection-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
 }
 
 .collection-image {

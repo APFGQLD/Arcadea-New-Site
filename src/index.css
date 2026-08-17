@@ -216,7 +216,7 @@ ul {
 
 .btn-primary:hover {
   background-color: var(--accent-gold-light);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -227,7 +227,7 @@ ul {
 .btn-secondary:hover {
   background-color: var(--text-primary);
   color: var(--bg-primary);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 /* Utility Classes */

@@ -117,7 +117,6 @@
 .join-action-button:hover:not(.disabled) {
     background: var(--accent-gold-light);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(133, 113, 77, 0.3);
 }
 
 .join-action-button.disabled {
