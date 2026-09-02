@@ -70,21 +70,25 @@
 
 .blog-post-meta {
     display: flex;
-    gap: 2rem;
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+    column-gap: 2rem;
     margin-bottom: 1.5rem;
     font-size: 0.95rem;
     color: var(--text-secondary);
 }
 
 .blog-post-date,
-.blog-post-author {
+.blog-post-author,
+.blog-post-readtime {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .blog-post-date svg,
-.blog-post-author svg {
+.blog-post-author svg,
+.blog-post-readtime svg {
     color: var(--accent-gold);
 }
 
@@ -105,6 +109,82 @@
     border-radius: 20px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: opacity var(--transition-normal);
+}
+
+.blog-category-tag:hover {
+    opacity: 0.85;
+}
+
+/* Share Buttons */
+.blog-post-share {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.blog-post-share-label {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+}
+
+.blog-post-share-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.blog-share-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.blog-share-btn:hover {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--background-primary);
+}
+
+.blog-share-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.blog-post-share-copied {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--accent-gold);
+    animation: shareCopiedFadeIn 0.3s ease-out;
+}
+
+@keyframes shareCopiedFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Post Body - WordPress Content */
@@ -218,6 +298,85 @@
     margin-bottom: 2rem;
 }
 
+/* Related Articles */
+.blog-related {
+    max-width: 1100px;
+    margin: 5rem auto 0;
+}
+
+.blog-related-heading {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.blog-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+}
+
+.blog-related-card {
+    display: block;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+}
+
+.blog-related-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-gold);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.blog-related-card-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.blog-related-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.blog-related-card:hover .blog-related-card-image img {
+    transform: scale(1.05);
+}
+
+.blog-related-card-content {
+    padding: 1.5rem;
+}
+
+.blog-related-card-date {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.blog-related-card-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-primary);
+    transition: color var(--transition-normal);
+}
+
+.blog-related-card:hover .blog-related-card-title {
+    color: var(--accent-gold);
+}
+
 /* Error State */
 .blog-error {
     text-align: center;
@@ -281,5 +440,18 @@
 
     .blog-post-cta h3 {
         font-size: 1.5rem;
+    }
+
+    .blog-post-share {
+        gap: 0.75rem;
+    }
+
+    .blog-related {
+        margin-top: 3.5rem;
+    }
+
+    .blog-related-heading {
+        font-size: 1.4rem;
+        margin-bottom: 1.75rem;
     }
 }

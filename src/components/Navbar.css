@@ -8,6 +8,21 @@
     transition: all var(--transition-normal);
 }
 
+/* Handed off to a page's own sticky sub-nav (e.g. the project detail page's
+   section menu) once it takes over the top of the viewport. The handoff is
+   instant (no transition on transform): the sub-nav becomes sticky the
+   moment it's triggered with no animation of its own, and the Navbar is
+   taller than it, so an animated slide-up would leave the Navbar's bottom
+   edge visible poking out from underneath for the duration of the slide.
+   Kept animated on the way back in — the sub-nav returns to its normal
+   in-flow position immediately on scroll-up, so there's nothing for the
+   Navbar to overlap while it eases back down. */
+.navbar.nav-hidden {
+    transform: translateY(-100%);
+    transition: transform 0s;
+    pointer-events: none;
+}
+
 /* Dark theme only: force white nav text when transparent over a dark hero.
    In light theme the hero is light-washed, so nav text keeps its theme color. */
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .logo-text,

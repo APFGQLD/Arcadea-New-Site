@@ -107,6 +107,28 @@
     color: var(--accent-gold);
 }
 
+.hero-listing-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.hero-listing-price {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.hero-cta-btn {
+    flex: 0 0 auto;
+    margin-top: 2rem;
+    min-width: 240px;
+}
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -140,7 +162,8 @@
     .detail-location,
     .detail-gallery,
     .detail-video,
-    .detail-agents {
+    .detail-agents,
+    .detail-comparison {
         padding: 4rem 1.5rem !important;
     }
 
@@ -148,29 +171,19 @@
         padding: 1.5rem;
     }
 
-    .unit-header-thumbnail {
-        width: 60px;
-        height: 45px;
-        margin-right: 1rem;
-    }
-
-    .unit-info-basic {
-        gap: 1rem;
-    }
-
-    .unit-info-meta {
-        gap: 1rem;
-    }
-
-
     .gallery-container {
         padding: 0 1rem;
     }
 }
 
 /* 2. Detail Overview & Stats */
-.detail-overview {
-    padding: 10rem 0;
+/* Compound with .container (not just .detail-overview): this section shares
+   its element with .container, whose own `padding: 0 2rem` shorthand would
+   otherwise win the vertical padding below on source-order alone, since
+   both are single-class selectors of equal specificity. Same reasoning
+   applies everywhere else below combined with .container. */
+.detail-overview.container {
+    padding: 8rem 0;
 }
 
 .overview-grid {
@@ -296,22 +309,53 @@
     }
 }
 
-.overview-availability {
-    margin-top: 6rem;
-    padding-top: 6rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.subsection-title {
-    font-size: 1.6rem;
-    margin-bottom: 2rem;
-    color: var(--text-primary);
+.listing-status-pill {
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.listing-status-pill.status-for-sale {
+    color: #4ade80;
+    border-color: #4ade80;
+}
+
+.listing-status-pill.status-under-offer {
+    color: var(--accent-gold);
+    border-color: var(--accent-gold);
+}
+
+.listing-status-pill.status-sold {
+    color: #fca5a5;
+    border-color: #fca5a5;
+}
+
+.listing-status-pill.status-coming-soon,
+.listing-status-pill.status-off-market {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .hero-cta-btn {
+        width: 100%;
+    }
 }
 
 /* 2. Detail Gallery */
-.detail-gallery {
+.detail-gallery.container {
+    padding: 8rem 0;
+}
+
+/* No padding of its own before this — it was relying entirely on
+   ComparisonTable's internal padding (60px), which was noticeably tighter
+   than every other section's 8rem here. */
+.detail-comparison.container {
     padding: 8rem 0;
 }
 
@@ -745,195 +789,7 @@
     transform: translateX(5px);
 }
 
-/* 4. Units Accordion (nested inside the Overview section) */
-.units-accordion {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    margin-top: 3rem;
-    height: 600px;
-    /* Fixed height for horizontal layout */
-    width: 100%;
-}
-
-.accordion-item {
-    background-color: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    transition: flex 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-    flex: 1;
-    /* Default collapsed width */
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-}
-
-.accordion-item.expanded {
-    flex: 4;
-    /* Expanded width */
-    border-color: var(--accent-gold);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    cursor: default;
-}
-
-.item-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
-    z-index: 1;
-    transition: background 0.5s ease;
-}
-
-.accordion-item.expanded .item-overlay {
-    background: var(--accordion-overlay);
-    opacity: 1;
-    /* Ensure opacity is 1 */
-}
-
-.accordion-header {
-    position: relative;
-    z-index: 2;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 100%;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-/* Hide the icon when expanded to remove the "dash" */
-.accordion-item.expanded .accordion-icon {
-    display: none;
-}
-
-.accordion-item.expanded .accordion-header {
-    height: auto;
-    background: transparent;
-    backdrop-filter: blur(5px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Collapsed Header Text Rotation */
-.accordion-item:not(.expanded) .accordion-header {
-    align-items: center;
-    justify-content: center;
-}
-
-.accordion-item:not(.expanded) .unit-info-basic {
-    transform: rotate(-90deg);
-    white-space: nowrap;
-    margin-bottom: 2rem;
-}
-
-/* Hide only meta (price) in collapsed state, show icon */
-.accordion-item:not(.expanded) .unit-info-meta,
-.accordion-item:not(.expanded) .availability-bar-container {
-    display: none;
-}
-
-/* Expanded Header Styles */
-.accordion-item.expanded .unit-type {
-    font-size: 1.5rem;
-    color: var(--accent-gold);
-}
-
-.accordion-item.expanded .unit-price {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--accordion-text);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.accordion-content {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-    z-index: 2;
-    opacity: 0;
-    transition: opacity 0.3s ease 0.1s;
-    display: flex;
-    flex-direction: column;
-}
-
-.accordion-item.expanded .accordion-content {
-    opacity: 1;
-}
-
-
-.unit-content-wrapper {
-    padding: 2.5rem;
-    height: 100%;
-    overflow: hidden;
-    background: transparent;
-    backdrop-filter: blur(10px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    /* Push content to bottom */
-}
-
-.unit-content-header {
-    flex: 0 0 auto;
-    /* Don't take up extra space */
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    margin-bottom: 1.5rem;
-    /* Fixed spacing to footer */
-}
-
-.unit-description {
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    -webkit-box-orient: vertical;
-    flex-shrink: 0;
-}
-
-
-.unit-description p {
-    color: var(--accordion-text);
-    opacity: 0.9;
-    margin: 0;
-    font-size: 1rem;
-}
-
-.unit-bottom-section {
-    display: flex;
-    flex-direction: column;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(133, 113, 77, 0.3);
-}
-
-.unit-stats-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: 100%;
-}
-
-.unit-extra-stats {
-    display: flex;
-    gap: 3rem;
-}
-
-.unit-actions-row {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    width: 100%;
-}
-
+/* Shared action buttons — used by Resources, Location (Get Directions), and Agent CTAs */
 .action-btn {
     flex: 1;
     /* Simple flex grow splits space evenly */
@@ -987,331 +843,8 @@
     border-color: black;
 }
 
-
-.download-fp-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.8rem 1.5rem;
-    /* Slightly smaller button */
-    background: var(--accent-gold);
-    color: var(--bg-primary);
-    text-decoration: none;
-    font-weight: 600;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
-}
-
-/* Removed old download-btn style - replaced by action-btn */
-
-.unit-availability-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-width: 140px;
-}
-
-.availability-bar-visual {
-    width: 100%;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    margin-top: 0.5rem;
-    overflow: hidden;
-}
-
-.availability-bar-visual .availability-bar-fill {
-    height: 100%;
-    /* Width set inline */
-    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-
-/* Availability Bar Styles */
-.availability-bar-fill {
-    height: 100%;
-    background-color: var(--accent-gold);
-    transition: width 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), background-color 0.3s ease;
-}
-
-.availability-bar-fill.high {
-    background-color: #1ed760;
-}
-
-.availability-bar-fill.med {
-    background-color: #ffb800;
-}
-
-.availability-bar-fill.low {
-    background-color: #ff4b4b;
-}
-
-/* Unit Content Footer Border - migrated to unit-bottom-section */
-
-
-.unit-availability-stat .availability-label,
-.stat-label {
-    color: var(--accordion-text);
-    opacity: 0.7;
-}
-
-.unit-availability-stat .availability-count,
-.stat-value {
-    color: var(--accordion-text);
-}
-
-.unit-stats-row {
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .units-accordion {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .accordion-item {
-        height: 150px;
-        /* Collapsed height on mobile */
-        flex: none;
-    }
-
-    .accordion-item.expanded {
-        height: auto;
-        flex: none;
-    }
-
-    .accordion-item:not(.expanded) .accordion-header {
-        align-items: flex-start;
-        justify-content: flex-end;
-    }
-
-    .accordion-item:not(.expanded) .unit-info-basic {
-        transform: none;
-        margin-bottom: 0;
-    }
-
-    .accordion-item:not(.expanded) .unit-info-meta {
-        display: flex;
-    }
-
-    .accordion-header {
-        background: transparent;
-    }
-
-    .unit-content-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-        height: auto;
-    }
-
-    .accordion-content {
-        height: 0;
-        display: block;
-        /* Revert flex */
-    }
-
-    .accordion-item.expanded .accordion-content {
-        height: auto;
-    }
-
-    /* Fix Content Overflow */
-    .unit-content-wrapper {
-        padding: 1.5rem;
-    }
-
-    .unit-stats-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 2rem;
-    }
-
-    .unit-availability-stat {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .unit-extra-stats {
-        width: 100%;
-        justify-content: flex-start;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .unit-actions-row {
-        flex-direction: column;
-    }
-
-    .action-btn {
-        width: 100%;
-    }
-}
-
-
-/* Stats Hover Effect */
-.unit-extra-stats {
-    display: flex;
-    gap: 3rem;
-    cursor: pointer;
-    /* Trigger for the whole group */
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    position: relative;
-    min-width: 100px;
-}
-
-.stat-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--text-primary);
-}
-
-.stat-label {
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    color: white;
-}
-
-[data-theme='light'] .stat-label {
-    color: black;
-}
-
-.swap-visible,
-.swap-hidden {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.swap-hidden {
-    position: absolute;
-    /* Restore absolute positioning */
-    top: 0;
-    left: 0;
-    opacity: 0;
-    transform: translateY(10px);
-    pointer-events: none;
-    width: 200px;
-}
-
-/* Hidden state specific styling */
-.swap-hidden .stat-value {
-    color: var(--accent-gold);
-}
-
-.unit-extra-stats:hover .swap-visible {
-    opacity: 0;
-    transform: translateY(-10px);
-}
-
-.unit-extra-stats:hover .swap-hidden {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.availability-count {
-    font-size: 3rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--accordion-text);
-}
-
-.availability-count.high {
-    color: #1ed760;
-}
-
-.availability-count.med {
-    color: #ffb800;
-}
-
-.availability-count.low {
-    color: #ff4b4b;
-}
-
-.availability-label {
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    color: var(--text-muted);
-}
-
-.unit-visual-col {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-}
-
-.unit-hero-image {
-    width: 100%;
-    height: 350px;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-}
-
-.unit-hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.download-fp-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem 2rem;
-    background-color: transparent;
-    border: 1px solid var(--accent-gold);
-    color: var(--accent-gold);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    width: fit-content;
-}
-
-.download-fp-btn:hover {
-    background-color: var(--accent-gold);
-    color: var(--bg-primary);
-}
-
-@media (max-width: 768px) {
-    .accordion-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .unit-info-meta {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .unit-content-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .unit-hero-image {
-        height: 250px;
-    }
-}
-
 /* 3.5. Video Section */
-.detail-video {
+.detail-video.container {
     padding: 8rem 0;
 }
 
@@ -1409,7 +942,7 @@
 }
 
 /* 6. Location Section */
-.detail-location {
+.detail-location.container {
     padding: 8rem 0;
 }
 
@@ -1439,21 +972,19 @@
     color: var(--text-primary);
 }
 
+.address-directions-btn {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    margin-top: 0.5rem;
+}
+
 .map-container {
     height: 100%;
-    min-height: 500px;
+    min-height: 750px;
     position: relative;
     border-radius: 4px;
     overflow: hidden;
     background-color: var(--bg-secondary);
-}
-
-/* Ensure map matches grid height on desktop */
-@media (min-width: 1024px) {
-    .map-container {
-        height: auto;
-        min-height: 0;
-    }
 }
 
 .map-placeholder {
@@ -1625,84 +1156,51 @@
     }
 }
 
-/* Sold Out UI Styles */
-.accordion-item.sold-out {
-    opacity: 0.85;
-    cursor: default;
-}
+/* Quick Navigation Banner — takes over the top of the viewport from the main
+   Navbar once pinned (see NavVisibilityContext / the sentinel above it), so
+   it sits at the very top and outranks the Navbar's own z-index.
 
-.accordion-item.sold-out .item-overlay {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9));
-}
+   Starts at the same ~144px height as the main Navbar (2rem padding + an
+   80px logo) from the moment it renders, so whenever it pins and takes over
+   from the Navbar, the handoff is a like-for-like swap with nothing
+   mismatched to peek out from behind. Eases down to a more compact height
+   (.nav-compact, below) once scrolled a bit further.
 
-.accordion-item.sold-out:not(.expanded) {
-    filter: grayscale(0.6);
-}
-
-.sold-out-badge {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    background: #b91c1c;
-    /* Prominent Red */
-    color: #ffffff;
-    padding: 0.4rem 1rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.5s ease;
-}
-
-.availability-count.sold-out {
-    color: #ef4444;
-    /* Brighter red for the count */
-}
-
-.sold-out-label {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #ef4444;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.availability-bar-fill.sold-out {
-    background: rgba(239, 68, 68, 0.2);
-    width: 0% !important;
-}
-
-.action-btn.primary-btn.disabled {
-    background: rgba(185, 28, 28, 0.1);
-    color: var(--text-muted);
-    border: 1px solid rgba(185, 28, 28, 0.2);
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.6;
-}
-
-.accordion-item.sold-out.expanded .unit-type {
-    color: #fca5a5;
-    /* Light red for the type label when expanded and sold out */
-}
-
-/* Quick Navigation Banner */
+   The hero is a full 100vh, and this bar sits right after it in normal
+   flow at its full height with no extra tricks — the hero's own -80px pull
+   under the fixed Navbar already means part of this bar's height lands
+   above the fold and the rest waits just below it, a natural invitation to
+   scroll rather than something engineered pixel-for-pixel. */
 .detail-nav-banner {
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
-    top: 80px;
-    z-index: 90;
+    top: 0;
+    z-index: 10000;
+    padding: 3.3rem 0;
+    /* Small nudge so the link row itself lands above the fold and is
+       actually clickable there, rather than just barely peeking in. */
+    margin-top: -2rem;
+    transition: padding 0.3s ease;
+    /* Its height changes (this <-> .nav-compact) while pinned above the
+       viewport's visible content. Without this, the browser's scroll
+       anchoring "helpfully" compensates by silently adjusting scrollY to
+       keep content visually stable, producing an extra unwanted scroll jump
+       on top of the user's own scrolling. */
+    overflow-anchor: none;
+    /* No backdrop-filter here: it's invisible anyway behind an opaque
+       background, and combined with position:sticky it's a known cause of
+       a stale/ghosted backdrop snapshot getting left behind while scrolling. */
+}
+
+.detail-nav-banner.nav-compact {
     padding: 1rem 0;
-    backdrop-filter: blur(10px);
 }
 
 .nav-banner-inner {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 3rem;
     overflow-x: auto;
     scrollbar-width: none;
@@ -1719,26 +1217,34 @@
     transition: all 0.3s ease;
     text-decoration: none;
     padding: 0.5rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .nav-banner-link:hover {
     color: var(--accent-gold);
 }
 
+.nav-banner-back {
+    padding-right: 3rem;
+    border-right: 1px solid var(--border-color);
+}
+
 .detail-overview, .detail-gallery, .detail-resources, .detail-video, .detail-comparison, .detail-location, .detail-agents {
-    scroll-margin-top: 140px;
+    scroll-margin-top: 100px;
 }
 
 @media (max-width: 768px) {
-    .detail-nav-banner {
-        top: 60px;
-    }
     .nav-banner-inner {
         justify-content: flex-start;
         padding: 0 1.5rem;
     }
+    .nav-banner-back {
+        padding-right: 1.5rem;
+    }
     .detail-overview, .detail-gallery, .detail-resources, .detail-video, .detail-comparison, .detail-location, .detail-agents {
-        scroll-margin-top: 110px;
+        scroll-margin-top: 80px;
     }
 }
 /* Progressive Loading Styles */

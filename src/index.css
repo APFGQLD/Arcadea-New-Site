@@ -11,12 +11,23 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--accent-gold) var(--bg-secondary);
+  /* Only html, not body — body having a non-"visible" overflow makes it an
+     unintended second scroll container, which silently breaks position:
+     sticky for every descendant on the site (it never actually scrolls
+     itself, so sticky elements bound to it never move). */
+  overflow-x: hidden;
+  /* Images throughout the site already reserve space via explicit
+     width/height, so scroll anchoring's usual job (stopping jumps from
+     late-loading content) is largely covered already. Left on, it instead
+     fights intentional height changes in sticky elements (e.g. the project
+     page's docking nav) by silently nudging scroll position to "compensate",
+     producing an extra unwanted jump on top of the user's own scrolling. */
+  overflow-anchor: none;
 }
 
 html,
 body {
   width: 100%;
-  overflow-x: hidden;
   position: relative;
   font-family: var(--font-main);
   background-color: var(--bg-primary);
