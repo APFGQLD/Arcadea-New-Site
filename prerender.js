@@ -6,7 +6,7 @@ import { fetchAllProjects, fetchAllBlogPosts } from './cms.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_URL = 'https://arcadea.com.au';
+const SITE_URL = 'https://www.arcadea.com.au';
 
 /**
  * Remove the base template's title, description, canonical, and social meta
@@ -49,6 +49,94 @@ function escapeAttr(text) {
 }
 
 /**
+ * Serialize one or more JSON-LD objects into <script type="application/ld+json">
+ * tags. Escapes "<" so CMS copy containing "</script>" can't break out of the tag.
+ */
+function jsonLdTags(...objects) {
+    return objects
+        .filter(Boolean)
+        .map(obj => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`)
+        .join('\n');
+}
+
+/**
+ * schema.org BreadcrumbList from an ordered [{ name, url }, ...] trail.
+ */
+function breadcrumbJSONLD(items) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: items.map((item, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: item.name,
+            item: item.url,
+        })),
+    };
+}
+
+/**
+ * schema.org RealEstateListing for a property page. Real estate isn't one of
+ * Google's supported rich-result types, so this won't produce a special SERP
+ * snippet — it's still valid structured data that helps search engines
+ * understand what the page is about (name, images, price when known, and
+ * address/geo once those are filled in on the property in Studio).
+ */
+function propertyJSONLD(project, url) {
+    const numericPrice = Number(String(project.price || '').replace(/[^0-9.]/g, ''));
+    const hasPrice = project.price && !Number.isNaN(numericPrice) && numericPrice > 0;
+
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'RealEstateListing',
+        name: project.title,
+        description: truncate(project.description, 500) || DEFAULT_DESCRIPTION,
+        url,
+        image: project.image || `${SITE_URL}/og-image.jpg`,
+        about: {
+            '@type': 'Residence',
+            name: project.title,
+            address: project.address ? { '@type': 'PostalAddress', streetAddress: project.address } : undefined,
+            geo: (project.map && project.map.lat != null && project.map.lng != null) ? {
+                '@type': 'GeoCoordinates',
+                latitude: project.map.lat,
+                longitude: project.map.lng,
+            } : undefined,
+        },
+        // NOTE: currency assumes AUD. Revisit if a Bali/IDR-priced listing ever
+        // gets a real numeric price instead of "POA".
+        offers: hasPrice ? {
+            '@type': 'Offer',
+            price: numericPrice,
+            priceCurrency: 'AUD',
+            availability: 'https://schema.org/InStock',
+        } : undefined,
+    };
+}
+
+/**
+ * schema.org BlogPosting for an article page.
+ */
+function blogPostJSONLD(post, url) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: truncate(post.excerpt, 300) || DEFAULT_DESCRIPTION,
+        image: post.image || `${SITE_URL}/og-image.jpg`,
+        url,
+        datePublished: post.publishedAt || undefined,
+        author: post.authorName ? { '@type': 'Person', name: post.authorName } : { '@type': 'Organization', name: 'Arcadea Property' },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Arcadea Property',
+            logo: { '@type': 'ImageObject', url: `${SITE_URL}/brand-logo-white.png` },
+        },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    };
+}
+
+/**
  * Generate SEO-friendly HTML for a project
  */
 function generateProjectHTML(project, baseHTML) {
@@ -57,6 +145,16 @@ function generateProjectHTML(project, baseHTML) {
     const description = escapeAttr(truncate(project.description, 160) || DEFAULT_DESCRIPTION);
     const image = project.image || `${SITE_URL}/og-image.jpg`;
     const url = `${SITE_URL}/project/${slug}`;
+
+    const structuredData = jsonLdTags(
+        breadcrumbJSONLD([
+            { name: 'Home', url: `${SITE_URL}/` },
+            { name: 'Our Collections', url: `${SITE_URL}/properties` },
+            ...(project.collectionTitle ? [{ name: project.collectionTitle, url: `${SITE_URL}/properties` }] : []),
+            { name: project.title || 'Project', url },
+        ]),
+        propertyJSONLD(project, url)
+    );
 
     const metaTags = `
     <title>${title} | Arcadea Property</title>
@@ -71,6 +169,7 @@ function generateProjectHTML(project, baseHTML) {
     <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${image}">
     <link rel="canonical" href="${url}">
+    ${structuredData}
 `;
 
     return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
@@ -86,6 +185,15 @@ function generateBlogPostHTML(post, baseHTML) {
     const image = post.image || `${SITE_URL}/og-image.jpg`;
     const url = `${SITE_URL}/news/${slug}`;
 
+    const structuredData = jsonLdTags(
+        breadcrumbJSONLD([
+            { name: 'Home', url: `${SITE_URL}/` },
+            { name: 'News & Insights', url: `${SITE_URL}/news` },
+            { name: post.title || 'Article', url },
+        ]),
+        blogPostJSONLD(post, url)
+    );
+
     const metaTags = `
     <title>${title} | Arcadea Property</title>
     <meta name="description" content="${description}">
@@ -99,6 +207,7 @@ function generateBlogPostHTML(post, baseHTML) {
     <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${image}">
     <link rel="canonical" href="${url}">
+    ${structuredData}
 `;
 
     return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
@@ -113,6 +222,13 @@ function generateStaticPageHTML(routeObj, baseHTML) {
     const description = escapeAttr(routeObj.description || DEFAULT_DESCRIPTION);
     const image = `${SITE_URL}/og-image.jpg`;
 
+    const structuredData = jsonLdTags(
+        breadcrumbJSONLD([
+            { name: 'Home', url: `${SITE_URL}/` },
+            { name: routeObj.title || routeObj.path, url },
+        ])
+    );
+
     const metaTags = `
     <title>${pageTitle}</title>
     <meta name="description" content="${description}">
@@ -126,6 +242,7 @@ function generateStaticPageHTML(routeObj, baseHTML) {
     <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${image}">
     <link rel="canonical" href="${url}">
+    ${structuredData}
 `;
 
     return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);

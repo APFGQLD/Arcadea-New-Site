@@ -36,6 +36,8 @@ async function fetchOrFail(label, query) {
 
 /**
  * All published projects. `propertyId` is the slug used by /project/:id.
+ * Extra fields (location, price, address, map, collectionTitle) feed the
+ * JSON-LD structured data generated in prerender.js.
  */
 export async function fetchAllProjects() {
     return fetchOrFail('projects', `
@@ -43,13 +45,19 @@ export async function fetchAllProjects() {
             "slug": propertyId,
             title,
             description,
-            "image": image.asset->url
+            location,
+            price,
+            address,
+            map,
+            "image": image.asset->url,
+            "collectionTitle": *[_type == "propertyCollection" && references(^._id)][0].title
         }
     `);
 }
 
 /**
- * All published blog posts.
+ * All published blog posts. Extra fields (publishedAt, authorName) feed the
+ * JSON-LD structured data generated in prerender.js.
  */
 export async function fetchAllBlogPosts() {
     return fetchOrFail('blog posts', `
@@ -57,7 +65,9 @@ export async function fetchAllBlogPosts() {
             "slug": slug.current,
             title,
             excerpt,
-            "image": featuredImage.asset->url
+            "image": featuredImage.asset->url,
+            publishedAt,
+            "authorName": author->name
         }
     `);
 }

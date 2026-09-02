@@ -8,8 +8,16 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+dist
 dist-ssr
 *.local
+
+# Sanity Studio build output & CLI runtime cache — Hostinger builds this
+# site itself (npm run build -> dist/), and Studio is embedded at /studio
+# in that same build, so the standalone studio/ project's own artifacts
+# never need to be committed.
+studio/dist
+studio/.sanity
 
 # Editor directories and files
 .vscode/*

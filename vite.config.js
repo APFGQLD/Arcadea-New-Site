@@ -6,6 +6,17 @@ export default defineConfig({
   base: '/', // Use absolute paths for assets (Required for deep linking)
   plugins: [react()],
   build: {
+    modulePreload: {
+      // Vite statically discovers the React.lazy(() => import('./pages/StudioPage'))
+      // call inside App.jsx (part of the eager entry chunk) and, by default,
+      // injects a <link rel="modulepreload"> (and stylesheet link) for that
+      // whole lazy chunk directly into the single shared index.html — meaning
+      // every visitor downloads the multi-MB Studio bundle up front. Strip it
+      // from preload lists; dynamic import() still fetches it fine on-demand
+      // when someone actually navigates to /studio.
+      resolveDependencies: (filename, deps) =>
+        deps.filter((dep) => !dep.includes('sanity-studio-vendor') && !dep.includes('StudioPage')),
+    },
     // Code splitting for better performance
     rollupOptions: {
       output: {

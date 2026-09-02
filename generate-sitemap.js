@@ -6,7 +6,7 @@ import { fetchAllProjects, fetchAllBlogPosts, EXCLUDED_ROUTES } from './cms.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_URL = 'https://arcadea.com.au'; // Update with your actual domain
+const SITE_URL = 'https://www.arcadea.com.au';
 
 /**
  * Parse App.jsx to find static routes

@@ -136,10 +136,11 @@
     }
 
     .detail-overview,
-    .detail-units,
     .detail-resources,
     .detail-location,
-    .detail-gallery {
+    .detail-gallery,
+    .detail-video,
+    .detail-agents {
         padding: 4rem 1.5rem !important;
     }
 
@@ -293,6 +294,20 @@
     .project-stats-card {
         max-width: 100%;
     }
+}
+
+.overview-availability {
+    margin-top: 6rem;
+    padding-top: 6rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.subsection-title {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* 2. Detail Gallery */
@@ -730,17 +745,7 @@
     transform: translateX(5px);
 }
 
-/* 4. Units Accordion */
-.detail-units {
-    padding: 8rem 0;
-}
-
-
-/* 4. Units Accordion */
-.detail-units {
-    padding: 8rem 0;
-}
-
+/* 4. Units Accordion (nested inside the Overview section) */
 .units-accordion {
     display: flex;
     flex-direction: row;
@@ -1305,43 +1310,102 @@
     }
 }
 
-/* 5. Developer Section */
-.detail-developer {
+/* 3.5. Video Section */
+.detail-video {
     padding: 8rem 0;
 }
 
-.developer-flex {
+.video-embed-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    /* 16:9 aspect ratio */
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: var(--bg-secondary);
+}
+
+.video-embed-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.border-accent {
+    border: 1px solid var(--accent-gold);
+}
+
+/* 6. Agent Section */
+.detail-agents {
+    padding: 8rem 0;
+}
+
+.agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.agent-card {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6rem;
+    text-align: center;
 }
 
-.developer-info {
-    flex: 1;
-}
-
-.developer-info h3 {
-    font-size: 2rem;
-    color: var(--accent-gold);
+.agent-photo {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
     margin-bottom: 1.5rem;
 }
 
-.developer-image {
-    flex: 0 0 450px;
-    height: 450px;
-    overflow: hidden;
-    padding: 0;
-    border-radius: 4px;
-}
-
-.developer-image img {
+.agent-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.border-accent {
-    border: 1px solid var(--accent-gold);
+.agent-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.agent-role {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+}
+
+.agent-bio {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.agent-contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1.5rem;
+}
+
+.agent-contact-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.agent-contact-link:hover {
+    color: var(--accent-gold);
 }
 
 /* 6. Location Section */
@@ -1356,32 +1420,23 @@
     /* margin-top: 3rem; - Removed as section-title handles spacing now */
 }
 
-.hotspot-item {
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border-color);
+.address-block {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
 }
 
-.hotspot-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.address-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-gold);
 }
 
-.distance-bar-track {
-    width: 100%;
-    height: 4px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.distance-bar-fill {
-    height: 100%;
-    background-color: var(--accent-gold);
-    border-radius: 2px;
+.address-text {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: var(--text-primary);
 }
 
 .map-container {
@@ -1399,38 +1454,6 @@
         height: auto;
         min-height: 0;
     }
-}
-
-.spot-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.spot-category {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    color: var(--accent-gold);
-    letter-spacing: 1px;
-}
-
-.spot-name {
-    font-weight: 500;
-    font-size: 1.1rem;
-}
-
-.spot-proximity {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-}
-
-.distance {
-    font-weight: 600;
-}
-
-.time {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
 }
 
 .map-placeholder {
@@ -1572,12 +1595,6 @@
 }
 
 @media (max-width: 1024px) {
-    .developer-flex {
-        flex-direction: column;
-        text-align: center;
-        gap: 3rem;
-    }
-
     .location-grid {
         grid-template-columns: 1fr;
     }
@@ -1708,7 +1725,7 @@
     color: var(--accent-gold);
 }
 
-.detail-overview, .detail-gallery, .detail-resources, .detail-units, .detail-comparison, .detail-developer, .detail-location {
+.detail-overview, .detail-gallery, .detail-resources, .detail-video, .detail-comparison, .detail-location, .detail-agents {
     scroll-margin-top: 140px;
 }
 
@@ -1720,7 +1737,7 @@
         justify-content: flex-start;
         padding: 0 1.5rem;
     }
-    .detail-overview, .detail-gallery, .detail-resources, .detail-units, .detail-comparison, .detail-developer, .detail-location {
+    .detail-overview, .detail-gallery, .detail-resources, .detail-video, .detail-comparison, .detail-location, .detail-agents {
         scroll-margin-top: 110px;
     }
 }
