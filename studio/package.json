@@ -17,5 +17,10 @@
     "@sanity/vision": "^6.5.0",
     "sanity": "^6.5.0",
     "styled-components": "^6.4.4"
+  },
+  "overrides": {
+    "js-yaml": "^3.15.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   }
 }

@@ -24,6 +24,7 @@ import {
     LightBulbIcon,
     GlobeAltIcon
 } from '@heroicons/react/24/solid';
+import { FaBed, FaBath, FaToilet, FaCar } from 'react-icons/fa6';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
 import usePageTitle from '../hooks/usePageTitle';
@@ -123,6 +124,14 @@ const ProjectDetailPage = () => {
         return price;
     };
 
+    // Convert a YouTube watch/share URL into an embeddable URL
+    const getYouTubeEmbedUrl = (url) => {
+        if (!url) return '';
+        const match = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+        const videoId = match ? match[1] : null;
+        return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : url;
+    };
+
     // Format project name from slug for loading screen
     const formatSlugToName = (slug) => {
         if (!slug) return '';
@@ -188,7 +197,11 @@ const ProjectDetailPage = () => {
             briefcaseicon: BriefcaseIcon,
             usersicon: UsersIcon,
             lightbulbicon: LightBulbIcon,
-            globealticon: GlobeAltIcon
+            globealticon: GlobeAltIcon,
+            bedicon: FaBed,
+            bathicon: FaBath,
+            toileticon: FaToilet,
+            caricon: FaCar
         };
 
         // Clean name: remove non-alphanumeric, lowercase and ensure it ends with "icon" for lookup
@@ -236,13 +249,18 @@ const ProjectDetailPage = () => {
             <nav className="detail-nav-banner">
                 <div className="container nav-banner-inner">
                     <a href="#overview" className="nav-banner-link">{t('project_detail.nav_overview', 'Overview')}</a>
-                    <a href="#vision" className="nav-banner-link">{t('project_detail.nav_vision', 'The Vision')}</a>
-                    <a href="#resources" className="nav-banner-link">{t('project_detail.nav_resources', 'Resources')}</a>
-                    <a href="#availability" className="nav-banner-link">{t('project_detail.nav_availability', 'Availability')}</a>
-                    {(project.collection === 'Island' || project.collection === 'island') && (
+                    {(project.collection === 'island') && (
                         <a href="#comparison" className="nav-banner-link">{t('project_detail.nav_comparison', 'Comparison')}</a>
                     )}
+                    <a href="#vision" className="nav-banner-link">{t('project_detail.nav_vision', 'The Vision')}</a>
+                    {project.videoUrl && (
+                        <a href="#video" className="nav-banner-link">{t('project_detail.nav_video', 'Video')}</a>
+                    )}
+                    <a href="#resources" className="nav-banner-link">{t('project_detail.nav_resources', 'Resources')}</a>
                     <a href="#location" className="nav-banner-link">{t('project_detail.nav_location', 'Location')}</a>
+                    {project.agents?.length > 0 && (
+                        <a href="#agent" className="nav-banner-link">{t('project_detail.nav_agent', 'Agent')}</a>
+                    )}
                 </div>
             </nav>
 
@@ -254,28 +272,191 @@ const ProjectDetailPage = () => {
                         <p className="project-description-text">{formatAirtableText(project.description)}</p>
                     </div>
 
-                    <div className="project-stats-sidebar">
-                        <div className="project-stats-card">
-                            <h4 className="stats-card-title">{t('project_detail.quick_facts', 'Quick Facts')}</h4>
-                            <div className="stats-inner-grid">
-                                {project.quickFacts?.map(fact => (
-                                    <div key={fact.id} className="compact-stat">
-                                        <div className="stat-icon-small">
-                                            {getIcon(fact.icon)}
+                    {project.quickFacts?.length > 0 && (
+                        <div className="project-stats-sidebar">
+                            <div className="project-stats-card">
+                                <h4 className="stats-card-title">{t('project_detail.quick_facts', 'Quick Facts')}</h4>
+                                <div className="stats-inner-grid">
+                                    {project.quickFacts.map(fact => (
+                                        <div key={fact.id} className="compact-stat">
+                                            <div className="stat-icon-small">
+                                                {getIcon(fact.icon)}
+                                            </div>
+                                            <div className="stat-text">
+                                                <span className="label">{fact.label}</span>
+                                                <span className="value">{fact.value}</span>
+                                            </div>
                                         </div>
-                                        <div className="stat-text">
-                                            <span className="label">{fact.label}</span>
-                                            <span className="value">{fact.value}</span>
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
+
+                {project.units?.length > 0 && (
+                    <div className="overview-availability">
+                        <h3 className="subsection-title">{t('project_detail.units_title', 'Pricing & Availability')}</h3>
+                        <div className="units-accordion">
+                            {project.units.map(unit => {
+                                const total = unit.totalUnits || 0;
+                                const sold = unit.soldUnits || 0;
+                                const available = Math.max(0, total - sold);
+                                const percentAvailable = total > 0 ? (available / total) * 100 : 0;
+
+                                const isSoldOut = total > 0 && available === 0;
+
+                                let barColorClass = 'high';
+                                if (isSoldOut) barColorClass = 'sold-out';
+                                else if (percentAvailable < 20) barColorClass = 'low';
+                                else if (percentAvailable < 50) barColorClass = 'med';
+
+                                return (
+                                    <div
+                                        key={unit.id}
+                                        className={`accordion-item ${expandedUnitId === unit.id ? 'expanded' : ''} ${isSoldOut ? 'sold-out' : ''}`}
+                                        style={{
+                                            backgroundImage: unit.image ? `url(${unit.image})` : undefined,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center'
+                                        }}
+                                        onClick={() => toggleUnit(unit.id)}
+                                    >
+                                        <div className="item-overlay"></div>
+
+                                        {isSoldOut && (
+                                            <div className="sold-out-badge">
+                                                {t('project_detail.sold_out', 'Sold Out')}
+                                            </div>
+                                        )}
+
+                                        <div className="accordion-header">
+                                            <div className="unit-info-basic">
+                                                <span className="unit-type">{unit.config}</span>
+                                            </div>
+                                            <div className="unit-info-meta">
+                                                <span className="unit-price">
+                                                    {t('project_detail.from', 'From')} {formatPrice(unit.minPrice || unit.price)}
+                                                </span>
+                                                <span className="accordion-icon">
+                                                    {expandedUnitId === unit.id ?
+                                                        <MinusIcon className="hero-icon" /> :
+                                                        <PlusIcon className="hero-icon" />
+                                                    }
+                                                </span>
+                                            </div>
+                                            <div className="availability-bar-container">
+                                                <div
+                                                    className={`availability-bar-fill ${barColorClass}`}
+                                                    style={{ width: `${percentAvailable}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+
+                                        <div className="accordion-content">
+                                            <div className="unit-content-wrapper" onClick={(e) => e.stopPropagation()}>
+                                                <div className="unit-content-header">
+                                                    {unit.description && (
+                                                        <div className="unit-description">
+                                                            <p>{unit.description}</p>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="unit-stats-row">
+                                                        <div className="unit-availability-stat">
+                                                            {!isSoldOut && (
+                                                                <span className={`availability-count ${barColorClass}`}>
+                                                                    {available}
+                                                                </span>
+                                                            )}
+                                                            <span className={`availability-label ${isSoldOut ? 'sold-out-label' : ''}`}>
+                                                                {isSoldOut ? t('project_detail.fully_sold', 'Fully Sold') : t('project_detail.units_available', 'Units Available')}
+                                                            </span>
+                                                            <div className="availability-bar-visual">
+                                                                <div
+                                                                    className={`availability-bar-fill ${barColorClass}`}
+                                                                    style={{ width: `${percentAvailable}%` }}
+                                                                ></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="unit-extra-stats">
+                                                            <div className="stat-item share-stat">
+                                                                <div className="swap-visible">
+                                                                    <span className="stat-value">100%</span>
+                                                                    <span className="stat-label">Total Share</span>
+                                                                </div>
+                                                                {unit.percentage && (
+                                                                    <div className="swap-hidden">
+                                                                        <span className="stat-value">
+                                                                            {(unit.percentage * 100).toLocaleString('en-US', { maximumFractionDigits: 2 })}%
+                                                                        </span>
+                                                                        <span className="stat-label">Min Share</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {(unit.price || unit.minPrice) && (
+                                                                <div className="stat-item price-stat">
+                                                                    <div className="swap-visible">
+                                                                        <span className="stat-value">{formatCompactPrice(unit.price)}</span>
+                                                                        <span className="stat-label">Full Price</span>
+                                                                    </div>
+                                                                    <div className="swap-hidden">
+                                                                        <span className="stat-value">{formatCompactPrice(unit.minPrice)}</span>
+                                                                        <span className="stat-label">Min Price</span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="unit-actions-row">
+                                                        {unit.floorPlan && (
+                                                            <a href={unit.floorPlan} target="_blank" rel="noopener noreferrer" className="action-btn secondary-btn">
+                                                                {t('project_detail.download_fp', 'Floor Plan')}
+                                                                <ArrowDownTrayIcon className="hero-icon-sm" style={{ marginLeft: '0.5rem' }} />
+                                                            </a>
+                                                        )}
+                                                        <button
+                                                            className={`action-btn primary-btn ${isSoldOut ? 'disabled' : ''}`}
+                                                            disabled={isSoldOut}
+                                                            onClick={() => {
+                                                                if (isSoldOut) return;
+                                                                if (project.collection === 'coastal') {
+                                                                    navigate('/#contact');
+                                                                } else if (unit.salesLink) {
+                                                                    window.open(unit.salesLink, '_blank', 'noopener,noreferrer');
+                                                                }
+                                                            }}
+                                                        >
+                                                            {isSoldOut
+                                                                ? t('project_detail.sold_out', 'Sold Out')
+                                                                : (project.collection === 'coastal')
+                                                                    ? t('project_detail.request_info', 'Request More Information')
+                                                                    : t('project_detail.reserve', 'Reserve Now')
+                                                            }
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
             </section>
 
-            {/* 2. Gallery & Narrative Section (Placeholder for implementation) */}
+            {/* 2.5. Comparison Table (Island Collection Only) */}
+            {(project.collection === 'island') && (
+                <section className="detail-comparison container" id="comparison">
+                    <ComparisonTable project={project} />
+                </section>
+            )}
+
+            {/* 3. Gallery & Narrative Section */}
             <section className="detail-gallery container" id="vision">
                 <div className="section-header-flex">
                     <h2 className="section-title">{t('project_detail.gallery_title', 'The Vision')}</h2>
@@ -309,10 +490,26 @@ const ProjectDetailPage = () => {
                 </div>
             </section>
 
-            {/* 3. Take a Look Section */}
+            {/* 3.5. Video Section */}
+            {project.videoUrl && (
+                <section className="detail-video container" id="video">
+                    <h2 className="section-title">{t('project_detail.video_title', 'The Film')}</h2>
+                    <div className="video-embed-wrapper">
+                        <iframe
+                            src={getYouTubeEmbedUrl(project.videoUrl)}
+                            title={`${project.name} video`}
+                            loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
+                </section>
+            )}
+
+            {/* 4. Resources Section */}
             <section className="detail-resources bg-secondary" id="resources">
                 <div className="container">
-                    <h2 className="section-title">{t('project_detail.resources_title', 'Take a Look')}</h2>
+                    <h2 className="section-title">{t('project_detail.resources_title', 'Resources')}</h2>
                     <p className="section-subtitle">{t('project_detail.resources_subtitle', 'Explore brochures, tours, and updates.')}</p>
 
                     <div className="resources-grid">
@@ -345,238 +542,26 @@ const ProjectDetailPage = () => {
                 </div>
             </section>
 
-            {/* 4. Unit Availability Table */}
-            {/* 4. Unit Availability Accordion */}
-            <section className="detail-units container" id="availability">
-                <h2 className="section-title">{t('project_detail.units_title', 'Availability & Unit Types')}</h2>
-                <div className="units-accordion">
-                    {project.units?.map(unit => {
-                        const total = unit.totalUnits || 0;
-                        const sold = unit.soldUnits || 0;
-                        const available = Math.max(0, total - sold);
-                        const percentAvailable = total > 0 ? (available / total) * 100 : 0;
-
-                        const isSoldOut = total > 0 && available === 0;
-
-                        let barColorClass = 'high';
-                        if (isSoldOut) barColorClass = 'sold-out';
-                        else if (percentAvailable < 20) barColorClass = 'low';
-                        else if (percentAvailable < 50) barColorClass = 'med';
-
-                        return (
-                            <div
-                                key={unit.id}
-                                className={`accordion-item ${expandedUnitId === unit.id ? 'expanded' : ''} ${isSoldOut ? 'sold-out' : ''}`}
-                                style={{
-                                    backgroundImage: unit.image ? `url(${unit.image})` : undefined,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center'
-                                }}
-                                onClick={() => toggleUnit(unit.id)}
-                            >
-                                <div className="item-overlay"></div>
-
-                                {isSoldOut && (
-                                    <div className="sold-out-badge">
-                                        {t('project_detail.sold_out', 'Sold Out')}
-                                    </div>
-                                )}
-
-                                <div className="accordion-header">
-                                    <div className="unit-info-basic">
-                                        <span className="unit-type">{unit.config}</span>
-                                    </div>
-                                    <div className="unit-info-meta">
-                                        <span className="unit-price">
-                                            {t('project_detail.from', 'From')} {formatPrice(unit.minPrice || unit.price)}
-                                        </span>
-                                        <span className="accordion-icon">
-                                            {expandedUnitId === unit.id ?
-                                                <MinusIcon className="hero-icon" /> :
-                                                <PlusIcon className="hero-icon" />
-                                            }
-                                        </span>
-                                    </div>
-                                    <div className="availability-bar-container">
-                                        <div
-                                            className={`availability-bar-fill ${barColorClass}`}
-                                            style={{ width: `${percentAvailable}%` }}
-                                        ></div>
-                                    </div>
-                                </div>
-
-                                <div className="accordion-content">
-                                    <div className="unit-content-wrapper" onClick={(e) => e.stopPropagation()}>
-                                        <div className="unit-content-header">
-                                            {unit.description && (
-                                                <div className="unit-description">
-                                                    <p>{unit.description}</p>
-                                                </div>
-                                            )}
-
-                                            <div className="unit-stats-row">
-                                                <div className="unit-availability-stat">
-                                                    {!isSoldOut && (
-                                                        <span className={`availability-count ${barColorClass}`}>
-                                                            {available}
-                                                        </span>
-                                                    )}
-                                                    <span className={`availability-label ${isSoldOut ? 'sold-out-label' : ''}`}>
-                                                        {isSoldOut ? t('project_detail.fully_sold', 'Fully Sold') : t('project_detail.units_available', 'Units Available')}
-                                                    </span>
-                                                    <div className="availability-bar-visual">
-                                                        <div
-                                                            className={`availability-bar-fill ${barColorClass}`}
-                                                            style={{ width: `${percentAvailable}%` }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="unit-extra-stats">
-                                                    <div className="stat-item share-stat">
-                                                        <div className="swap-visible">
-                                                            <span className="stat-value">100%</span>
-                                                            <span className="stat-label">Total Share</span>
-                                                        </div>
-                                                        {unit.percentage && (
-                                                            <div className="swap-hidden">
-                                                                <span className="stat-value">
-                                                                    {(unit.percentage * 100).toLocaleString('en-US', { maximumFractionDigits: 2 })}%
-                                                                </span>
-                                                                <span className="stat-label">Min Share</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    {(unit.price || unit.minPrice) && (
-                                                        <div className="stat-item price-stat">
-                                                            <div className="swap-visible">
-                                                                <span className="stat-value">{formatCompactPrice(unit.price)}</span>
-                                                                <span className="stat-label">Full Price</span>
-                                                            </div>
-                                                            <div className="swap-hidden">
-                                                                <span className="stat-value">{formatCompactPrice(unit.minPrice)}</span>
-                                                                <span className="stat-label">Min Price</span>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            <div className="unit-actions-row">
-                                                {unit.floorPlan && (
-                                                    <a href={unit.floorPlan} target="_blank" rel="noopener noreferrer" className="action-btn secondary-btn">
-                                                        {t('project_detail.download_fp', 'Floor Plan')}
-                                                        <ArrowDownTrayIcon className="hero-icon-sm" style={{ marginLeft: '0.5rem' }} />
-                                                    </a>
-                                                )}
-                                                <button
-                                                    className={`action-btn primary-btn ${isSoldOut ? 'disabled' : ''}`}
-                                                    disabled={isSoldOut}
-                                                    onClick={() => {
-                                                        if (isSoldOut) return;
-                                                        if (project.collection === 'Coastal' || project.collection === 'coastal') {
-                                                            navigate('/#contact');
-                                                        } else if (unit.salesLink) {
-                                                            window.open(unit.salesLink, '_blank', 'noopener,noreferrer');
-                                                        }
-                                                    }}
-                                                >
-                                                    {isSoldOut
-                                                        ? t('project_detail.sold_out', 'Sold Out')
-                                                        : (project.collection === 'Coastal' || project.collection === 'coastal')
-                                                            ? t('project_detail.request_info', 'Request More Information')
-                                                            : t('project_detail.reserve', 'Reserve Now')
-                                                    }
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </section>
-
-            {/* 4.5. Comparison Table (Island Collection Only) */}
-            {(project.collection === 'Island' || project.collection === 'island') && (
-                <section className="detail-comparison container" id="comparison">
-                    <ComparisonTable project={project} />
-                </section>
-            )}
-
-            {/* 5. Developer Section */}
-            <section className="detail-developer bg-secondary" id="developer">
-                <div className="container developer-flex">
-                    <div className="developer-info">
-                        <h2 className="section-title">{t('project_detail.dev_title', 'The Developer')}</h2>
-                        <h3>{project.developer?.name}</h3>
-                        <p>{formatAirtableText(project.developer?.description)}</p>
-                    </div>
-                    {project.developer?.image && (
-                        <div className="developer-image border-accent">
-                            <img
-                                src={project.developer.image}
-                                alt={project.developer.name}
-                                width="400"
-                                height="400"
-                                loading="lazy"
-                                decoding="async"
-                            />
-                        </div>
-                    )}
-                </div>
-            </section>
-
-            {/* 6. Location Section */}
+            {/* 5. Location Section */}
             <section className="detail-location container" id="location">
                 <h2 className="section-title">{t('project_detail.location_title', 'Location')}</h2>
                 <div className="location-grid">
-                    <div className="hotspots-list">
-                        {(() => {
-                            // Sort hotspots by distance (low to high)
-                            const sortedHotspots = [...(project.hotspots || [])].sort((a, b) => {
-                                return (parseFloat(a.distance) || 0) - (parseFloat(b.distance) || 0);
-                            });
-
-                            const maxDistance = Math.max(...sortedHotspots.map(h => parseFloat(h.distance) || 0), 1000); // Default to 1000 divisor if empty
-
-                            return sortedHotspots.map(spot => {
-                                const dist = parseFloat(spot.distance) || 0;
-                                const widthPercent = Math.min((dist / maxDistance) * 100, 100);
-
-                                return (
-                                    <div key={spot.id} className="hotspot-item">
-                                        <div className="hotspot-header">
-                                            <div className="spot-info">
-                                                <span className="spot-category">{spot.category}</span>
-                                                <span className="spot-name">{spot.name}</span>
-                                            </div>
-                                            <div className="spot-proximity">
-                                                <span className="distance">
-                                                    {dist > 1000 ? `${(dist / 1000).toFixed(1)}km` : `${dist}m`}
-                                                </span>
-                                                <span className="time">{spot.time} {t('project_detail.mins', 'mins')}</span>
-                                            </div>
-                                        </div>
-                                        <div className="distance-bar-track">
-                                            <div
-                                                className="distance-bar-fill"
-                                                style={{ width: `${widthPercent}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                );
-                            });
-                        })()}
-                    </div>
-                    {project.map && (
+                    {project.address && (
+                        <div className="address-block">
+                            <span className="address-label">{t('project_detail.address_label', 'Address')}</span>
+                            <p className="address-text">{project.address}</p>
+                        </div>
+                    )}
+                    {(project.address || (project.map?.lat && project.map?.lng)) && (
                         <div className="map-container border-accent">
                             <iframe
                                 width="100%"
                                 height="100%"
-                                src={`https://maps.google.com/maps?q=${project.map.lat},${project.map.lng}&z=15&output=embed`}
+                                src={
+                                    project.map?.lat && project.map?.lng
+                                        ? `https://maps.google.com/maps?q=${project.map.lat},${project.map.lng}&z=15&output=embed`
+                                        : `https://maps.google.com/maps?q=${encodeURIComponent(project.address)}&z=15&output=embed`
+                                }
                                 title="Project Location"
                                 frameBorder="0"
                                 style={{ border: 0, filter: 'grayscale(100%) invert(90%) contrast(80%)' }} // Custom dark mode attempt
@@ -586,6 +571,46 @@ const ProjectDetailPage = () => {
                     )}
                 </div>
             </section >
+
+            {/* 6. Agent Section */}
+            {project.agents?.length > 0 && (
+                <section className="detail-agents bg-secondary" id="agent">
+                    <div className="container">
+                        <h2 className="section-title">{t('project_detail.agent_title', 'Speak to an Agent')}</h2>
+                        <div className="agents-grid">
+                            {project.agents.map((agent) => (
+                                <div key={agent.id} className="agent-card">
+                                    {agent.photo && (
+                                        <div className="agent-photo border-accent">
+                                            <img
+                                                src={agent.photo}
+                                                alt={agent.name}
+                                                width="300"
+                                                height="300"
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="agent-info">
+                                        <h3>{agent.name}</h3>
+                                        {agent.jobTitle && <span className="agent-role">{agent.jobTitle}</span>}
+                                        {agent.bio && <p className="agent-bio">{formatAirtableText(agent.bio)}</p>}
+                                        <div className="agent-contact-links">
+                                            {agent.phone && <a href={`tel:${agent.phone}`} className="agent-contact-link">{agent.phone}</a>}
+                                            {agent.email && <a href={`mailto:${agent.email}`} className="agent-contact-link">{agent.email}</a>}
+                                        </div>
+                                        <button className="action-btn primary-btn" onClick={() => navigate('/#contact')}>
+                                            {t('project_detail.enquire', 'Enquire Now')}
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* 7. Lightbox Overlay */}
             {
                 selectedImageIndex !== null && project.gallery?.[selectedImageIndex] && (

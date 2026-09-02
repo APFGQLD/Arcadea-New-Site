@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -24,14 +24,18 @@ import ShortLinkRedirect from './pages/ShortLinkRedirect';
 import PageLoader from './components/PageLoader';
 import './index.css';
 
+// Lazy-loaded: Sanity Studio is a large bundle that only visitors of /studio should pay for
+const StudioPage = lazy(() => import('./pages/StudioPage'));
+
 function App() {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
+  const isStudioPage = location.pathname.startsWith('/studio');
 
   return (
     <div className="app-wrapper">
       <PageLoader />
-      {!isAdminPage && <Navbar />}
+      {!isAdminPage && !isStudioPage && <Navbar />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -55,12 +59,22 @@ function App() {
           {/* Hidden calculator — accessible by direct link only, not in nav */}
           <Route path="/tools/off-the-plan-calculator" element={<OffThePlanCalculatorPage />} />
 
+          {/* Sanity Studio, embedded at /studio — must come before the short-link catch-all */}
+          <Route
+            path="/studio/*"
+            element={(
+              <Suspense fallback={null}>
+                <StudioPage />
+              </Suspense>
+            )}
+          />
+
           {/* Catch-all for short links - MUST be last before 404 */}
           <Route path="/:slug" element={<ShortLinkRedirect />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
-      {!isAdminPage && <Footer />}
+      {!isAdminPage && !isStudioPage && <Footer />}
     </div>
   );
 }

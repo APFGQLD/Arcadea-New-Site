@@ -7,11 +7,14 @@ export default {
       name: 'title',
       title: 'Title',
       type: 'string',
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'collectionId',
       title: 'Collection ID',
       type: 'string',
+      description: 'Used in the page URL hash, e.g. #coastal',
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'logoLight',
@@ -27,6 +30,7 @@ export default {
       name: 'location',
       title: 'Location',
       type: 'string',
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'description',
@@ -40,6 +44,7 @@ export default {
       options: {
         hotspot: true,
       },
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'properties',
@@ -48,4 +53,11 @@ export default {
       of: [{type: 'reference', to: {type: 'property'}}],
     },
   ],
+  preview: {
+    select: {
+      title: 'title',
+      subtitle: 'location',
+      media: 'image',
+    },
+  },
 }

@@ -5,7 +5,7 @@ import { createImageUrlBuilder } from '@sanity/image-url';
 export const client = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'b6pkfjxp',
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
-  useCdn: true, // Use CDN for faster responses, set to false for fresh data
+  useCdn: false, // Fetch directly from the live API so published edits show up immediately
   apiVersion: '2024-01-01', // Use current date
 });
 
@@ -189,15 +189,21 @@ export const fetchProjectDetail = async (idOrSlug) => {
         "name": title,
         description,
         statusTag,
-        "collection": collection,
+        "collection": *[_type == "propertyCollection" && references(^._id)][0].collectionId,
         "heroImage": image.asset->url,
+        videoUrl,
         stats,
-        developer {
+        agents[]-> {
+          "id": _id,
           name,
-          description,
-          "image": image.asset->url
+          jobTitle,
+          "photo": photo.asset->url,
+          phone,
+          email,
+          bio
         },
         map,
+        address,
         quickFacts[] {
           "id": _key,
           icon,
@@ -224,13 +230,6 @@ export const fetchProjectDetail = async (idOrSlug) => {
           "thumbSmall": image.asset->url,
           "thumbMedium": image.asset->url,
           caption
-        },
-        hotspots[] {
-          "id": _key,
-          name,
-          distance,
-          time,
-          category
         },
         resources[] {
           "id": _key,

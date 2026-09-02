@@ -1,6 +1,13 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Canonicalize on www — arcadea.com.au and www.arcadea.com.au currently
+  # serve identical content with no redirect, which splits SEO signals
+  # between two domains. Force everything onto the www version.
+  RewriteCond %{HTTP_HOST} ^arcadea\.com\.au$ [NC]
+  RewriteRule ^(.*)$ https://www.arcadea.com.au/$1 [L,R=301]
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
