@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { SunIcon } from '@heroicons/react/24/solid';
 import { fetchPropertyCollections, fetchProperties, fetchPageAssets } from '../services/sanityService';
+import { formatListingPrice } from '../utils/priceFormat';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './PropertiesPage.css';
 import usePageTitle from '../hooks/usePageTitle';
@@ -67,12 +68,12 @@ const PropertiesPage = () => {
 
         const animateElements = document.querySelectorAll('.animate-on-scroll');
         animateElements.forEach((el) => observer.observe(el));
-        
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
             observer.disconnect();
         };
-    }, [collections]);
+    }, [collections, selectedCollection]);
 
     // Calculate cinematic transform values
     const scrollProgress = Math.min(scrollY / 600, 1); // 0 to 1 over 600px of scroll
@@ -327,7 +328,7 @@ const PropertiesPage = () => {
                                             <div className="property-info">
                                                 <div className="property-location">{property.location}</div>
                                                 <h3 className="property-title">{property.title}</h3>
-                                                <p className="property-price">{property.price}</p>
+                                                <p className="property-price">{formatListingPrice(property.price)}</p>
                                                 <ul className="property-features">
                                                     {property.features?.map((feat, idx) => (
                                                         <li key={idx}>{feat}</li>

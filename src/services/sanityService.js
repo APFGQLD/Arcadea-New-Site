@@ -21,16 +21,19 @@ export const urlFor = (source) => {
 const DEFAULT_FEATURED_IMAGE = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/V04_FINAL_lowres.jpeg';
 
 /**
- * Fetch all blog posts with pagination
+ * Fetch all blog posts with pagination, optionally scoped to a category slug
  */
-export const fetchBlogPosts = async (page = 1, perPage = 9) => {
+export const fetchBlogPosts = async (page = 1, perPage = 9, categorySlug = null) => {
   const start = (page - 1) * perPage;
   const end = start + perPage;
-  
+  const filter = categorySlug
+    ? `_type == "post" && $categorySlug in categories[]->slug.current`
+    : `_type == "post"`;
+
   try {
     const query = `
       {
-        "posts": *[_type == "post"] | order(publishedAt desc) [$start...$end] {
+        "posts": *[${filter}] | order(publishedAt desc) [$start...$end] {
           _id,
           "id": _id,
           "slug": slug.current,
@@ -40,13 +43,14 @@ export const fetchBlogPosts = async (page = 1, perPage = 9) => {
           "date": publishedAt,
           "author": author->name,
           "featuredImage": featuredImage.asset->url,
+          "featuredImageAlt": featuredImage.alt,
           "categories": categories[]->{name, "slug": slug.current}
         },
-        "total": count(*[_type == "post"])
+        "total": count(*[${filter}])
       }
     `;
-    
-    const result = await client.fetch(query, { start, end });
+
+    const result = await client.fetch(query, { start, end, categorySlug });
     
     return {
       posts: result.posts.map(post => ({
@@ -73,11 +77,13 @@ export const fetchBlogPost = async (slug) => {
         "id": _id,
         "slug": slug.current,
         title,
+        excerpt,
         content,
         "date": publishedAt,
         "author": author->name,
         "authorAvatar": author->image.asset->url,
         "featuredImage": featuredImage.asset->url,
+        "featuredImageAlt": featuredImage.alt,
         "categories": categories[]->{name, "slug": slug.current}
       }
     `;
@@ -93,6 +99,39 @@ export const fetchBlogPost = async (slug) => {
   } catch (error) {
     console.error('Error fetching blog post from Sanity:', error);
     throw error;
+  }
+};
+
+/**
+ * Fetch posts related to the given one — prioritises posts sharing a
+ * category, falling back to the most recent other posts to fill the list.
+ */
+export const fetchRelatedPosts = async (currentSlug, categorySlugs = [], limit = 3) => {
+  try {
+    const query = `
+      *[_type == "post" && slug.current != $currentSlug && defined(slug.current)] {
+        _id,
+        "id": _id,
+        "slug": slug.current,
+        title,
+        excerpt,
+        "date": publishedAt,
+        "author": author->name,
+        "featuredImage": featuredImage.asset->url,
+        "featuredImageAlt": featuredImage.alt,
+        "sharesCategory": count((categories[]->slug.current)[@ in $categorySlugs]) > 0
+      } | order(sharesCategory desc, publishedAt desc) [0...$limit]
+    `;
+
+    const result = await client.fetch(query, { currentSlug, categorySlugs, limit });
+
+    return result.map(post => ({
+      ...post,
+      featuredImage: post.featuredImage || DEFAULT_FEATURED_IMAGE,
+    }));
+  } catch (error) {
+    console.error('Error fetching related posts from Sanity:', error);
+    return [];
   }
 };
 
@@ -156,7 +195,11 @@ export const fetchProperties = async (collectionId) => {
           "id": propertyId,
           title,
           location,
-          price,
+          price {
+            enquiryOnly,
+            prefix,
+            amount
+          },
           "image": image.asset->url,
           tag,
           features
@@ -192,7 +235,14 @@ export const fetchProjectDetail = async (idOrSlug) => {
         "collection": *[_type == "propertyCollection" && references(^._id)][0].collectionId,
         "heroImage": image.asset->url,
         videoUrl,
-        stats,
+        price {
+          enquiryOnly,
+          prefix,
+          amount
+        },
+        status,
+        ctaLabel,
+        ctaLink,
         agents[]-> {
           "id": _id,
           name,
@@ -210,19 +260,6 @@ export const fetchProjectDetail = async (idOrSlug) => {
           label,
           value,
           order
-        },
-        units[] {
-          "id": _key,
-          config,
-          totalUnits,
-          soldUnits,
-          "price": price,
-          minPrice,
-          description,
-          "image": image.asset->url,
-          "floorPlan": floorPlan.asset->url,
-          percentage,
-          salesLink
         },
         gallery[] {
           "id": _key,

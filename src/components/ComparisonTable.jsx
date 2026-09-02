@@ -8,21 +8,13 @@ const ComparisonTable = ({ project }) => {
 
     // Data extraction with fallbacks
     const projectName = project.name;
-    const roi = project.stats?.ipdc ? `${project.stats.ipdc}%` : '12 - 18%';
+    const roi = '12 - 18%';
 
-    // Find lowest price
-    const entryPrice = project.units && project.units.length > 0
-        ? project.units.reduce((min, unit) => {
-            const price = unit.minPrice || unit.price;
-            // Basic heuristic to parse price if it's a string like "$55,000"
-            const numPrice = Number(String(price).replace(/[^0-9.-]+/g, ""));
-            return numPrice < min ? numPrice : min;
-        }, Infinity)
+    const entryPrice = project.price && !project.price.enquiryOnly && project.price.amount != null
+        ? project.price.amount
         : 55000; // Fallback default
 
-    const formattedEntryPrice = entryPrice !== Infinity
-        ? `From $${(entryPrice / 1000).toFixed(0)}k`
-        : 'From $55k';
+    const formattedEntryPrice = `From $${(entryPrice / 1000).toFixed(0)}k`;
 
     return (
         <div className="apfg-comp-container">

@@ -5,7 +5,7 @@ export default {
   groups: [
     { name: 'overview', title: 'Overview', default: true },
     { name: 'media', title: 'Media' },
-    { name: 'availability', title: 'Availability' },
+    { name: 'listing', title: 'Listing' },
     { name: 'location', title: 'Location' },
     { name: 'resources', title: 'Resources' },
     { name: 'agents', title: 'Agents' },
@@ -28,16 +28,11 @@ export default {
     },
     {
       name: 'location',
-      title: 'Location',
+      title: 'Area',
       type: 'string',
       group: 'overview',
+      description: 'Short label shown on listing cards, e.g. "Canggu, Bali". For the full street address used by the map, see Address on the Location tab.',
       validation: (Rule) => Rule.required(),
-    },
-    {
-      name: 'price',
-      title: 'Price',
-      type: 'string',
-      group: 'overview',
     },
     {
       name: 'image',
@@ -145,40 +140,64 @@ export default {
       description: 'Optional YouTube link shown as an embedded video on the project page',
     },
     {
-      name: 'stats',
-      title: 'Stats',
+      name: 'price',
+      title: 'Price',
       type: 'object',
-      group: 'availability',
+      group: 'listing',
       fields: [
-        { name: 'beds', type: 'string', title: 'Beds' },
-        { name: 'baths', type: 'string', title: 'Baths' },
-        { name: 'size', type: 'string', title: 'Size' },
-        { name: 'ipdc', type: 'string', title: 'IPDC' }
-      ]
+        {
+          name: 'enquiryOnly',
+          title: 'By Enquiry Only',
+          type: 'boolean',
+          description: 'Hides the amount on the site and shows "By Enquiry Only" instead',
+          initialValue: false,
+        },
+        {
+          name: 'prefix',
+          title: 'Prefix',
+          type: 'string',
+          description: 'Optional, e.g. "From", "Offers Over", "Guide"',
+          hidden: ({ parent }) => !!parent?.enquiryOnly,
+        },
+        {
+          name: 'amount',
+          title: 'Amount',
+          type: 'number',
+          hidden: ({ parent }) => !!parent?.enquiryOnly,
+        },
+      ],
+      preview: {
+        select: { enquiryOnly: 'enquiryOnly', prefix: 'prefix', amount: 'amount' },
+        prepare({ enquiryOnly, prefix, amount }) {
+          if (enquiryOnly) return { title: 'By Enquiry Only' };
+          if (amount == null) return { title: 'No price set' };
+          const formatted = `$${Number(amount).toLocaleString('en-US')}`;
+          return { title: prefix ? `${prefix} ${formatted}` : formatted };
+        },
+      },
     },
     {
-      name: 'units',
-      title: 'Units',
-      type: 'array',
-      group: 'availability',
-      of: [{
-        type: 'object',
-        fields: [
-          { name: 'config', type: 'string', title: 'Config' },
-          { name: 'totalUnits', type: 'number', title: 'Total Units' },
-          { name: 'soldUnits', type: 'number', title: 'Sold Units' },
-          { name: 'price', type: 'string', title: 'Price Display' },
-          { name: 'minPrice', type: 'number', title: 'Minimum Price' },
-          { name: 'description', type: 'text', title: 'Description' },
-          { name: 'image', type: 'image', title: 'Image' },
-          { name: 'floorPlan', type: 'image', title: 'Floor Plan' },
-          { name: 'percentage', type: 'number', title: 'Percentage' },
-          { name: 'salesLink', type: 'url', title: 'Sales Link' }
-        ],
-        preview: {
-          select: { title: 'config', subtitle: 'price', media: 'image' },
-        },
-      }]
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      group: 'listing',
+      options: {
+        list: ['For Sale', 'Under Offer', 'Sold', 'Coming Soon', 'Off Market'],
+      },
+    },
+    {
+      name: 'ctaLabel',
+      title: 'Call-to-Action Label',
+      type: 'string',
+      group: 'listing',
+      description: 'Button text, e.g. "Enquire Now", "Book a Viewing". Defaults to "Enquire Now" if left blank.',
+    },
+    {
+      name: 'ctaLink',
+      title: 'Call-to-Action Link',
+      type: 'url',
+      group: 'listing',
+      description: 'Optional external link (e.g. a booking page). If left blank, the button opens the on-site enquiry form instead.',
     },
     {
       name: 'address',

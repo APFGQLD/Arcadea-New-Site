@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useNavVisibility } from '../context/NavVisibilityContext';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
 
@@ -12,6 +13,7 @@ import './Navbar.css';
 const Navbar = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const { navHidden } = useNavVisibility();
     const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,7 +37,7 @@ const Navbar = () => {
     const showWhiteLogo = theme === 'dark';
 
     return (
-        <nav className={`navbar ${forceScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''} ${isHomePage ? 'is-home' : ''}`}>
+        <nav className={`navbar ${forceScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''} ${isHomePage ? 'is-home' : ''} ${navHidden && !isMenuOpen ? 'nav-hidden' : ''}`}>
             <div className="container nav-container">
                 <Link to="/" className="logo" onClick={closeMenu}>
                     <img
@@ -58,7 +60,7 @@ const Navbar = () => {
                         <li><Link to="/" onClick={closeMenu}>{t('nav.home')}</Link></li>
                         <li><Link to="/properties" onClick={closeMenu}>{t('nav.properties')}</Link></li>
                         <li><Link to="/services" onClick={closeMenu}>{t('nav.services')}</Link></li>
-
+                        <li><Link to="/news" onClick={closeMenu}>{t('nav.news')}</Link></li>
                         <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>
                         <li><Link to="/#contact" className="btn-nav" onClick={closeMenu}>{t('nav.contact')}</Link></li>
                     </ul>

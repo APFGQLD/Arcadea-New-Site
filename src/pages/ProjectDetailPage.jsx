@@ -2,16 +2,13 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import { useNavVisibility } from '../context/NavVisibilityContext';
 import { fetchProjectDetail } from '../services/sanityService';
 import {
     MoonIcon,
     SparklesIcon,
     ArrowsPointingOutIcon,
     PresentationChartLineIcon,
-    ArrowDownTrayIcon,
-    ArrowRightIcon,
-    PlusIcon,
-    MinusIcon,
     HomeIcon,
     CalendarIcon,
     MapPinIcon,
@@ -28,21 +25,62 @@ import { FaBed, FaBath, FaToilet, FaCar } from 'react-icons/fa6';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
 import usePageTitle from '../hooks/usePageTitle';
+import { formatListingPrice } from '../utils/priceFormat';
 import './ProjectDetailPage.css';
+
+const STATUS_STYLES = {
+    'for sale': 'status-for-sale',
+    'under offer': 'status-under-offer',
+    'sold': 'status-sold',
+    'coming soon': 'status-coming-soon',
+    'off market': 'status-off-market',
+};
 
 const ProjectDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const { setNavHidden } = useNavVisibility();
 
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
     const carouselRef = useRef(null);
+    const navBannerSentinelRef = useRef(null);
+    const [navBannerCompact, setNavBannerCompact] = useState(false);
 
     usePageTitle(project?.name);
+
+    // The mini section-menu takes over the top of the viewport (replacing the
+    // main Navbar) once it becomes sticky, detected via a zero-height sentinel
+    // placed just before it: once the sentinel scrolls above the top, the menu
+    // has pinned. It starts at the same height as the Navbar (so the handoff
+    // is a seamless swap, nothing mismatched to peek out from behind), then
+    // eases down to a more compact height once scrolled a bit further, with
+    // nothing else on screen at that point for it to clash with.
+    useEffect(() => {
+        const sentinel = navBannerSentinelRef.current;
+        if (!sentinel) return;
+
+        const COMPACT_SCROLL_RANGE = 60; // px scrolled past pin before compacting
+
+        const handleScroll = () => {
+            const top = sentinel.getBoundingClientRect().top;
+            const pinned = top <= 0;
+            setNavHidden(pinned);
+            setNavBannerCompact(pinned && top <= -COMPACT_SCROLL_RANGE);
+        };
+
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            setNavHidden(false); // Restore the main Navbar when leaving this page
+        };
+    }, [project, setNavHidden]);
 
     useEffect(() => {
         const loadProject = async () => {
@@ -92,36 +130,6 @@ const ProjectDetailPage = () => {
             left: direction === 'left' ? -scrollAmount : scrollAmount,
             behavior: 'smooth'
         });
-    };
-
-    const [expandedUnitId, setExpandedUnitId] = useState(null);
-
-    const toggleUnit = (id) => {
-        setExpandedUnitId(prev => prev === id ? null : id);
-    };
-
-    const formatPrice = (price) => {
-        if (!price) return 'TBC';
-        // Check if price is a number string or number
-        const numPrice = Number(price);
-        if (!isNaN(numPrice)) {
-            return `A$ ${numPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-        }
-        return price; // Return as is if fully formatted string already (fallback)
-    };
-
-    const formatCompactPrice = (price) => {
-        if (!price) return 'TBC';
-        const numPrice = Number(price);
-        if (!isNaN(numPrice)) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD', // Using USD symbol $ but represents AUD context
-                notation: "compact",
-                maximumFractionDigits: 1
-            }).format(numPrice).replace('US', ''); // Remove US code if present, ensuring generic $
-        }
-        return price;
     };
 
     // Convert a YouTube watch/share URL into an embeddable URL
@@ -227,9 +235,6 @@ const ProjectDetailPage = () => {
                     />
                     <div className="hero-overlay"></div>
                 </div>
-                <button className="shared-back-link" onClick={() => navigate('/properties')}>
-                    &larr; {t('common.back', 'Back to Portfolio')}
-                </button>
                 <div className="hero-content container">
                     <div className="hero-welcome-area centered">
                         {project.statusTag && (
@@ -241,13 +246,41 @@ const ProjectDetailPage = () => {
                             <span className="welcome-text">{t('project_detail.welcome', 'Welcome to')}</span>{" "}
                             <span className="project-name-accent">{project.name}</span>
                         </h1>
+                        {(project.price || project.status) && (
+                            <div className="hero-listing-row">
+                                {project.price && (
+                                    <span className="hero-listing-price">{formatListingPrice(project.price)}</span>
+                                )}
+                                {project.status && (
+                                    <span className={`listing-status-pill ${STATUS_STYLES[project.status.toLowerCase()] || ''}`}>
+                                        {project.status}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+                        <button
+                            className="action-btn primary-btn hero-cta-btn"
+                            onClick={() => {
+                                if (project.ctaLink) {
+                                    window.open(project.ctaLink, '_blank', 'noopener,noreferrer');
+                                } else {
+                                    navigate('/#contact');
+                                }
+                            }}
+                        >
+                            {project.ctaLabel || t('project_detail.enquire', 'Enquire Now')}
+                        </button>
                     </div>
                 </div>
             </section>
 
             {/* Quick Navigation Banner */}
-            <nav className="detail-nav-banner">
+            <div ref={navBannerSentinelRef} aria-hidden="true" />
+            <nav className={`detail-nav-banner ${navBannerCompact ? 'nav-compact' : ''}`}>
                 <div className="container nav-banner-inner">
+                    <button className="nav-banner-link nav-banner-back" onClick={() => navigate('/properties')}>
+                        &larr; {t('project_detail.nav_back', 'Portfolio')}
+                    </button>
                     <a href="#overview" className="nav-banner-link">{t('project_detail.nav_overview', 'Overview')}</a>
                     {(project.collection === 'island') && (
                         <a href="#comparison" className="nav-banner-link">{t('project_detail.nav_comparison', 'Comparison')}</a>
@@ -293,160 +326,6 @@ const ProjectDetailPage = () => {
                         </div>
                     )}
                 </div>
-
-                {project.units?.length > 0 && (
-                    <div className="overview-availability">
-                        <h3 className="subsection-title">{t('project_detail.units_title', 'Pricing & Availability')}</h3>
-                        <div className="units-accordion">
-                            {project.units.map(unit => {
-                                const total = unit.totalUnits || 0;
-                                const sold = unit.soldUnits || 0;
-                                const available = Math.max(0, total - sold);
-                                const percentAvailable = total > 0 ? (available / total) * 100 : 0;
-
-                                const isSoldOut = total > 0 && available === 0;
-
-                                let barColorClass = 'high';
-                                if (isSoldOut) barColorClass = 'sold-out';
-                                else if (percentAvailable < 20) barColorClass = 'low';
-                                else if (percentAvailable < 50) barColorClass = 'med';
-
-                                return (
-                                    <div
-                                        key={unit.id}
-                                        className={`accordion-item ${expandedUnitId === unit.id ? 'expanded' : ''} ${isSoldOut ? 'sold-out' : ''}`}
-                                        style={{
-                                            backgroundImage: unit.image ? `url(${unit.image})` : undefined,
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center'
-                                        }}
-                                        onClick={() => toggleUnit(unit.id)}
-                                    >
-                                        <div className="item-overlay"></div>
-
-                                        {isSoldOut && (
-                                            <div className="sold-out-badge">
-                                                {t('project_detail.sold_out', 'Sold Out')}
-                                            </div>
-                                        )}
-
-                                        <div className="accordion-header">
-                                            <div className="unit-info-basic">
-                                                <span className="unit-type">{unit.config}</span>
-                                            </div>
-                                            <div className="unit-info-meta">
-                                                <span className="unit-price">
-                                                    {t('project_detail.from', 'From')} {formatPrice(unit.minPrice || unit.price)}
-                                                </span>
-                                                <span className="accordion-icon">
-                                                    {expandedUnitId === unit.id ?
-                                                        <MinusIcon className="hero-icon" /> :
-                                                        <PlusIcon className="hero-icon" />
-                                                    }
-                                                </span>
-                                            </div>
-                                            <div className="availability-bar-container">
-                                                <div
-                                                    className={`availability-bar-fill ${barColorClass}`}
-                                                    style={{ width: `${percentAvailable}%` }}
-                                                ></div>
-                                            </div>
-                                        </div>
-
-                                        <div className="accordion-content">
-                                            <div className="unit-content-wrapper" onClick={(e) => e.stopPropagation()}>
-                                                <div className="unit-content-header">
-                                                    {unit.description && (
-                                                        <div className="unit-description">
-                                                            <p>{unit.description}</p>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="unit-stats-row">
-                                                        <div className="unit-availability-stat">
-                                                            {!isSoldOut && (
-                                                                <span className={`availability-count ${barColorClass}`}>
-                                                                    {available}
-                                                                </span>
-                                                            )}
-                                                            <span className={`availability-label ${isSoldOut ? 'sold-out-label' : ''}`}>
-                                                                {isSoldOut ? t('project_detail.fully_sold', 'Fully Sold') : t('project_detail.units_available', 'Units Available')}
-                                                            </span>
-                                                            <div className="availability-bar-visual">
-                                                                <div
-                                                                    className={`availability-bar-fill ${barColorClass}`}
-                                                                    style={{ width: `${percentAvailable}%` }}
-                                                                ></div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="unit-extra-stats">
-                                                            <div className="stat-item share-stat">
-                                                                <div className="swap-visible">
-                                                                    <span className="stat-value">100%</span>
-                                                                    <span className="stat-label">Total Share</span>
-                                                                </div>
-                                                                {unit.percentage && (
-                                                                    <div className="swap-hidden">
-                                                                        <span className="stat-value">
-                                                                            {(unit.percentage * 100).toLocaleString('en-US', { maximumFractionDigits: 2 })}%
-                                                                        </span>
-                                                                        <span className="stat-label">Min Share</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-
-                                                            {(unit.price || unit.minPrice) && (
-                                                                <div className="stat-item price-stat">
-                                                                    <div className="swap-visible">
-                                                                        <span className="stat-value">{formatCompactPrice(unit.price)}</span>
-                                                                        <span className="stat-label">Full Price</span>
-                                                                    </div>
-                                                                    <div className="swap-hidden">
-                                                                        <span className="stat-value">{formatCompactPrice(unit.minPrice)}</span>
-                                                                        <span className="stat-label">Min Price</span>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="unit-actions-row">
-                                                        {unit.floorPlan && (
-                                                            <a href={unit.floorPlan} target="_blank" rel="noopener noreferrer" className="action-btn secondary-btn">
-                                                                {t('project_detail.download_fp', 'Floor Plan')}
-                                                                <ArrowDownTrayIcon className="hero-icon-sm" style={{ marginLeft: '0.5rem' }} />
-                                                            </a>
-                                                        )}
-                                                        <button
-                                                            className={`action-btn primary-btn ${isSoldOut ? 'disabled' : ''}`}
-                                                            disabled={isSoldOut}
-                                                            onClick={() => {
-                                                                if (isSoldOut) return;
-                                                                if (project.collection === 'coastal') {
-                                                                    navigate('/#contact');
-                                                                } else if (unit.salesLink) {
-                                                                    window.open(unit.salesLink, '_blank', 'noopener,noreferrer');
-                                                                }
-                                                            }}
-                                                        >
-                                                            {isSoldOut
-                                                                ? t('project_detail.sold_out', 'Sold Out')
-                                                                : (project.collection === 'coastal')
-                                                                    ? t('project_detail.request_info', 'Request More Information')
-                                                                    : t('project_detail.reserve', 'Reserve Now')
-                                                            }
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
             </section>
 
             {/* 2.5. Comparison Table (Island Collection Only) */}
@@ -550,6 +429,18 @@ const ProjectDetailPage = () => {
                         <div className="address-block">
                             <span className="address-label">{t('project_detail.address_label', 'Address')}</span>
                             <p className="address-text">{project.address}</p>
+                            <a
+                                href={
+                                    project.map?.lat && project.map?.lng
+                                        ? `https://www.google.com/maps/dir/?api=1&destination=${project.map.lat},${project.map.lng}`
+                                        : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(project.address)}`
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="action-btn secondary-btn address-directions-btn"
+                            >
+                                {t('project_detail.get_directions', 'Get Directions')}
+                            </a>
                         </div>
                     )}
                     {(project.address || (project.map?.lat && project.map?.lng)) && (
