@@ -191,6 +191,23 @@ const ProjectDetailPage = () => {
         });
     };
 
+    const formatFileSize = (bytes) => {
+        if (!bytes) return null;
+        if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const FILE_ICONS = {
+        pdf: '📄',
+        doc: '📝', docx: '📝',
+        xls: '📊', xlsx: '📊', csv: '📊',
+        ppt: '📽️', pptx: '📽️',
+        zip: '🗜️', rar: '🗜️',
+        jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️', webp: '🖼️',
+        mp4: '🎬', mov: '🎬',
+    };
+    const getFileIcon = (ext) => FILE_ICONS[ext?.toLowerCase()] || '📎';
+
     const getIcon = (iconName) => {
         if (!iconName) return <PresentationChartLineIcon className="hero-icon" />;
 
@@ -414,16 +431,18 @@ const ProjectDetailPage = () => {
                                 ) : (
                                     <>
                                         <div className="resource-icon">
-                                            {res.type === 'Brochure (PDF)' && <span>📄</span>}
-                                            {res.type === 'Virtual Tour (URL)' && <span>👓</span>}
-                                            {res.type === 'Monthly Update' && <span>📅</span>}
+                                            <span>{res.fileExt ? getFileIcon(res.fileExt) : '🔗'}</span>
                                         </div>
                                         <span className="resource-arrow">→</span>
                                     </>
                                 )}
                                 <div className="resource-info">
                                     <h4>{res.label}</h4>
-                                    <span className="resource-type">{res.type}</span>
+                                    {res.fileExt && (
+                                        <span className="resource-file-meta">
+                                            {res.fileExt.toUpperCase()}{formatFileSize(res.fileSize) && ` · ${formatFileSize(res.fileSize)}`}
+                                        </span>
+                                    )}
                                 </div>
                             </a>
                         ))}

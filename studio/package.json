@@ -14,8 +14,8 @@
   "type": "commonjs",
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
-    "@sanity/vision": "^6.5.0",
-    "sanity": "^6.5.0",
+    "@sanity/vision": "^6.12.0",
+    "sanity": "^6.12.0",
     "styled-components": "^6.4.4"
   },
   "overrides": {

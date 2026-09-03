@@ -292,9 +292,11 @@ export const fetchProjectDetail = async (idOrSlug) => {
         resources[] {
           "id": _key,
           label,
-          type,
           link,
           "fileUrl": file.asset->url,
+          "fileName": file.asset->originalFilename,
+          "fileSize": file.asset->size,
+          "fileExt": file.asset->extension,
           "image": image.asset->url + "${CARD_IMAGE_PARAMS}"
         }
       }

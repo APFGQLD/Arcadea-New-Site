@@ -248,12 +248,11 @@ export default {
         type: 'object',
         fields: [
           { name: 'label', type: 'string', title: 'Label' },
-          { name: 'type', type: 'string', title: 'Type' },
           {
             name: 'file',
             type: 'file',
             title: 'File Upload',
-            description: 'Upload a PDF or other file directly (e.g. a brochure). Takes priority over Link below if both are set.',
+            description: 'Upload a PDF or other file directly (e.g. a brochure). Its file type and size are shown automatically on the site — no need to describe it. Takes priority over Link below if both are set.',
           },
           {
             name: 'link',
@@ -264,7 +263,7 @@ export default {
           { name: 'image', type: 'image', title: 'Image' }
         ],
         preview: {
-          select: { title: 'label', subtitle: 'type', media: 'image' },
+          select: { title: 'label', subtitle: 'link', media: 'image' },
         },
         validation: (Rule) => Rule.custom((resource) => {
           if (!resource?.file && !resource?.link) {

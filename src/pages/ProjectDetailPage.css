@@ -839,11 +839,11 @@
     font-size: 1.1rem;
 }
 
-.resource-type {
+.resource-file-meta {
+    display: block;
+    margin-top: 0.3rem;
     font-size: 0.8rem;
-    color: var(--accent-gold);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: var(--text-secondary);
 }
 
 .resource-arrow {
