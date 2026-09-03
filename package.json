@@ -20,7 +20,7 @@
     "@portabletext/react": "^6.2.0",
     "@sanity/client": "^7.23.2",
     "@sanity/image-url": "^2.1.1",
-    "@sanity/vision": "^6.5.0",
+    "@sanity/vision": "^6.12.0",
     "@supabase/supabase-js": "^2.95.3",
     "axios": "^1.16.0",
     "i18next": "^25.8.0",
@@ -30,7 +30,7 @@
     "react-i18next": "^16.5.4",
     "react-icons": "^5.7.0",
     "react-router-dom": "^7.13.0",
-    "sanity": "^6.5.0",
+    "sanity": "^6.12.0",
     "styled-components": "^6.4.4"
   },
   "devDependencies": {
