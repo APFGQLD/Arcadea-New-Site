@@ -67,12 +67,19 @@
 .cinematic-hero-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
+    /* The radial vignette darkens the hero's edges for text contrast; the
+       nav scrim on top of it guarantees the fixed navbar itself stays
+       legible regardless of what's directly behind it. */
+    background:
+        var(--hero-nav-scrim),
+        radial-gradient(circle at center, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
     z-index: 2;
 }
 
 [data-theme='light'] .cinematic-hero-overlay {
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.8) 100%);
+    background:
+        var(--hero-nav-scrim),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.8) 100%);
 }
 
 .cinematic-text-wrapper {

@@ -129,7 +129,7 @@ const BlogPostPage = () => {
     if (loading) {
         return (
             <div className="blog-post-page">
-                <div className="container">
+                <div className="blog-post-loading">
                     <LoadingSpinner message="Loading article..." />
                 </div>
             </div>
@@ -165,45 +165,47 @@ const BlogPostPage = () => {
                     aria-label={post.featuredImageAlt || post.title}
                 >
                     <div className="blog-post-hero-overlay"></div>
+                    <div className="container">
+                        <Link to="/news" className="blog-back-link">
+                            <ArrowLeftIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} /> Back to News
+                        </Link>
+                    </div>
+                    <div className="container">
+                        <div className="blog-post-hero-inner">
+                            {post.categories && post.categories.length > 0 && (
+                                <div className="blog-post-categories">
+                                    {post.categories.map((cat, idx) => (
+                                        <Link key={idx} to={`/news?category=${cat.slug}`} className="blog-category-tag">
+                                            {cat.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                            <h1 className="blog-post-title">{post.title}</h1>
+                            <div className="blog-post-meta">
+                                <span className="blog-post-date">
+                                    <CalendarDaysIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
+                                    {formatDate(post.date)}
+                                </span>
+                                <span className="blog-post-author">
+                                    <UserIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
+                                    {post.author}
+                                </span>
+                                {getReadingTime(post.content) && (
+                                    <span className="blog-post-readtime">
+                                        <ClockIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
+                                        {getReadingTime(post.content)} min read
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
             {/* Content */}
             <div className="container">
-                <Link to="/news" className="blog-back-link">
-                    <ArrowLeftIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} /> Back to News
-                </Link>
-
                 <article className="blog-post-content">
-                    <header className="blog-post-header">
-                        <h1 className="blog-post-title">{post.title}</h1>
-                        <div className="blog-post-meta">
-                            <span className="blog-post-date">
-                                <CalendarDaysIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                {formatDate(post.date)}
-                            </span>
-                            <span className="blog-post-author">
-                                <UserIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                {post.author}
-                            </span>
-                            {getReadingTime(post.content) && (
-                                <span className="blog-post-readtime">
-                                    <ClockIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                    {getReadingTime(post.content)} min read
-                                </span>
-                            )}
-                        </div>
-                        {post.categories && post.categories.length > 0 && (
-                            <div className="blog-post-categories">
-                                {post.categories.map((cat, idx) => (
-                                    <Link key={idx} to={`/news?category=${cat.slug}`} className="blog-category-tag">
-                                        {cat.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                    </header>
-
                     <div className="blog-post-body">
                         {Array.isArray(post.content) ? (
                             <PortableText value={post.content} components={portableTextComponents} />

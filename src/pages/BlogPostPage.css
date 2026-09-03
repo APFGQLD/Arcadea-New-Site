@@ -1,24 +1,53 @@
 /* Blog Post Page */
 .blog-post-page {
     min-height: 100vh;
-    background: var(--background-primary);
+    background: var(--bg-primary);
     padding-bottom: 6rem;
+}
+
+.blog-post-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Hero Section with Featured Image */
 .blog-post-hero {
-    height: 60vh;
-    min-height: 400px;
+    height: 72vh;
+    min-height: 560px;
     background-size: cover;
     background-position: center;
     position: relative;
     margin-bottom: -8rem;
+    /* The two .container children (back-link, title block) are pushed to
+       opposite ends via this padded flex box — kept on .blog-post-hero
+       itself, not a nested .container, since .container's own shorthand
+       `padding: 0 2rem` would otherwise win the cascade and zero out the
+       vertical padding declared here (equal specificity, same element). */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10rem 0 11rem;
 }
 
 .blog-post-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent, var(--background-primary));
+    /* Two independent jobs layered together: the nav scrim guarantees the
+       fixed navbar stays legible, and --hero-gradient (dark/light per theme,
+       same as the project-detail hero) protects the title and meta row
+       pinned to the bottom, regardless of what's in the uploaded image. */
+    background: var(--hero-nav-scrim), var(--hero-gradient);
+}
+
+.blog-post-hero > .container {
+    position: relative;
+    z-index: 2;
+}
+
+.blog-post-hero-inner {
+    max-width: 800px;
 }
 
 /* Back Link */
@@ -26,13 +55,12 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 1rem;
     text-decoration: none;
-    margin-top: 12rem;
-    margin-bottom: 3rem;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
     transition: all var(--transition-normal);
 }
 
@@ -53,18 +81,13 @@
     z-index: 2;
 }
 
-.blog-post-header {
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
 .blog-post-title {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2.25rem, 5.5vw, 3.5rem);
     font-weight: 700;
-    line-height: 1.3;
+    line-height: 1.25;
     color: var(--text-primary);
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
     margin-bottom: 1.5rem;
 }
 
@@ -73,9 +96,9 @@
     flex-wrap: wrap;
     row-gap: 0.75rem;
     column-gap: 2rem;
-    margin-bottom: 1.5rem;
     font-size: 0.95rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
+    opacity: 0.85;
 }
 
 .blog-post-date,
@@ -96,13 +119,17 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    margin-bottom: 1.25rem;
 }
 
 .blog-category-tag {
     display: inline-block;
     padding: 0.4rem 1rem;
     background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
-    color: var(--background-primary);
+    /* Fixed white, not a theme variable: the gradient itself doesn't change
+       between themes, so tying the text to --bg-primary (which flips white
+       <-> near-black) was making it unreadable in one theme or the other. */
+    color: #ffffff;
     font-family: var(--font-body);
     font-size: 0.85rem;
     font-weight: 600;
@@ -160,7 +187,7 @@
 .blog-share-btn:hover {
     background: var(--accent-gold);
     border-color: var(--accent-gold);
-    color: var(--background-primary);
+    color: var(--bg-primary);
 }
 
 .blog-share-btn svg {
@@ -399,13 +426,13 @@
 /* Responsive */
 @media (max-width: 768px) {
     .blog-post-hero {
-        height: 40vh;
-        min-height: 300px;
+        height: 74vh;
+        min-height: 600px;
         margin-bottom: -6rem;
-    }
-
-    .blog-back-link {
-        margin-top: 8rem;
+        /* Deliberately more headroom than padding-top+padding-bottom alone
+           would suggest is needed: a long title wrapping to 3-4 lines at
+           this width, plus the wrapped meta row below it, needs the room. */
+        padding: 8rem 0 9rem;
     }
 
     .blog-post-content {
@@ -414,11 +441,6 @@
 
     .blog-post-title {
         font-size: 1.75rem;
-    }
-
-    .blog-post-meta {
-        flex-direction: column;
-        gap: 0.75rem;
     }
 
     .blog-post-body {
