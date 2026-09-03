@@ -10,12 +10,46 @@ import {
     CheckIcon
 } from '@heroicons/react/24/solid';
 import { FaXTwitter, FaFacebookF, FaLinkedinIn } from 'react-icons/fa6';
-import { fetchBlogPost, fetchRelatedPosts } from '../services/sanityService';
+import { fetchBlogPost, fetchRelatedPosts, urlFor } from '../services/sanityService';
 import { getReadingTime } from '../utils/readingTime';
 import { PortableText } from '@portabletext/react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import usePageTitle from '../hooks/usePageTitle';
 import './BlogPostPage.css';
+
+// Internal links (relative, or pointing back at this domain) use React
+// Router's Link for client-side navigation; everything else opens in a new
+// tab, since it's leaving the site.
+const portableTextComponents = {
+    types: {
+        image: ({ value }) => {
+            if (!value?.asset) return null;
+            return (
+                <img
+                    className="blog-post-body-image"
+                    src={urlFor(value).width(1200).fit('max').auto('format').url()}
+                    alt={value.alt || ''}
+                    loading="lazy"
+                />
+            );
+        },
+    },
+    marks: {
+        link: ({ value, children }) => {
+            const href = value?.href || '';
+            const isInternal = href.startsWith('/') || href.includes('arcadea.com.au');
+            if (isInternal) {
+                const path = href.startsWith('http') ? href.replace(/^https?:\/\/[^/]+/, '') : href;
+                return <Link to={path || '/'}>{children}</Link>;
+            }
+            return (
+                <a href={href} target="_blank" rel="noopener noreferrer">
+                    {children}
+                </a>
+            );
+        },
+    },
+};
 
 const BlogPostPage = () => {
     const { slug } = useParams();
@@ -168,7 +202,7 @@ const BlogPostPage = () => {
 
                     <div className="blog-post-body">
                         {Array.isArray(post.content) ? (
-                            <PortableText value={post.content} />
+                            <PortableText value={post.content} components={portableTextComponents} />
                         ) : (
                             <div dangerouslySetInnerHTML={{ __html: post.content }} />
                         )}

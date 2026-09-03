@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+
 # Sanity Studio build output & CLI runtime cache — Hostinger builds this
 # site itself (npm run build -> dist/), and Studio is embedded at /studio
 # in that same build, so the standalone studio/ project's own artifacts

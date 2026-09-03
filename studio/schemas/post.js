@@ -30,7 +30,44 @@ export default {
       name: 'content',
       title: 'Content',
       type: 'array',
-      of: [{type: 'block'}, {type: 'image'}],
+      of: [
+        {
+          type: 'block',
+          styles: [
+            {title: 'Normal', value: 'normal'},
+            {title: 'H2', value: 'h2'},
+            {title: 'H3', value: 'h3'},
+            {title: 'Quote', value: 'blockquote'},
+          ],
+          lists: [
+            {title: 'Bullet', value: 'bullet'},
+            {title: 'Numbered', value: 'number'},
+          ],
+          marks: {
+            decorators: [
+              {title: 'Strong', value: 'strong'},
+              {title: 'Emphasis', value: 'em'},
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                    description: 'Internal links can be relative, e.g. /project/one-park-lane',
+                    validation: (Rule) => Rule.required().uri({allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel']}),
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {type: 'image'},
+      ],
       validation: (Rule) => Rule.required().min(1),
     },
     {
