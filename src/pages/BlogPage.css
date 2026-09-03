@@ -1,7 +1,7 @@
 /* Blog Page */
 .blog-page {
     min-height: 100vh;
-    background: var(--background-primary);
+    background: var(--bg-primary);
     padding-bottom: 6rem;
 }
 
@@ -18,7 +18,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--background-primary);
+    background: var(--bg-primary);
     opacity: 0.9;
 }
 
@@ -379,7 +379,7 @@
 
 .pagination-btn:hover:not(:disabled) {
     background: var(--accent-gold);
-    color: var(--background-primary);
+    color: var(--bg-primary);
     border-color: var(--accent-gold);
 }
 
