@@ -22,6 +22,7 @@ import {
     GlobeAltIcon
 } from '@heroicons/react/24/solid';
 import { FaBed, FaBath, FaToilet, FaCar } from 'react-icons/fa6';
+import { PortableText } from '@portabletext/react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
 import usePageTitle from '../hooks/usePageTitle';
@@ -281,7 +282,7 @@ const ProjectDetailPage = () => {
             <div ref={navBannerSentinelRef} aria-hidden="true" />
             <nav className={`detail-nav-banner ${navBannerCompact ? 'nav-compact' : ''}`}>
                 <div className="container nav-banner-inner">
-                    <button className="nav-banner-link nav-banner-back" onClick={() => navigate('/properties')}>
+                    <button className="nav-banner-link nav-banner-back" onClick={() => navigate(project.collection ? `/properties#${project.collection}` : '/properties')}>
                         &larr; {t('project_detail.nav_back', 'Portfolio')}
                     </button>
                     <a href="#overview" className="nav-banner-link">{t('project_detail.nav_overview', 'Overview')}</a>
@@ -305,7 +306,13 @@ const ProjectDetailPage = () => {
                 <div className="overview-grid">
                     <div className="overview-info">
                         <h2 className="section-title">{t('project_detail.overview_title', 'The Project')}</h2>
-                        <p className="project-description-text">{formatAirtableText(project.description)}</p>
+                        {Array.isArray(project.description) ? (
+                            <div className="project-description-text">
+                                <PortableText value={project.description} />
+                            </div>
+                        ) : (
+                            <p className="project-description-text">{formatAirtableText(project.description)}</p>
+                        )}
                     </div>
 
                     {project.quickFacts?.length > 0 && (
@@ -396,7 +403,7 @@ const ProjectDetailPage = () => {
 
                     <div className="resources-grid">
                         {project.resources?.map((res) => (
-                            <a key={res.id} href={res.link} target="_blank" rel="noopener noreferrer" className={`resource-card ${res.image ? 'has-image' : ''}`}>
+                            <a key={res.id} href={res.fileUrl || res.link} target="_blank" rel="noopener noreferrer" className={`resource-card ${res.image ? 'has-image' : ''}`}>
                                 {res.image ? (
                                     <div className="resource-card-image">
                                         <img src={res.image} alt={res.label} loading="lazy" />
