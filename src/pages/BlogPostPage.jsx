@@ -33,6 +33,10 @@ const portableTextComponents = {
                 />
             );
         },
+        htmlEmbed: ({ value }) => {
+            if (!value?.code) return null;
+            return <div className="blog-post-body-embed" dangerouslySetInnerHTML={{ __html: value.code }} />;
+        },
     },
     marks: {
         link: ({ value, children }) => {

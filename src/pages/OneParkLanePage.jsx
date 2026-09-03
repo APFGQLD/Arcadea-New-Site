@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import usePageTitle from '../hooks/usePageTitle';
 import { fetchPageAssets } from '../services/sanityService';
+import { rafThrottle } from '../utils/rafThrottle';
 import './OneParkLanePage.css';
 
 const OneParkLanePage = () => {
@@ -27,7 +28,7 @@ const OneParkLanePage = () => {
 
     // Manual JS Sticky Logic
     useEffect(() => {
-        const handleScroll = () => {
+        const updateScrollPosition = () => {
             // Safety check
             if (!trackRef.current || !contentRef.current) return;
 
@@ -47,26 +48,29 @@ const OneParkLanePage = () => {
                 setProgress(Math.max(0, Math.min(1, relativeScroll / maxTranslate)));
             }
         };
+        const handleScroll = rafThrottle(updateScrollPosition);
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
+        updateScrollPosition();
 
-        const handleMouseMove = (e) => {
+        const updateMousePosition = (clientX, clientY) => {
             if (!contentRef.current) return;
-            const { clientX, clientY } = e;
             // Calculate distance from center of window (-50 to 50)
             const x = (clientX / window.innerWidth - 0.5) * 100;
             const y = (clientY / window.innerHeight - 0.5) * 100;
-            
+
             contentRef.current.style.setProperty('--mouse-x', `${x}`);
             contentRef.current.style.setProperty('--mouse-y', `${y}`);
         };
+        const handleMouseMove = rafThrottle((e) => updateMousePosition(e.clientX, e.clientY));
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('mousemove', handleMouseMove);
+            handleScroll.cancel();
+            handleMouseMove.cancel();
         };
     }, []);
 

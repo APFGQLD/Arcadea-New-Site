@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useNavVisibility } from '../context/NavVisibilityContext';
+import { rafThrottle } from '../utils/rafThrottle';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
 
@@ -21,11 +22,14 @@ const Navbar = () => {
     const isHomePage = location.pathname === '/';
 
     useEffect(() => {
-        const handleScroll = () => {
+        const handleScroll = rafThrottle(() => {
             setScrolled(window.scrollY > 50);
+        });
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            handleScroll.cancel();
         };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);

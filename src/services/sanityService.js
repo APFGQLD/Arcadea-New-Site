@@ -20,6 +20,23 @@ export const urlFor = (source) => {
 // Default image fallback
 const DEFAULT_FEATURED_IMAGE = 'https://cms.arcadea.com.au/wp-content/uploads/2026/02/V04_FINAL_lowres.jpeg';
 
+// Sanity's CDN accepts image transform params directly on the asset URL, so
+// appending them in the GROQ projection itself (no need to round-trip
+// through the image-url builder for a plain resize) is enough to make it
+// serve a resized, compressed derivative instead of the original. Editors
+// upload originals straight from a camera/phone — several MB and thousands
+// of pixels wide — but nothing on the site displays one larger than ~1920px,
+// so without this the browser was downloading and decoding the full
+// original just to shrink it, which was a major source of scroll jank.
+const CARD_IMAGE_PARAMS = '?w=800&auto=format&q=75';
+const FEATURED_IMAGE_PARAMS = '?w=1600&auto=format&q=75';
+const HERO_IMAGE_PARAMS = '?w=1920&auto=format&q=75';
+const AVATAR_IMAGE_PARAMS = '?w=160&auto=format&q=75';
+const PROFILE_IMAGE_PARAMS = '?w=400&auto=format&q=75';
+// Logos are flat-colour wordmarks, not photos — a higher quality floor
+// avoids visible compression banding on their edges and text.
+const LOGO_IMAGE_PARAMS = '?w=600&auto=format&q=90';
+
 /**
  * Fetch all blog posts with pagination, optionally scoped to a category slug
  */
@@ -42,7 +59,8 @@ export const fetchBlogPosts = async (page = 1, perPage = 9, categorySlug = null)
           content,
           "date": publishedAt,
           "author": author->name,
-          "featuredImage": featuredImage.asset->url,
+          "featuredImage": featuredImage.asset->url + "${FEATURED_IMAGE_PARAMS}",
+          "featuredImageThumb": featuredImage.asset->url + "${CARD_IMAGE_PARAMS}",
           "featuredImageAlt": featuredImage.alt,
           "categories": categories[]->{name, "slug": slug.current}
         },
@@ -56,6 +74,7 @@ export const fetchBlogPosts = async (page = 1, perPage = 9, categorySlug = null)
       posts: result.posts.map(post => ({
         ...post,
         featuredImage: post.featuredImage || DEFAULT_FEATURED_IMAGE,
+        featuredImageThumb: post.featuredImageThumb || DEFAULT_FEATURED_IMAGE,
       })),
       totalPages: Math.ceil(result.total / perPage) || 1,
       total: result.total || 0
@@ -81,8 +100,8 @@ export const fetchBlogPost = async (slug) => {
         content,
         "date": publishedAt,
         "author": author->name,
-        "authorAvatar": author->image.asset->url,
-        "featuredImage": featuredImage.asset->url,
+        "authorAvatar": author->image.asset->url + "${AVATAR_IMAGE_PARAMS}",
+        "featuredImage": featuredImage.asset->url + "${HERO_IMAGE_PARAMS}",
         "featuredImageAlt": featuredImage.alt,
         "categories": categories[]->{name, "slug": slug.current}
       }
@@ -117,7 +136,7 @@ export const fetchRelatedPosts = async (currentSlug, categorySlugs = [], limit =
         excerpt,
         "date": publishedAt,
         "author": author->name,
-        "featuredImage": featuredImage.asset->url,
+        "featuredImage": featuredImage.asset->url + "${CARD_IMAGE_PARAMS}",
         "featuredImageAlt": featuredImage.alt,
         "sharesCategory": count((categories[]->slug.current)[@ in $categorySlugs]) > 0
       } | order(sharesCategory desc, publishedAt desc) [0...$limit]
@@ -163,11 +182,11 @@ export const fetchPropertyCollections = async () => {
       *[_type == "propertyCollection" && !(_id in path("drafts.**"))] | order(title asc) {
         title,
         "id": collectionId,
-        "logoLight": logoLight.asset->url,
-        "logoDark": logoDark.asset->url,
+        "logoLight": logoLight.asset->url + "${LOGO_IMAGE_PARAMS}",
+        "logoDark": logoDark.asset->url + "${LOGO_IMAGE_PARAMS}",
         location,
         description,
-        "image": image.asset->url
+        "image": image.asset->url + "${HERO_IMAGE_PARAMS}"
       }
     `;
     return await client.fetch(query);
@@ -186,11 +205,11 @@ export const fetchProperties = async (collectionId) => {
       *[_type == "propertyCollection" && collectionId == $collectionId && !(_id in path("drafts.**"))][0] {
         title,
         collectionId,
-        "logoLight": logoLight.asset->url,
-        "logoDark": logoDark.asset->url,
+        "logoLight": logoLight.asset->url + "${LOGO_IMAGE_PARAMS}",
+        "logoDark": logoDark.asset->url + "${LOGO_IMAGE_PARAMS}",
         location,
         description,
-        "image": image.asset->url,
+        "image": image.asset->url + "${HERO_IMAGE_PARAMS}",
         properties[]-> {
           "id": propertyId,
           title,
@@ -200,7 +219,7 @@ export const fetchProperties = async (collectionId) => {
             prefix,
             amount
           },
-          "image": image.asset->url,
+          "image": image.asset->url + "${CARD_IMAGE_PARAMS}",
           tag,
           features
         }
@@ -214,9 +233,11 @@ export const fetchProperties = async (collectionId) => {
 };
 
 export const fetchPageAssets = async (identifiers) => {
+    // Page assets are used as full-bleed hero/section backgrounds throughout
+    // the site, so they get the same cap as other hero imagery.
     const query = `*[_type == "pageAsset" && identifier in $identifiers] {
         identifier,
-        "url": image.asset->url
+        "url": image.asset->url + "${HERO_IMAGE_PARAMS}"
     }`;
     return client.fetch(query, { identifiers });
 };
@@ -233,7 +254,7 @@ export const fetchProjectDetail = async (idOrSlug) => {
         description,
         statusTag,
         "collection": *[_type == "propertyCollection" && references(^._id)][0].collectionId,
-        "heroImage": image.asset->url,
+        "heroImage": image.asset->url + "${HERO_IMAGE_PARAMS}",
         videoUrl,
         price {
           enquiryOnly,
@@ -247,7 +268,7 @@ export const fetchProjectDetail = async (idOrSlug) => {
           "id": _id,
           name,
           jobTitle,
-          "photo": photo.asset->url,
+          "photo": photo.asset->url + "${PROFILE_IMAGE_PARAMS}",
           phone,
           email,
           bio
@@ -263,9 +284,9 @@ export const fetchProjectDetail = async (idOrSlug) => {
         },
         gallery[] {
           "id": _key,
-          "url": image.asset->url,
-          "thumbSmall": image.asset->url,
-          "thumbMedium": image.asset->url,
+          "url": image.asset->url + "${HERO_IMAGE_PARAMS}",
+          "thumbSmall": image.asset->url + "${CARD_IMAGE_PARAMS}",
+          "thumbMedium": image.asset->url + "${CARD_IMAGE_PARAMS}",
           caption
         },
         resources[] {
@@ -273,7 +294,7 @@ export const fetchProjectDetail = async (idOrSlug) => {
           label,
           type,
           link,
-          "image": image.asset->url
+          "image": image.asset->url + "${CARD_IMAGE_PARAMS}"
         }
       }
     `;

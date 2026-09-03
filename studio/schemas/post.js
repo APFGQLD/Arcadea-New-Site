@@ -67,6 +67,7 @@ export default {
           },
         },
         {type: 'image'},
+        {type: 'htmlEmbed'},
       ],
       validation: (Rule) => Rule.required().min(1),
     },

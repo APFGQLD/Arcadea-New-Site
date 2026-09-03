@@ -5,5 +5,6 @@ import property from './property'
 import propertyCollection from './propertyCollection'
 import pageAsset from './pageAsset'
 import agent from './agent'
+import htmlEmbed from './htmlEmbed'
 
-export const schemaTypes = [post, category, author, property, propertyCollection, pageAsset, agent]
+export const schemaTypes = [post, category, author, property, propertyCollection, pageAsset, agent, htmlEmbed]
