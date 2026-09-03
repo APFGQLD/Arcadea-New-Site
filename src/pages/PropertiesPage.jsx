@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { SunIcon } from '@heroicons/react/24/solid';
 import { fetchPropertyCollections, fetchProperties, fetchPageAssets } from '../services/sanityService';
 import { formatListingPrice } from '../utils/priceFormat';
+import { rafThrottle } from '../utils/rafThrottle';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './PropertiesPage.css';
 import usePageTitle from '../hooks/usePageTitle';
@@ -48,11 +49,11 @@ const PropertiesPage = () => {
 
     // Track scroll for cinematic effect
     useEffect(() => {
-        const handleScroll = () => {
+        const handleScroll = rafThrottle(() => {
             setScrollY(window.scrollY);
-        };
+        });
         window.addEventListener('scroll', handleScroll, { passive: true });
-        
+
         // Setup intersection observer for scroll animations
         const observer = new IntersectionObserver(
             (entries) => {
@@ -71,6 +72,7 @@ const PropertiesPage = () => {
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            handleScroll.cancel();
             observer.disconnect();
         };
     }, [collections, selectedCollection]);

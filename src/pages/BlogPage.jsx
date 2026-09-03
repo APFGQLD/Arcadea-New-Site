@@ -187,10 +187,10 @@ const BlogPage = () => {
                             <div className="blog-grid">
                                 {gridPosts.map((post, index) => (
                                     <article key={post.id} className="blog-card" style={{ animationDelay: `${index * 0.1}s` }}>
-                                        {post.featuredImage && (
+                                        {post.featuredImageThumb && (
                                             <Link to={`/news/${post.slug}`} className="blog-card-image">
                                                 <img
-                                                    src={post.featuredImage}
+                                                    src={post.featuredImageThumb}
                                                     alt={post.featuredImageAlt || post.title}
                                                     loading="lazy"
                                                     decoding="async"

@@ -26,6 +26,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
 import usePageTitle from '../hooks/usePageTitle';
 import { formatListingPrice } from '../utils/priceFormat';
+import { rafThrottle } from '../utils/rafThrottle';
 import './ProjectDetailPage.css';
 
 const STATUS_STYLES = {
@@ -66,18 +67,20 @@ const ProjectDetailPage = () => {
 
         const COMPACT_SCROLL_RANGE = 60; // px scrolled past pin before compacting
 
-        const handleScroll = () => {
+        const updatePinState = () => {
             const top = sentinel.getBoundingClientRect().top;
             const pinned = top <= 0;
             setNavHidden(pinned);
             setNavBannerCompact(pinned && top <= -COMPACT_SCROLL_RANGE);
         };
+        const handleScroll = rafThrottle(updatePinState);
 
-        handleScroll();
+        updatePinState();
         window.addEventListener('scroll', handleScroll, { passive: true });
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            handleScroll.cancel();
             setNavHidden(false); // Restore the main Navbar when leaving this page
         };
     }, [project, setNavHidden]);
