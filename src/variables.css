@@ -3,10 +3,24 @@
   --bg-primary: #0a0a0a;
   --bg-secondary: #141414;
   --bg-tertiary: #1f1f1f;
+  /* Card/panel background that sits a level above the page (e.g. the
+     article body card on a hero page) — was referenced across several
+     pages but never actually defined here, which silently left those
+     "cards" fully transparent (an undefined var() poisons the whole
+     `background` shorthand it's used in). */
+  --surface-elevated: var(--bg-secondary);
 
   --accent-gold: #85714d;
   --accent-gold-light: #a68d60;
   --accent-gold-dark: #66573b;
+  --accent-gold-rgb: 133, 113, 77;
+  /* Paired with accent-gold in diagonal gradients (category tags, the
+     footer accent line, CTA panels). Referenced across several files but
+     never actually defined — same "undefined var() poisons the whole
+     background shorthand" issue as --surface-elevated: those gradients
+     were silently rendering as no background at all. */
+  --accent-teal: #2f6664;
+  --accent-teal-rgb: 47, 102, 100;
 
   --text-primary: #ffffff;
   --text-secondary: #a0a0a0;
@@ -16,6 +30,11 @@
   --glass-bg: rgba(20, 20, 20, 0.7);
   --glass-border: rgba(255, 255, 255, 0.1);
   --hero-gradient: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+  /* Protects the fixed navbar's legibility over a hero image, independent of
+     --hero-gradient above (which protects title text pinned to the hero's
+     bottom edge instead). Sized in px, not %, so it covers the navbar's
+     footprint consistently no matter how tall the hero itself is. */
+  --hero-nav-scrim: linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 0, rgba(0, 0, 0, 0.32) 100px, transparent 220px);
 
   /* Typography */
   --font-main: 'Urbanist', 'Inter', system-ui, -apple-system, sans-serif;
@@ -45,6 +64,7 @@
   --bg-primary: #ffffff;
   --bg-secondary: #f5f5f5;
   --bg-tertiary: #eeeeee;
+  --surface-elevated: var(--bg-secondary);
 
   --text-primary: #0a0a0a;
   --text-secondary: #444444;
@@ -54,6 +74,7 @@
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(0, 0, 0, 0.1);
   --hero-gradient: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+  --hero-nav-scrim: linear-gradient(to bottom, rgba(255, 255, 255, 0.65) 0, rgba(255, 255, 255, 0.32) 100px, transparent 220px);
 
   /* Accordion Theming Light */
   --accordion-overlay: linear-gradient(to right, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 100%);
