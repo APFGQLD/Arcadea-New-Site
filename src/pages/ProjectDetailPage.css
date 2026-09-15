@@ -1304,17 +1304,92 @@
     border-right: 1px solid var(--border-color);
 }
 
+/* Wraps the section-jump links (everything except Back) so mobile can
+   turn just this group into a dropdown without touching the Back button.
+   On desktop it's simply a second flex item sitting next to Back, with
+   its own matching gap so the row reads identically to one flat list. */
+.nav-banner-links {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+/* Dropdown trigger — desktop has room to show every link inline, so this
+   only ever appears below the mobile breakpoint. */
+.nav-banner-toggle {
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 0.5rem 0;
+    cursor: pointer;
+}
+
+.nav-banner-toggle-chevron {
+    font-size: 0.65em;
+    transition: transform 0.25s ease;
+}
+
+.mobile-nav-open .nav-banner-toggle-chevron {
+    transform: rotate(180deg);
+}
+
 .detail-overview, .detail-gallery, .detail-resources, .detail-video, .detail-comparison, .detail-location, .detail-agents {
     scroll-margin-top: 100px;
 }
 
 @media (max-width: 768px) {
     .nav-banner-inner {
-        justify-content: flex-start;
+        justify-content: space-between;
         padding: 0 1.5rem;
+        position: relative;
+        /* The base rule's overflow-x:auto implicitly computes overflow-y
+           to auto too (a CSS spec quirk: any non-visible overflow-x forces
+           overflow-y off "visible"), which clips the dropdown panel below
+           since it's absolutely positioned against this element. Not
+           needed on mobile anymore now that there's nothing to
+           horizontally scroll here. */
+        overflow: visible;
     }
     .nav-banner-back {
-        padding-right: 1.5rem;
+        padding-right: 1.25rem;
+    }
+    .nav-banner-toggle {
+        display: flex;
+    }
+    /* Collapsed by default on mobile; a tap on .nav-banner-toggle adds
+       .mobile-nav-open to the <nav> and turns this into a dropdown panel
+       instead of the old horizontal scroll strip, which left most links
+       off-screen with no hint they were there. */
+    .nav-banner-links {
+        display: none;
+    }
+    .mobile-nav-open .nav-banner-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+        padding: 0.25rem 1.5rem 0.5rem;
+    }
+    .mobile-nav-open .nav-banner-links .nav-banner-link {
+        width: 100%;
+        padding: 0.9rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .mobile-nav-open .nav-banner-links .nav-banner-link:last-child {
+        border-bottom: none;
     }
     .detail-overview, .detail-gallery, .detail-resources, .detail-video, .detail-comparison, .detail-location, .detail-agents {
         scroll-margin-top: 80px;
