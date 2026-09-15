@@ -1311,10 +1311,24 @@
 @media (max-width: 768px) {
     .nav-banner-inner {
         justify-content: flex-start;
+        /* Desktop's 3rem gap between 7 links adds up to ~340px on its own,
+           nearly the width of the whole viewport, pushing most links off
+           screen with no hint they exist. Tightened so more are visible
+           at a glance. */
+        gap: 1.25rem;
         padding: 0 1.5rem;
+        -webkit-overflow-scrolling: touch;
+        /* Fades both edges so a partially-cut-off link reads as "more to
+           scroll to" rather than looking like stray clipped text. */
+        mask-image: linear-gradient(to right, transparent 0, #000 1.5rem, #000 calc(100% - 1.5rem), transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0, #000 1.5rem, #000 calc(100% - 1.5rem), transparent 100%);
+    }
+    .nav-banner-link {
+        font-size: 0.78rem;
+        letter-spacing: 1px;
     }
     .nav-banner-back {
-        padding-right: 1.5rem;
+        padding-right: 1.25rem;
     }
     .detail-overview, .detail-gallery, .detail-resources, .detail-video, .detail-comparison, .detail-location, .detail-agents {
         scroll-margin-top: 80px;
