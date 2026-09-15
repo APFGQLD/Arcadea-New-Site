@@ -559,7 +559,12 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
-    z-index: 9999;
+    /* Must outrank .detail-nav-banner's own z-index (10000): both are
+       position:fixed/sticky elements that create their own stacking
+       context, so a lower value here would sink the whole overlay —
+       close button included — behind the banner regardless of the
+       overlay's children's own z-index values. */
+    z-index: 10010;
     display: flex;
     align-items: center;
     justify-content: center;
