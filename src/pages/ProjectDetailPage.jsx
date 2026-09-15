@@ -51,7 +51,9 @@ const ProjectDetailPage = () => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
     const carouselRef = useRef(null);
     const navBannerSentinelRef = useRef(null);
+    const navBannerRef = useRef(null);
     const [navBannerCompact, setNavBannerCompact] = useState(false);
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
     usePageTitle(project?.name);
 
@@ -85,6 +87,28 @@ const ProjectDetailPage = () => {
             setNavHidden(false); // Restore the main Navbar when leaving this page
         };
     }, [project, setNavHidden]);
+
+    // Mobile section-links dropdown: close it on an outside tap, Escape, or
+    // once anything else about the page changes underneath it.
+    useEffect(() => {
+        if (!mobileNavOpen) return;
+
+        const handleOutsideClick = (e) => {
+            if (navBannerRef.current && !navBannerRef.current.contains(e.target)) {
+                setMobileNavOpen(false);
+            }
+        };
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') setMobileNavOpen(false);
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [mobileNavOpen]);
 
     useEffect(() => {
         const loadProject = async () => {
@@ -297,24 +321,38 @@ const ProjectDetailPage = () => {
 
             {/* Quick Navigation Banner */}
             <div ref={navBannerSentinelRef} aria-hidden="true" />
-            <nav className={`detail-nav-banner ${navBannerCompact ? 'nav-compact' : ''}`}>
+            <nav
+                ref={navBannerRef}
+                className={`detail-nav-banner ${navBannerCompact ? 'nav-compact' : ''} ${mobileNavOpen ? 'mobile-nav-open' : ''}`}
+            >
                 <div className="container nav-banner-inner">
                     <button className="nav-banner-link nav-banner-back" onClick={() => navigate(project.collection ? `/properties#${project.collection}` : '/properties')}>
                         &larr; {t('project_detail.nav_back', 'Portfolio')}
                     </button>
-                    <a href="#overview" className="nav-banner-link">{t('project_detail.nav_overview', 'Overview')}</a>
-                    {(project.collection === 'island') && (
-                        <a href="#comparison" className="nav-banner-link">{t('project_detail.nav_comparison', 'Comparison')}</a>
-                    )}
-                    <a href="#vision" className="nav-banner-link">{t('project_detail.nav_vision', 'The Vision')}</a>
-                    {project.videoUrl && (
-                        <a href="#video" className="nav-banner-link">{t('project_detail.nav_video', 'Video')}</a>
-                    )}
-                    <a href="#resources" className="nav-banner-link">{t('project_detail.nav_resources', 'Resources')}</a>
-                    <a href="#location" className="nav-banner-link">{t('project_detail.nav_location', 'Location')}</a>
-                    {project.agents?.length > 0 && (
-                        <a href="#agent" className="nav-banner-link">{t('project_detail.nav_agent', 'Agent')}</a>
-                    )}
+                    <button
+                        type="button"
+                        className="nav-banner-toggle"
+                        aria-expanded={mobileNavOpen}
+                        onClick={() => setMobileNavOpen((open) => !open)}
+                    >
+                        {t('project_detail.nav_menu', 'Sections')}
+                        <span className="nav-banner-toggle-chevron" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <div className="nav-banner-links">
+                        <a href="#overview" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_overview', 'Overview')}</a>
+                        {(project.collection === 'island') && (
+                            <a href="#comparison" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_comparison', 'Comparison')}</a>
+                        )}
+                        <a href="#vision" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_vision', 'The Vision')}</a>
+                        {project.videoUrl && (
+                            <a href="#video" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_video', 'Video')}</a>
+                        )}
+                        <a href="#resources" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_resources', 'Resources')}</a>
+                        <a href="#location" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_location', 'Location')}</a>
+                        {project.agents?.length > 0 && (
+                            <a href="#agent" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_agent', 'Agent')}</a>
+                        )}
+                    </div>
                 </div>
             </nav>
 
