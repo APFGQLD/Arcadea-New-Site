@@ -221,7 +221,10 @@ export const fetchProperties = async (collectionId) => {
           },
           "image": image.asset->url + "${CARD_IMAGE_PARAMS}",
           tag,
-          features
+          features,
+          bedrooms,
+          bathrooms,
+          carSpaces
         }
       }
     `;

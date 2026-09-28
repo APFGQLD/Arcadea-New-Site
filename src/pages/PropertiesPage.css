@@ -615,6 +615,71 @@
     color: var(--accent-gold);
 }
 
+.properties-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 3rem;
+}
+
+.properties-count {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.sort-control {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sort-control label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+
+.sort-control select {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.sort-control select:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+}
+
+.property-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin: 1rem 0 0;
+}
+
+.property-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.property-stat svg {
+    color: var(--accent-gold);
+    font-size: 0.9rem;
+}
+
 .property-features {
     list-style: none;
     padding: 0;
@@ -738,7 +803,7 @@
 
 .listing-view .property-grid {
     margin-top: 0 !important;
-    padding-top: 3rem;
+    padding-top: 1.5rem;
 }
 
 @media (max-width: 768px) {
