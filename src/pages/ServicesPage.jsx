@@ -159,7 +159,7 @@ const ServicesPage = () => {
                                     </ul>
                                 </div>
 
-                                <Link to="/properties" className="btn btn-secondary">
+                                <Link to="/properties/" className="btn btn-secondary">
                                     Explore Opportunities
                                 </Link>
                             </div>

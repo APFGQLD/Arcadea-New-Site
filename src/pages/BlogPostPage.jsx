@@ -260,7 +260,7 @@ const BlogPostPage = () => {
                     <div className="blog-post-cta">
                         <h3>Ready to Explore Premium Properties?</h3>
                         <p>Discover our exclusive collection of investment properties across the globe.</p>
-                        <Link to="/properties" className="btn btn-primary">
+                        <Link to="/properties/" className="btn btn-primary">
                             View Properties
                         </Link>
                     </div>

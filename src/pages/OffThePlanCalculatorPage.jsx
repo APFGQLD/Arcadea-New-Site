@@ -662,7 +662,7 @@ const OffThePlanCalculatorPage = () => {
                                 rental yields.
                             </p>
                             <div className="otp-actions">
-                                <Link to="/properties" className="btn btn-primary">
+                                <Link to="/properties/" className="btn btn-primary">
                                     View properties
                                 </Link>
                                 <a href="/#contact" className="btn btn-secondary">

@@ -192,7 +192,7 @@ const IPDCPage = () => {
                         <p>Explore our current properties offering Interest Paid During Construction or contact our Brisbane team for a private consultation.</p>
 
                         <div className="ipdc-actions">
-                            <Link to="/properties#island" className="btn btn-primary">View The Island Collection</Link>
+                            <Link to="/properties/#island" className="btn btn-primary">View The Island Collection</Link>
                             <a href="/#contact" className="btn btn-secondary">Contact Us</a>
                         </div>
                     </div>

@@ -62,7 +62,7 @@ const Navbar = () => {
                 <div className={`nav-wrapper ${isMenuOpen ? 'open' : ''}`}>
                     <ul className="nav-links">
                         <li><Link to="/" onClick={closeMenu}>{t('nav.home')}</Link></li>
-                        <li><Link to="/properties" onClick={closeMenu}>{t('nav.properties')}</Link></li>
+                        <li><Link to="/properties/" onClick={closeMenu}>{t('nav.properties')}</Link></li>
                         <li><Link to="/services" onClick={closeMenu}>{t('nav.services')}</Link></li>
                         <li><Link to="/news" onClick={closeMenu}>{t('nav.news')}</Link></li>
                         <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>

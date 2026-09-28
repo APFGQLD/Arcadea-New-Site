@@ -30,9 +30,9 @@ const Footer = () => {
                         <h4 className="footer-heading">{t('footer.quickLinks', 'Quick Links')}</h4>
                         <ul className="footer-links">
                             <li><Link to="/">{t('nav.home', 'Home')}</Link></li>
-                            <li><Link to="/properties">{t('nav.properties', 'Properties')}</Link></li>
-                            <li><Link to="/properties#coastal">Coastal Collection</Link></li>
-                            <li><Link to="/properties#island">Island Collection</Link></li>
+                            <li><Link to="/properties/">{t('nav.properties', 'Properties')}</Link></li>
+                            <li><Link to="/properties/#coastal">Coastal Collection</Link></li>
+                            <li><Link to="/properties/#island">Island Collection</Link></li>
                             <li><Link to="/services">{t('nav.services', 'Services')}</Link></li>
                             <li><Link to="/about">{t('nav.about', 'About')}</Link></li>
                             <li><Link to="/news">{t('footer.news', 'News')}</Link></li>

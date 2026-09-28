@@ -196,7 +196,7 @@ const ProjectDetailPage = () => {
         return (
             <div className="project-detail-error">
                 <p>{error || t('project_detail.not_found', 'Project not found.')}</p>
-                <button className="btn btn-secondary" onClick={() => navigate('/properties')}>
+                <button className="btn btn-secondary" onClick={() => navigate('/properties/')}>
                     {t('common.back', 'Back to Portfolio')}
                 </button>
             </div>
@@ -326,7 +326,7 @@ const ProjectDetailPage = () => {
                 className={`detail-nav-banner ${navBannerCompact ? 'nav-compact' : ''} ${mobileNavOpen ? 'mobile-nav-open' : ''}`}
             >
                 <div className="container nav-banner-inner">
-                    <button className="nav-banner-link nav-banner-back" onClick={() => navigate(project.collection ? `/properties#${project.collection}` : '/properties')}>
+                    <button className="nav-banner-link nav-banner-back" onClick={() => navigate(project.collection ? `/properties/#${project.collection}` : '/properties/')}>
                         &larr; {t('project_detail.nav_back', 'Portfolio')}
                     </button>
                     <button

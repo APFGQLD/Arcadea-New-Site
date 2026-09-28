@@ -85,7 +85,7 @@ const LucPrivateSalesPage = () => {
                         Our specialized resale team will review your requirements and contact you shortly with available inventory and pricing.
                     </p>
                     <div className="success-actions">
-                        <Link to="/properties" className="btn-primary">Return to Portfolio</Link>
+                        <Link to="/properties/" className="btn-primary">Return to Portfolio</Link>
                         <button className="btn-secondary" onClick={() => setSubmitted(false)}>Send Another Inquiry</button>
                     </div>
                 </div>
