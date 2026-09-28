@@ -109,13 +109,13 @@ const PropertiesPage = () => {
         loadData();
     }, [selectedCollection]);
 
-    // Auto-select collection from URL hash
+    // Auto-select collection from URL hash (works for any collection loaded from Sanity)
     useEffect(() => {
         const hash = location.hash.replace('#', '');
-        if (hash && (hash === 'island' || hash === 'coastal')) {
+        if (hash && collections.some((c) => c.id === hash)) {
             setSelectedCollection(hash);
         }
-    }, [location.hash]);
+    }, [location.hash, collections]);
 
     // Scroll to top when collection changes
     useEffect(() => {
@@ -124,10 +124,12 @@ const PropertiesPage = () => {
 
     const handleSelectCollection = (collectionId) => {
         setSelectedCollection(collectionId);
+        navigate(`/properties#${collectionId}`);
     };
 
     const handleBack = () => {
         setSelectedCollection(null);
+        navigate('/properties');
     };
 
     // Removed static collections object
