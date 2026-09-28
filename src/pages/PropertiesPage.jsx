@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { SunIcon } from '@heroicons/react/24/solid';
+import { FaBed, FaBath, FaCar } from 'react-icons/fa6';
 import { fetchPropertyCollections, fetchProperties, fetchPageAssets } from '../services/sanityService';
 import { formatListingPrice } from '../utils/priceFormat';
 import { rafThrottle } from '../utils/rafThrottle';
@@ -25,6 +26,7 @@ const PropertiesPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [scrollY, setScrollY] = useState(0);
+    const [sortOption, setSortOption] = useState('featured');
 
     // Fetch data on mount
     useEffect(() => {
@@ -117,10 +119,46 @@ const PropertiesPage = () => {
         }
     }, [location.hash, collections]);
 
-    // Scroll to top when collection changes
+    // Scroll to top and reset sorting when collection changes
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        setSortOption('featured');
     }, [selectedCollection]);
+
+    const getPriceValue = (property) => {
+        if (!property.price || property.price.enquiryOnly || property.price.amount == null) return null;
+        return property.price.amount;
+    };
+
+    const sortedListings = useMemo(() => {
+        const sorted = [...listings];
+        const compareWithNullsLast = (a, b, getValue, ascending) => {
+            const valA = getValue(a);
+            const valB = getValue(b);
+            if (valA == null && valB == null) return 0;
+            if (valA == null) return 1;
+            if (valB == null) return -1;
+            return ascending ? valA - valB : valB - valA;
+        };
+
+        switch (sortOption) {
+            case 'price_asc':
+                sorted.sort((a, b) => compareWithNullsLast(a, b, getPriceValue, true));
+                break;
+            case 'price_desc':
+                sorted.sort((a, b) => compareWithNullsLast(a, b, getPriceValue, false));
+                break;
+            case 'beds_desc':
+                sorted.sort((a, b) => compareWithNullsLast(a, b, (p) => p.bedrooms, false));
+                break;
+            case 'name_asc':
+                sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+                break;
+            default:
+                break;
+        }
+        return sorted;
+    }, [listings, sortOption]);
 
     const handleSelectCollection = (collectionId) => {
         setSelectedCollection(collectionId);
@@ -308,8 +346,30 @@ const PropertiesPage = () => {
                                 </button>
                             </div>
                         ) : (
-                            <div className="property-grid">
-                                {listings.map((property) => {
+                            <>
+                                <div className="properties-toolbar">
+                                    <span className="properties-count">
+                                        {listings.length} {listings.length === 1
+                                            ? t('properties.count_singular', 'Property')
+                                            : t('properties.count_plural', 'Properties')}
+                                    </span>
+                                    <div className="sort-control">
+                                        <label htmlFor="property-sort">{t('properties.sort.label', 'Sort by')}</label>
+                                        <select
+                                            id="property-sort"
+                                            value={sortOption}
+                                            onChange={(e) => setSortOption(e.target.value)}
+                                        >
+                                            <option value="featured">{t('properties.sort.featured', 'Featured')}</option>
+                                            <option value="price_asc">{t('properties.sort.price_asc', 'Price: Low to High')}</option>
+                                            <option value="price_desc">{t('properties.sort.price_desc', 'Price: High to Low')}</option>
+                                            <option value="beds_desc">{t('properties.sort.beds_desc', 'Bedrooms: Most to Least')}</option>
+                                            <option value="name_asc">{t('properties.sort.name_asc', 'Name: A-Z')}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="property-grid">
+                                {sortedListings.map((property) => {
                                     if (!property) return null;
                                     return (
                                         <div
@@ -333,6 +393,25 @@ const PropertiesPage = () => {
                                                 <div className="property-location">{property.location}</div>
                                                 <h3 className="property-title">{property.title}</h3>
                                                 <p className="property-price">{formatListingPrice(property.price)}</p>
+                                                {(property.bedrooms != null || property.bathrooms != null || property.carSpaces != null) && (
+                                                    <div className="property-stats">
+                                                        {property.bedrooms != null && (
+                                                            <span className="property-stat">
+                                                                <FaBed /> {property.bedrooms}
+                                                            </span>
+                                                        )}
+                                                        {property.bathrooms != null && (
+                                                            <span className="property-stat">
+                                                                <FaBath /> {property.bathrooms}
+                                                            </span>
+                                                        )}
+                                                        {property.carSpaces != null && (
+                                                            <span className="property-stat">
+                                                                <FaCar /> {property.carSpaces}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
                                                 <ul className="property-features">
                                                     {property.features?.map((feat, idx) => (
                                                         <li key={idx}>{feat}</li>
@@ -352,6 +431,7 @@ const PropertiesPage = () => {
                                     );
                                 })}
                             </div>
+                            </>
                         )}
                     </div>
                 </div>

@@ -69,6 +69,7 @@
         "labels": {
             "bedrooms": "Bedrooms",
             "bathrooms": "Bathrooms",
+            "carSpaces": "Car Spaces",
             "size": "Size",
             "price": "Price",
             "location": "Location",
@@ -88,6 +89,16 @@
             "book_viewing": "Book a Viewing",
             "back_to_portfolio": "Back to Portfolio"
         },
+        "sort": {
+            "label": "Sort by",
+            "featured": "Featured",
+            "price_asc": "Price: Low to High",
+            "price_desc": "Price: High to Low",
+            "beds_desc": "Bedrooms: Most to Least",
+            "name_asc": "Name: A-Z"
+        },
+        "count_singular": "Property",
+        "count_plural": "Properties",
         "loading": "Loading properties...",
         "no_properties": "No properties found in this collection.",
         "error": "Unable to load properties. Please try again later."
