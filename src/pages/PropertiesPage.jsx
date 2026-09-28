@@ -124,12 +124,12 @@ const PropertiesPage = () => {
 
     const handleSelectCollection = (collectionId) => {
         setSelectedCollection(collectionId);
-        navigate(`/properties#${collectionId}`);
+        navigate(`/properties/#${collectionId}`);
     };
 
     const handleBack = () => {
         setSelectedCollection(null);
-        navigate('/properties');
+        navigate('/properties/');
     };
 
     // Removed static collections object

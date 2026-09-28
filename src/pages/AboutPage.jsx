@@ -229,7 +229,7 @@ const AboutPage = () => {
                     <div className="collections-grid">
                         {collections.map((collection) => (
                             <Link
-                                to={`/properties#${collection.id}`}
+                                to={`/properties/#${collection.id}`}
                                 key={collection.id}
                                 className={`collection-card-about ${collection.featured ? 'featured' : ''}`}
                                 style={{ display: 'block', textDecoration: 'none' }}

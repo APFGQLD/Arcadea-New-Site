@@ -91,7 +91,7 @@ const OneParkLanePage = () => {
         <div className="opl-page" style={assets['oneparklane-v04'] ? { '--hero-bg-image': `url(${assets['oneparklane-v04']})` } : {}}>
             <div ref={trackRef} className="opl-hero-track">
                 <div ref={contentRef} className="opl-js-sticky-content">
-                    <button className="shared-back-link" onClick={() => navigate('/properties')}>
+                    <button className="shared-back-link" onClick={() => navigate('/properties/')}>
                         &larr; Back to Portfolio
                     </button>
 

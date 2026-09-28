@@ -24,7 +24,7 @@ const NotFoundPage = () => {
         {
             icon: MapIcon,
             label: 'Properties',
-            path: '/properties',
+            path: '/properties/',
             description: 'Browse our collection'
         },
         {

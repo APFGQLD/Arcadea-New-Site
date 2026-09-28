@@ -40,7 +40,7 @@ const Properties = () => {
                             key={collection.id}
                             className={`collection-showcase-card reveal reveal-up delay-${(index % 3 + 1) * 100}`}
                             data-theme={theme}
-                            onClick={() => navigate(`/properties#${collection.id}`)}
+                            onClick={() => navigate(`/properties/#${collection.id}`)}
                         >
                             <div className="collection-showcase-image" style={{ overflow: 'hidden' }}>
                                 <img
@@ -78,7 +78,7 @@ const Properties = () => {
                 </div>
 
                 <div className="properties-action reveal reveal-up delay-300">
-                    <Link to="/properties" className="btn btn-secondary">{t('properties.cta')}</Link>
+                    <Link to="/properties/" className="btn btn-secondary">{t('properties.cta')}</Link>
                 </div>
             </div>
         </section>
