@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import usePageTitle from '../hooks/usePageTitle';
 import useInView from '../hooks/useInView';
+import { useNavVisibility } from '../context/NavVisibilityContext';
 import {
     CountUp,
     Segmented,
@@ -62,6 +63,10 @@ const BRACKET_OPTIONS = [
     { value: 39, label: '39% taxpayer' },
     { value: 47, label: '47% taxpayer' },
 ];
+
+// Hero photo, pre-sized into public/images/insights/ (800 / 1400 / 2000 wide)
+const heroSrcSet = (format) =>
+    [800, 1400, 2000].map((w) => `/images/insights/gold-coast-skyline-${w}.${format} ${w}w`).join(', ');
 
 const MESSAGE_ICONS = {
     shield: ShieldCheckIcon,
@@ -563,10 +568,18 @@ const NewVsEstablishedPage = () => {
     });
 
     const pageRef = useRef(null);
+    const { setNavOverDarkHero } = useNavVisibility();
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, []);
+
+    // The photo hero stays dark in both themes, so ask the Navbar for its
+    // white logo/text while it's transparent over it
+    useEffect(() => {
+        setNavOverDarkHero(true);
+        return () => setNavOverDarkHero(false);
+    }, [setNavOverDarkHero]);
 
     // Fade/slide section content in as it scrolls into view
     useEffect(() => {
@@ -592,7 +605,22 @@ const NewVsEstablishedPage = () => {
         <div className="nve-page" ref={pageRef}>
             {/* ---------------- Hero ---------------- */}
             <header className="nve-hero">
-                <div className="container">
+                {/* Decorative skyline photo (licensed); overlays in the CSS keep the copy legible */}
+                <div className="nve-hero-media" aria-hidden="true">
+                    <picture>
+                        <source type="image/avif" srcSet={heroSrcSet('avif')} sizes="100vw" />
+                        <source type="image/webp" srcSet={heroSrcSet('webp')} sizes="100vw" />
+                        <img
+                            src="/images/insights/gold-coast-skyline-1400.jpg"
+                            alt=""
+                            width="2000"
+                            height="1334"
+                            fetchPriority="high"
+                            decoding="async"
+                        />
+                    </picture>
+                </div>
+                <div className="container nve-hero-inner">
                     <span className="nve-eyebrow">Investor research · Gold Coast · September 2026</span>
                     <h1 className="nve-title">
                         The 2026 tax reforms changed the maths. <span>Here&apos;s what $1.6M earns now.</span>
