@@ -26,6 +26,8 @@ import './index.css';
 
 // Lazy-loaded: Sanity Studio is a large bundle that only visitors of /studio should pay for
 const StudioPage = lazy(() => import('./pages/StudioPage'));
+// Lazy-loaded: keeps Recharts out of the main bundle for everyone else
+const NewVsEstablishedPage = lazy(() => import('./pages/NewVsEstablishedPage'));
 
 function App() {
   const location = useLocation();
@@ -58,6 +60,9 @@ function App() {
 
           {/* Hidden calculator — accessible by direct link only, not in nav */}
           <Route path="/tools/off-the-plan-calculator" element={<OffThePlanCalculatorPage />} />
+
+          {/* Showcase research page — noindex and out of the sitemap until compliance sign-off */}
+          <Route path="/insights/new-vs-established-gold-coast" element={<Suspense fallback={null}><NewVsEstablishedPage /></Suspense>} />
 
           {/* Sanity Studio, embedded at /studio — must come before the short-link catch-all */}
           <Route
