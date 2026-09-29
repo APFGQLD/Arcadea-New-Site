@@ -14,7 +14,7 @@ import './Navbar.css';
 const Navbar = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
-    const { navHidden } = useNavVisibility();
+    const { navHidden, navOverDarkHero } = useNavVisibility();
     const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,11 +37,14 @@ const Navbar = () => {
 
     // Logo follows the theme: white in dark theme, black in light theme.
     // (In light theme the hero gets a light overlay, so the black logo stays readable.)
+    // Exception: a page with an always-dark hero gets the white logo and nav
+    // text in both themes while the Navbar is still transparent over it.
     const forceScrolled = scrolled;
-    const showWhiteLogo = theme === 'dark';
+    const overDarkHero = navOverDarkHero && !forceScrolled && !isMenuOpen;
+    const showWhiteLogo = theme === 'dark' || overDarkHero;
 
     return (
-        <nav className={`navbar ${forceScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''} ${isHomePage ? 'is-home' : ''} ${navHidden && !isMenuOpen ? 'nav-hidden' : ''}`}>
+        <nav className={`navbar ${forceScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''} ${isHomePage ? 'is-home' : ''} ${navHidden && !isMenuOpen ? 'nav-hidden' : ''} ${overDarkHero ? 'over-dark-hero' : ''}`}>
             <div className="container nav-container">
                 <Link to="/" className="logo" onClick={closeMenu}>
                     <img

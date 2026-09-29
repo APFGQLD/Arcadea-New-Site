@@ -16,10 +16,69 @@
 }
 
 /* ---------------- Hero ---------------- */
+/* Photo hero that stays dark in both themes. The dark text/surface tokens
+   are re-declared here so everything inside reads correctly in light mode
+   too (the Navbar is told to go white via NavVisibilityContext). */
 .nve-hero {
+    --hero-bg: #0a0a0a;
+    --text-primary: #ffffff;
+    --text-secondary: #cfcfcf;
+    --text-muted: #9a9a9a;
+    --glass-bg: rgba(12, 12, 12, 0.62);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --border-color: #2a2a2a;
+    position: relative;
+    isolation: isolate;
     padding: 9rem 0 4rem;
-    background: var(--ambient-glow), var(--bg-primary);
+    background: var(--hero-bg);
+    color: var(--text-primary);
     border-bottom: 1px solid var(--border-color);
+}
+
+.nve-hero-media {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 100%;
+    max-height: 980px;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.nve-hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% 40%;
+}
+
+/* Overlays, top to bottom in the stack:
+   1. nav scrim so the transparent Navbar stays legible
+   2. left-to-right darkening — the sun sits behind the headline
+   3. fade into the solid hero background behind the stat cards */
+.nve-hero-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.25) 120px, transparent 240px),
+        linear-gradient(90deg, rgba(10, 10, 10, 0.88) 0%, rgba(10, 10, 10, 0.7) 40%, rgba(10, 10, 10, 0.25) 75%, rgba(10, 10, 10, 0.1) 100%),
+        linear-gradient(to bottom, transparent 40%, rgba(10, 10, 10, 0.75) 68%, var(--hero-bg) 92%);
+}
+
+.nve-hero-inner {
+    position: relative;
+}
+
+/* Phones: the stacked stat cards make the hero very tall, so keep the photo
+   behind the headline area only and anchor the crop on the towers */
+@media (max-width: 800px) {
+    .nve-hero-media {
+        height: 720px;
+    }
+
+    .nve-hero-media img {
+        object-position: 72% 40%;
+    }
 }
 
 .nve-eyebrow {
@@ -40,10 +99,6 @@
 
 .nve-title span {
     color: var(--accent-gold-light);
-}
-
-:root[data-theme='light'] .nve-title span {
-    color: var(--accent-gold-dark);
 }
 
 .nve-subtitle {

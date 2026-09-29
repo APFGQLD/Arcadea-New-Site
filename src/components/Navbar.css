@@ -24,21 +24,29 @@
 }
 
 /* Dark theme only: force white nav text when transparent over a dark hero.
-   In light theme the hero is light-washed, so nav text keeps its theme color. */
+   In light theme the hero is light-washed, so nav text keeps its theme color.
+   .over-dark-hero is the exception: a page whose hero stays dark in both
+   themes (set via NavVisibilityContext; only applied while transparent). */
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .logo-text,
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .nav-links a:not(:hover),
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .theme-toggle:not(:hover),
-[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .lang-selected:not(:hover) {
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .lang-selected:not(:hover),
+.navbar.over-dark-hero .logo-text,
+.navbar.over-dark-hero .nav-links a:not(:hover),
+.navbar.over-dark-hero .theme-toggle:not(:hover),
+.navbar.over-dark-hero .lang-selected:not(:hover) {
     color: #ffffff !important;
 }
 
 /* White button styling when navbar is transparent over dark hero */
-[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav {
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav,
+.navbar.over-dark-hero .btn-nav {
     border-color: #ffffff !important;
     color: #ffffff !important;
 }
 
-[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav:hover {
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav:hover,
+.navbar.over-dark-hero .btn-nav:hover {
     background-color: #ffffff;
     color: #000000 !important;
 }
@@ -96,7 +104,8 @@
 }
 
 /* Force hamburger bars to white when over dark hero (dark theme only) */
-[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .hamburger .bar {
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .hamburger .bar,
+.navbar.over-dark-hero .hamburger .bar {
     background-color: #ffffff !important;
 }
 
