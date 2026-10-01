@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import usePageTitle from '../hooks/usePageTitle';
+import './EditorialPage.css';
 import './PrivacyPolicyPage.css';
 
 const PrivacyPolicyPage = () => {
-    usePageTitle('Privacy Policy');
+    usePageTitle('Privacy Policy', {
+        description: 'How Arcadea Property collects, uses, stores and protects your personal information, and how to contact us about your data.'
+    });
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -12,14 +15,14 @@ const PrivacyPolicyPage = () => {
     }, []);
 
     return (
-        <div className="privacy-page">
-            <div className="privacy-hero">
-                <div className="container">
-                    <h1 className="privacy-title">Privacy Policy</h1>
-                </div>
-            </div>
+        <div className="editorial-page privacy-page">
+            <header className="ed-wide privacy-header">
+                <span className="ed-eyebrow">Legal</span>
+                <h1 className="privacy-title">Privacy Policy</h1>
+                <p className="privacy-meta">Last updated: {new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            </header>
 
-            <div className="container">
+            <div className="privacy-body">
                 <div className="privacy-content">
                     <section>
                         <h2>1. Introduction</h2>
@@ -72,7 +75,6 @@ const PrivacyPolicyPage = () => {
                         </p>
                     </section>
 
-                    <p className="privacy-last-updated">Last updated: {new Date().toLocaleDateString()}</p>
                 </div>
             </div>
         </div>

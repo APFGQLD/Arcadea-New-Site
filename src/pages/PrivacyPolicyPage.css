@@ -1,67 +1,68 @@
-/* Privacy Policy Page */
+/* Privacy Policy: editorial heading and a reading column, matching the
+   article pages. */
 .privacy-page {
-    min-height: 100vh;
-    background: var(--background-primary);
-    padding-bottom: 6rem;
+    padding-bottom: 8rem;
 }
 
-/* Hero Section */
-.privacy-hero {
-    background: var(--surface-elevated);
-    padding: 8rem 0 4rem;
-    margin-bottom: 4rem;
+.privacy-header {
+    padding-top: 10rem;
+    padding-bottom: 4rem;
     border-bottom: 1px solid var(--border-color);
+    margin-bottom: 4rem;
 }
 
 .privacy-title {
     font-family: var(--font-heading);
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 700;
+    font-size: clamp(2.75rem, 6vw, 5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-transform: none;
     color: var(--text-primary);
-    text-align: center;
+    margin: 0 0 1.25rem;
 }
 
-/* Content */
-.privacy-content {
-    max-width: 800px;
+.privacy-meta {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent-gold-light);
+}
+
+[data-theme='light'] .privacy-meta {
+    color: var(--accent-gold);
+}
+
+/* Reading column */
+.privacy-body {
+    width: 90vw;
+    max-width: 720px;
     margin: 0 auto;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 3rem;
 }
 
-.privacy-content section {
-    margin-bottom: 3rem;
+.privacy-content {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text-secondary);
+}
+
+.privacy-content section + section {
+    margin-top: 3.5rem;
 }
 
 .privacy-content h2 {
     font-family: var(--font-heading);
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: clamp(1.5rem, 2.5vw, 1.9rem);
+    font-weight: 300;
+    line-height: 1.3;
+    text-transform: none;
+    letter-spacing: normal;
     color: var(--text-primary);
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.5rem;
+    margin: 0 0 1.25rem;
 }
 
-.privacy-content p,
-.privacy-content li {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
-
-.privacy-content ul {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.privacy-content li {
-    margin-bottom: 0.5rem;
+.privacy-content p {
+    margin-bottom: 1.25rem;
 }
 
 .privacy-content strong {
@@ -69,35 +70,53 @@
     font-weight: 600;
 }
 
+/* The global reset strips list markers; restore them as gold dashes */
+.privacy-content ul {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+}
+
+.privacy-content li {
+    position: relative;
+    padding-left: 1.6rem;
+    margin-bottom: 0.9rem;
+}
+
+.privacy-content li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.9em;
+    width: 0.7rem;
+    height: 1px;
+    background: var(--accent-gold-light);
+}
+
 .privacy-content a {
-    color: var(--accent-gold);
+    color: var(--text-primary);
     text-decoration: underline;
-    transition: opacity var(--transition-normal);
+    text-decoration-color: var(--accent-gold-light);
+    text-underline-offset: 3px;
+    transition: color 0.3s ease;
 }
 
 .privacy-content a:hover {
-    opacity: 0.8;
+    color: var(--accent-gold-light);
 }
 
-.privacy-last-updated {
-    font-size: 0.875rem;
-    color: var(--text-tertiary);
-    font-style: italic;
-    margin-top: 3rem;
-    text-align: right;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-    .privacy-hero {
-        padding: 6rem 0 3rem;
+    .privacy-page {
+        padding-bottom: 5rem;
+    }
+
+    .privacy-header {
+        padding-top: 7.5rem;
+        padding-bottom: 2.5rem;
+        margin-bottom: 3rem;
     }
 
     .privacy-content {
-        padding: 2rem 1.5rem;
-    }
-
-    .privacy-title {
-        font-size: 2rem;
+        font-size: 1rem;
     }
 }

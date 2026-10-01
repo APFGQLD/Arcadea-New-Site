@@ -38,30 +38,28 @@
     color: #ffffff !important;
 }
 
-/* White button styling when navbar is transparent over dark hero */
+/* Get in Touch over a dark hero: white text, brighter gold outline */
 [data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav,
 .navbar.over-dark-hero .btn-nav {
-    border-color: #ffffff !important;
     color: #ffffff !important;
-}
-
-[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav:hover,
-.navbar.over-dark-hero .btn-nav:hover {
-    background-color: #ffffff;
-    color: #000000 !important;
+    border-color: #d6c08a;
 }
 
 .navbar.scrolled {
-    padding: 1rem 0;
+    padding: 0.9rem 0;
     background-color: var(--glass-bg);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--glass-border);
 }
 
+/* Same width as the page content (.ed-wide) so the logo lines up with it */
 .nav-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 85vw;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
 .logo {
@@ -71,15 +69,33 @@
     cursor: pointer;
 }
 
-.nav-logo-img {
-    height: 80px;
-    width: auto;
-    object-fit: contain;
+/* Crop box around the wordmark. In the 3125x1875 logo PNGs the lettering
+   spans x 104-3020 and y 800-1075, so with --logo-h as the lettering height:
+   box width  = 2916/276 x h, image height = 1875/276 x h,
+   left/top offsets = 104/276 x h and 800/276 x h. */
+.nav-logo-crop {
+    --logo-h: 18px;
+    display: block;
+    height: var(--logo-h);
+    width: calc(var(--logo-h) * 10.565);
+    overflow: hidden;
+    transform-origin: left center;
     transition: transform var(--transition-normal);
 }
 
-.logo:hover .nav-logo-img {
-    transform: scale(1.00);
+/* Shrink on scroll with a transform rather than a new --logo-h: custom
+   properties don't animate, so changing the size would resize the image
+   instantly while the crop box eased, clipping the logo mid-transition. */
+.navbar.scrolled .nav-logo-crop {
+    transform: scale(0.833);
+}
+
+.nav-logo-img {
+    height: calc(var(--logo-h) * 6.793);
+    width: auto;
+    max-width: none;
+    margin-left: calc(var(--logo-h) * -0.3768);
+    margin-top: calc(var(--logo-h) * -2.8986);
 }
 
 .hamburger {
@@ -135,6 +151,7 @@
 }
 
 .nav-links a {
+    position: relative;
     font-size: 0.9rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -143,17 +160,46 @@
     transition: color var(--transition-normal);
 }
 
-.btn-nav {
-    padding: 0.8rem 1.5rem;
-    border: 1px solid var(--accent-gold);
-    color: var(--accent-gold) !important;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
+.nav-links a:hover {
+    color: var(--accent-gold-light);
 }
 
-.btn-nav:hover {
-    background-color: var(--accent-gold);
+/* Current page: thin gold rule under the link */
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.45rem;
+    height: 1px;
+    background: var(--accent-gold-light);
+}
+
+/* Get in Touch: a fully outlined button, so it can't be mistaken for the
+   active-page underline. Text stays white/primary for contrast; the outline
+   carries the gold. */
+.btn-nav {
+    padding: 0.65rem 1.4rem;
+    border: 1px solid var(--accent-gold-light);
     color: var(--text-primary) !important;
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-nav:hover,
+[data-theme='dark'] .navbar:not(.scrolled):not(.menu-open) .btn-nav:hover,
+.navbar.over-dark-hero .btn-nav:hover {
+    background-color: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: #ffffff !important;
+}
+
+[data-theme='light'] .nav-links a.active::after,
+[data-theme='light'] .btn-nav {
+    border-color: var(--accent-gold);
+}
+
+[data-theme='light'] .nav-links a.active::after {
+    background: var(--accent-gold);
 }
 
 @media (max-width: 1200px) {
@@ -173,40 +219,136 @@
         display: flex;
     }
 
+    .nav-container {
+        width: 90vw;
+    }
+
+    .nav-logo-crop {
+        --logo-h: 14px;
+    }
+
+    .navbar.scrolled .nav-logo-crop {
+        transform: none;
+    }
+
+    /* Keep the logo and close button above the open menu */
+    .logo,
+    .hamburger {
+        position: relative;
+        z-index: 1001;
+    }
+
+    /* Let the header blend into the open menu. Dropping the backdrop-filter
+       also stops the navbar acting as the containing block for the fixed
+       menu below, so the menu sizes against the viewport. */
+    .navbar.menu-open {
+        background-color: transparent;
+        border-bottom-color: transparent;
+        backdrop-filter: none;
+    }
+
+    /* Full-screen menu */
     .nav-wrapper {
         position: fixed;
         top: 0;
-        right: -100%;
-        width: 80%;
-        max-width: 400px;
+        left: 0;
+        width: 100vw;
         height: 100vh;
-        background-color: var(--bg-secondary);
+        height: 100dvh;
+        padding: 7rem 2rem 3rem;
+        background-color: var(--bg-primary);
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        gap: 3rem;
-        transition: right 0.4s ease;
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        gap: 2rem;
+        overflow-y: auto;
         z-index: 1000;
-        backdrop-filter: blur(20px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0s linear 0.4s;
     }
 
     .nav-wrapper.open {
-        right: 0;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.4s ease, visibility 0s linear 0s;
     }
 
     .nav-links {
+        flex: 1;
         flex-direction: column;
-        gap: 2rem;
+        justify-content: center;
+        gap: 1.75rem;
         text-align: center;
     }
 
-    .nav-links a {
-        font-size: 1.2rem;
+    .nav-links li {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .nav-wrapper.open .nav-links li {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: calc(0.1s + var(--i, 0) * 0.06s);
+    }
+
+    .navbar .nav-links a {
+        font-family: var(--font-heading);
+        font-size: clamp(2rem, 8vw, 3rem);
+        font-weight: 300;
+        text-transform: none;
+        letter-spacing: normal;
+        color: var(--text-primary);
+    }
+
+    .navbar .nav-links a:hover {
+        color: var(--accent-gold-light);
+    }
+
+    /* Get in Touch keeps its outline in the menu, in the body font so it
+       reads as a button rather than another page link */
+    .navbar .nav-links .btn-nav {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.9rem 2rem;
+        border: 1px solid var(--accent-gold);
+        border-radius: 0;
+        font-family: var(--font-main);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--text-primary) !important;
+    }
+
+    .navbar .nav-links .btn-nav:hover {
+        background-color: var(--accent-gold);
+        color: #ffffff !important;
     }
 
     .nav-controls {
-        flex-direction: column;
+        flex-direction: row;
         gap: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .nav-wrapper.open .nav-controls {
+        opacity: 1;
+        transition-delay: 0.5s;
+    }
+
+    /* The language list sits at the bottom of the screen here, so open it
+       upwards and centred under the button instead of down off-screen */
+    .nav-controls .lang-dropdown {
+        top: auto;
+        bottom: calc(100% + 8px);
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }

@@ -109,7 +109,9 @@
     },
     "about_page": {
         "hero": {
-            "title": "THE ARCHITECT OF WEALTH & LIFESTYLE",
+            "eyebrow": "About Arcadea",
+            "title": "The Architect of",
+            "title_accent": "Wealth & Lifestyle",
             "subtitle": "We curate the world's most exceptional properties, bridging the gap between high-yield accessibility and ultra-luxury living."
         },
         "story": {
@@ -204,7 +206,8 @@
         "cta": {
             "title": "BEGIN YOUR JOURNEY",
             "subtitle": "Whether you seek the data or the dream, we are here to guide you.",
-            "button": "Get in Touch"
+            "button": "Get in Touch",
+            "secondary": "View Properties"
         }
     },
     "contact": {

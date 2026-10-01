@@ -1,62 +1,90 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import bigALogo from '../assets/big-a.png';
+import { useTheme } from '../context/ThemeContext';
+import brandLogoWhite from '../assets/brand-logo-white.png';
+import brandLogoBlack from '../assets/brand-logo-black.png';
 import './Footer.css';
+
+const exploreLinks = [
+    { to: '/', key: 'nav.home', label: 'Home' },
+    { to: '/properties/', key: 'nav.properties', label: 'Properties' },
+    { to: '/properties/#coastal', label: 'Coastal Collection' },
+    { to: '/properties/#island', label: 'Island Collection' },
+    { to: '/services', key: 'nav.services', label: 'Services' },
+    { to: '/about', key: 'nav.about', label: 'About' },
+    { to: '/news', key: 'nav.news', label: 'News' }
+];
+
+const socialLinks = [
+    { href: 'https://www.instagram.com/arcadea.property', label: 'Instagram' },
+    { href: 'https://www.facebook.com/profile.php?id=61593654575099', label: 'Facebook' }
+];
 
 const Footer = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const year = new Date().getFullYear();
 
     return (
         <footer className="footer">
-            <div className="container">
-                <div className="footer-content">
-                    {/* Logo and Description */}
-                    <div className="footer-section footer-brand">
-                        <div className="logo footer-logo">
-                            <img
-                                src={bigALogo}
-                                alt="ARCADEA PROPERTY"
-                                className="footer-logo-img"
-                            />
-                        </div>
+            <div className="footer-inner">
+                {/* Columns */}
+                <div className="footer-columns">
+                    <div className="footer-brand">
                         <p className="footer-tagline">
                             {t('footer.tagline', 'Exquisite Living, Refined Investments')}
                         </p>
+                        <p className="footer-about">
+                            Curated coastal and island property across Australia and Bali, for investors and those seeking a sanctuary.
+                        </p>
                     </div>
 
-                    {/* Quick Links */}
-                    <div className="footer-section">
-                        <h4 className="footer-heading">{t('footer.quickLinks', 'Quick Links')}</h4>
+                    <nav className="footer-col" aria-label="Footer">
+                        <h3 className="footer-heading">{t('footer.explore', 'Explore')}</h3>
                         <ul className="footer-links">
-                            <li><Link to="/">{t('nav.home', 'Home')}</Link></li>
-                            <li><Link to="/properties/">{t('nav.properties', 'Properties')}</Link></li>
-                            <li><Link to="/properties/#coastal">Coastal Collection</Link></li>
-                            <li><Link to="/properties/#island">Island Collection</Link></li>
-                            <li><Link to="/services">{t('nav.services', 'Services')}</Link></li>
-                            <li><Link to="/about">{t('nav.about', 'About')}</Link></li>
-                            <li><Link to="/news">{t('footer.news', 'News')}</Link></li>
+                            {exploreLinks.map(link => (
+                                <li key={link.to}>
+                                    <Link to={link.to}>{link.key ? t(link.key, link.label) : link.label}</Link>
+                                </li>
+                            ))}
                         </ul>
-                    </div>
+                    </nav>
 
-                    {/* Contact */}
-                    <div className="footer-section">
-                        <h4 className="footer-heading">{t('footer.contact', 'Contact')}</h4>
+                    <div className="footer-col">
+                        <h3 className="footer-heading">{t('footer.contact', 'Contact')}</h3>
                         <ul className="footer-links">
-                            <li><Link to="/#contact">{t('nav.contact', 'Get in Touch')}</Link></li>
-                            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
                             <li><a href="mailto:info@arcadea.com.au">info@arcadea.com.au</a></li>
-                            <li><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer">Sitemap</a></li>
+                            <li><Link to="/#contact">{t('footer.enquiry', 'Make an Enquiry')}</Link></li>
+                        </ul>
+
+                        <h3 className="footer-heading footer-heading-follow">{t('footer.follow', 'Follow')}</h3>
+                        <ul className="footer-links footer-social">
+                            {socialLinks.map(link => (
+                                <li key={link.label}>
+                                    <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label} &#8599;</a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
 
-                {/* Copyright */}
+                {/* Legal */}
                 <div className="footer-bottom">
-                    <p className="copyright">
-                        &copy; {new Date().getFullYear()} Arcadea Property. Licensed Real Estate Agent No. 4857148. {t('footer.rights', 'All rights reserved.')}
+                    <p className="footer-legal">
+                        &copy; {year} Arcadea Property. Licensed Real Estate Agent No. 4857148. {t('footer.rights', 'All rights reserved.')}
                     </p>
+                    <div className="footer-legal-links">
+                        <Link to="/privacy-policy">Privacy Policy</Link>
+                        <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer">Sitemap</a>
+                    </div>
                 </div>
+            </div>
+
+            {/* Oversized wordmark sign-off. The logo PNG has a lot of empty
+                space around the lettering, so this box crops to it (see CSS). */}
+            <div className="footer-wordmark" aria-hidden="true">
+                <img src={theme === 'dark' ? brandLogoWhite : brandLogoBlack} alt="" />
             </div>
         </footer>
     );

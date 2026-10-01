@@ -8,6 +8,12 @@
       "port": 5173
     },
     {
+      "name": "arcadea-dev-lan",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--host"],
+      "port": 5173
+    },
+    {
       "name": "sanity-studio",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "studio", "run", "dev"],

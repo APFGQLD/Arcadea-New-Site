@@ -3,23 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 
+/** Home page opening statement, in the same style as the Properties intro. */
 const About = () => {
     const { t } = useTranslation();
     const sectionRef = useRef(null);
     useScrollReveal(sectionRef);
 
     return (
-        <section ref={sectionRef} id="about" className="section-padding" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-            <div className="container">
-                <div className="section-header reveal reveal-up" style={{ marginBottom: 0 }}>
-                    <h2 className="section-title">
-                        {t('about.title').split(' ')[0]} <span className="text-gold">{t('about.title').split(' ')[1]}</span>
-                    </h2>
-                    <p className="section-description" style={{ marginBottom: '3rem' }}>
-                        {t('about.description')}
-                    </p>
-                    <Link to="/about" className="btn btn-secondary">{t('nav.about')}</Link>
-                </div>
+        <section ref={sectionRef} id="about" className="ed-intro">
+            <div className="reveal reveal-up">
+                <span className="ed-eyebrow">{t('about.title')}</span>
+                <p>{t('about.description')}</p>
+                <Link to="/about" className="ed-text-link home-intro-link">{t('about.link', 'Our Story')} &rarr;</Link>
             </div>
         </section>
     );

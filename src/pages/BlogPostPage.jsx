@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-    CalendarDaysIcon,
-    UserIcon,
-    ClockIcon,
-    ArrowLeftIcon,
-    LinkIcon,
-    CheckIcon
-} from '@heroicons/react/24/solid';
+import { LinkIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { FaXTwitter, FaFacebookF, FaLinkedinIn } from 'react-icons/fa6';
 import { fetchBlogPost, fetchRelatedPosts, urlFor } from '../services/sanityService';
 import { getReadingTime } from '../utils/readingTime';
 import { PortableText } from '@portabletext/react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import usePageTitle from '../hooks/usePageTitle';
+import './EditorialPage.css';
+import './BlogPage.css';
 import './BlogPostPage.css';
 
 // Internal links (relative, or pointing back at this domain) use React
@@ -139,161 +134,139 @@ const BlogPostPage = () => {
     if (!post) {
         return (
             <div className="blog-post-page">
-                <div className="container">
-                    <div className="blog-error">
-                        <h2>Article Not Found</h2>
-                        <p>The article you're looking for doesn't exist.</p>
-                        <Link to="/news" className="btn btn-primary">
-                            ← Back to News
-                        </Link>
-                    </div>
+                <div className="ed-wide blog-error">
+                    <h2>Article Not Found</h2>
+                    <p>The article you're looking for doesn't exist.</p>
+                    <Link to="/news" className="ed-text-link">&larr; Back to News</Link>
                 </div>
             </div>
         );
     }
 
     const shareUrl = window.location.href;
+    const readingTime = getReadingTime(post.content);
+    const metaParts = [formatDate(post.date), post.author, readingTime ? `${readingTime} min read` : null].filter(Boolean);
 
     return (
-        <div className="blog-post-page">
-            {/* Featured Image Header */}
+        <div className="editorial-page blog-post-page">
+            {/* Heading: always shown, whether or not the article has a photo */}
+            <header className="ed-wide blog-post-header">
+                <Link to="/news" className="ed-text-link blog-back-link">&larr; Back to News</Link>
+                {post.categories && post.categories.length > 0 && (
+                    <div className="blog-post-categories">
+                        {post.categories.map((cat, idx) => (
+                            <Link key={idx} to={`/news?category=${cat.slug}`} className="blog-category-tag">
+                                {cat.name}
+                            </Link>
+                        ))}
+                    </div>
+                )}
+                <h1 className="blog-post-title">{post.title}</h1>
+                <p className="blog-post-meta">{metaParts.join(' · ')}</p>
+            </header>
+
             {post.featuredImage && (
-                <div
-                    className="blog-post-hero"
-                    style={{ backgroundImage: `url(${post.featuredImage})` }}
-                    role="img"
-                    aria-label={post.featuredImageAlt || post.title}
-                >
-                    <div className="blog-post-hero-overlay"></div>
-                    <div className="container">
-                        <Link to="/news" className="blog-back-link">
-                            <ArrowLeftIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} /> Back to News
-                        </Link>
-                    </div>
-                    <div className="container">
-                        <div className="blog-post-hero-inner">
-                            {post.categories && post.categories.length > 0 && (
-                                <div className="blog-post-categories">
-                                    {post.categories.map((cat, idx) => (
-                                        <Link key={idx} to={`/news?category=${cat.slug}`} className="blog-category-tag">
-                                            {cat.name}
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-                            <h1 className="blog-post-title">{post.title}</h1>
-                            <div className="blog-post-meta">
-                                <span className="blog-post-date">
-                                    <CalendarDaysIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                    {formatDate(post.date)}
-                                </span>
-                                <span className="blog-post-author">
-                                    <UserIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                    {post.author}
-                                </span>
-                                {getReadingTime(post.content) && (
-                                    <span className="blog-post-readtime">
-                                        <ClockIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                        {getReadingTime(post.content)} min read
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                <div className="ed-wide blog-post-hero">
+                    <img
+                        src={post.featuredImage}
+                        alt={post.featuredImageAlt || post.title}
+                        loading="eager"
+                        decoding="async"
+                    />
                 </div>
             )}
 
-            {/* Content */}
-            <div className="container">
-                <article className="blog-post-content">
-                    <div className="blog-post-body">
-                        {Array.isArray(post.content) ? (
-                            <PortableText value={post.content} components={portableTextComponents} />
-                        ) : (
-                            <div dangerouslySetInnerHTML={{ __html: post.content }} />
-                        )}
-                    </div>
+            {/* Article */}
+            <article className="blog-post-content">
+                <div className="blog-post-body">
+                    {Array.isArray(post.content) ? (
+                        <PortableText value={post.content} components={portableTextComponents} />
+                    ) : (
+                        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                    )}
+                </div>
 
-                    <div className="blog-post-share">
-                        <span className="blog-post-share-label">Share this article</span>
-                        <div className="blog-post-share-buttons">
-                            <a
-                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(post.title)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="blog-share-btn"
-                                aria-label="Share on X"
-                            >
-                                <FaXTwitter />
-                            </a>
-                            <a
-                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="blog-share-btn"
-                                aria-label="Share on Facebook"
-                            >
-                                <FaFacebookF />
-                            </a>
-                            <a
-                                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="blog-share-btn"
-                                aria-label="Share on LinkedIn"
-                            >
-                                <FaLinkedinIn />
-                            </a>
-                            <button
-                                type="button"
-                                onClick={handleCopyLink}
-                                className="blog-share-btn"
-                                aria-label="Copy article link"
-                            >
-                                {copied ? <CheckIcon /> : <LinkIcon />}
-                            </button>
-                        </div>
-                        {copied && <span className="blog-post-share-copied">Link copied!</span>}
+                <div className="blog-post-share">
+                    <span className="blog-post-share-label">Share this article</span>
+                    <div className="blog-post-share-buttons">
+                        <a
+                            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(post.title)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="blog-share-btn"
+                            aria-label="Share on X"
+                        >
+                            <FaXTwitter />
+                        </a>
+                        <a
+                            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="blog-share-btn"
+                            aria-label="Share on Facebook"
+                        >
+                            <FaFacebookF />
+                        </a>
+                        <a
+                            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="blog-share-btn"
+                            aria-label="Share on LinkedIn"
+                        >
+                            <FaLinkedinIn />
+                        </a>
+                        <button
+                            type="button"
+                            onClick={handleCopyLink}
+                            className="blog-share-btn"
+                            aria-label="Copy article link"
+                        >
+                            {copied ? <CheckIcon /> : <LinkIcon />}
+                        </button>
                     </div>
+                    {copied && <span className="blog-post-share-copied">Link copied</span>}
+                </div>
+            </article>
 
-                    {/* Call to Action */}
-                    <div className="blog-post-cta">
-                        <h3>Ready to Explore Premium Properties?</h3>
-                        <p>Discover our exclusive collection of investment properties across the globe.</p>
-                        <Link to="/properties/" className="btn btn-primary">
-                            View Properties
-                        </Link>
-                    </div>
-                </article>
+            {/* Call to action */}
+            <section className="ed-wide ed-panel blog-post-cta">
+                <span className="ed-eyebrow">The Collections</span>
+                <h2 className="blog-post-cta-title">Ready to explore premium properties?</h2>
+                <p>Discover our exclusive collection of investment properties across Australia and Bali.</p>
+                <Link to="/properties/" className="ed-text-link">View Properties &rarr;</Link>
+            </section>
 
-                {relatedPosts.length > 0 && (
-                    <section className="blog-related">
+            {/* Related articles, as the same cards as the News page */}
+            {relatedPosts.length > 0 && (
+                <section className="ed-wide blog-related">
+                    <div className="blog-related-header">
                         <h2 className="blog-related-heading">You Might Also Like</h2>
-                        <div className="blog-related-grid">
-                            {relatedPosts.map((related) => (
-                                <Link key={related.id} to={`/news/${related.slug}`} className="blog-related-card">
+                        <Link to="/news" className="ed-text-link">All Articles &rarr;</Link>
+                    </div>
+                    <div className="blog-grid">
+                        {relatedPosts.map((related) => (
+                            <Link key={related.id} to={`/news/${related.slug}`} className="blog-card">
+                                <div className="blog-card-image">
                                     {related.featuredImage && (
-                                        <div className="blog-related-card-image">
-                                            <img
-                                                src={related.featuredImage}
-                                                alt={related.featuredImageAlt || related.title}
-                                                loading="lazy"
-                                                decoding="async"
-                                                width="400"
-                                                height="280"
-                                            />
-                                        </div>
+                                        <img
+                                            src={related.featuredImage}
+                                            alt={related.featuredImageAlt || related.title}
+                                            loading="lazy"
+                                            decoding="async"
+                                            width="800"
+                                            height="600"
+                                        />
                                     )}
-                                    <div className="blog-related-card-content">
-                                        <span className="blog-related-card-date">{formatDate(related.date)}</span>
-                                        <h3 className="blog-related-card-title">{related.title}</h3>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-                )}
-            </div>
+                                </div>
+                                <span className="blog-card-meta">{formatDate(related.date)}</span>
+                                <h3 className="blog-card-title">{related.title}</h3>
+                                <span className="ed-text-link blog-card-link">Read Article &rarr;</span>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+            )}
         </div>
     );
 };

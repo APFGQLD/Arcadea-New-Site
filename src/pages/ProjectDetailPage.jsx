@@ -21,10 +21,21 @@ import {
     LightBulbIcon,
     GlobeAltIcon
 } from '@heroicons/react/24/solid';
+import {
+    DocumentTextIcon,
+    DocumentIcon,
+    TableCellsIcon,
+    PresentationChartBarIcon,
+    ArchiveBoxIcon,
+    PhotoIcon,
+    FilmIcon,
+    LinkIcon
+} from '@heroicons/react/24/outline';
 import { FaBed, FaBath, FaToilet, FaCar } from 'react-icons/fa6';
 import { PortableText } from '@portabletext/react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
+import EnquiryForm from '../components/EnquiryForm';
 import usePageTitle from '../hooks/usePageTitle';
 import { formatListingPrice } from '../utils/priceFormat';
 import { rafThrottle } from '../utils/rafThrottle';
@@ -50,10 +61,15 @@ const ProjectDetailPage = () => {
     const [error, setError] = useState(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
     const carouselRef = useRef(null);
+    const lightboxThumbsRef = useRef(null);
+    const lightboxTouchX = useRef(null);
     const navBannerSentinelRef = useRef(null);
     const navBannerRef = useRef(null);
     const [navBannerCompact, setNavBannerCompact] = useState(false);
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
+    // Set when a visitor clicks an agent's "Enquire Now", so the enquiry
+    // names that agent
+    const [enquiryAgent, setEnquiryAgent] = useState(null);
 
     usePageTitle(project?.name);
 
@@ -117,6 +133,7 @@ const ProjectDetailPage = () => {
                 const data = await fetchProjectDetail(id);
                 setProject(data);
                 setSelectedImageIndex(null); // Reset lightbox on project change
+                setEnquiryAgent(null);
             } catch (err) {
                 console.error('Error fetching project detail:', err);
                 setError(t('project_detail.error', 'Failed to load project details.'));
@@ -150,6 +167,47 @@ const ProjectDetailPage = () => {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [selectedImageIndex, handleNextImage, handlePrevImage]);
+
+    // While the lightbox is open: stop the page scrolling behind it and keep
+    // the active thumbnail in view.
+    const lightboxOpen = selectedImageIndex !== null;
+    useEffect(() => {
+        if (!lightboxOpen) return undefined;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = previousOverflow; };
+    }, [lightboxOpen]);
+
+    useEffect(() => {
+        if (selectedImageIndex === null || !lightboxThumbsRef.current) return;
+        const thumb = lightboxThumbsRef.current.children[selectedImageIndex];
+        thumb?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }, [selectedImageIndex]);
+
+    // Swipe left/right on touch screens
+    const handleLightboxTouchStart = (e) => {
+        lightboxTouchX.current = e.touches[0].clientX;
+    };
+    const handleLightboxTouchEnd = (e) => {
+        if (lightboxTouchX.current === null) return;
+        const dx = e.changedTouches[0].clientX - lightboxTouchX.current;
+        lightboxTouchX.current = null;
+        if (Math.abs(dx) < 50) return;
+        if (dx < 0) handleNextImage();
+        else handlePrevImage();
+    };
+
+    // Links straight to a section (e.g. /project/x#enquire from an email) can't
+    // jump on load because the content arrives later, so jump once it's in.
+    useEffect(() => {
+        if (!project || !window.location.hash) return;
+        const target = document.getElementById(window.location.hash.slice(1));
+        target?.scrollIntoView({ block: 'start' });
+    }, [project]);
+
+    const scrollToEnquiry = () => {
+        document.getElementById('enquire')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     const scrollCarousel = (direction) => {
         if (!carouselRef.current) return;
@@ -215,22 +273,26 @@ const ProjectDetailPage = () => {
         });
     };
 
+    // Line icon for a resource's file type (links have no extension)
+    const RESOURCE_ICONS = {
+        pdf: DocumentTextIcon,
+        doc: DocumentTextIcon, docx: DocumentTextIcon, txt: DocumentTextIcon,
+        xls: TableCellsIcon, xlsx: TableCellsIcon, csv: TableCellsIcon,
+        ppt: PresentationChartBarIcon, pptx: PresentationChartBarIcon,
+        zip: ArchiveBoxIcon, rar: ArchiveBoxIcon,
+        jpg: PhotoIcon, jpeg: PhotoIcon, png: PhotoIcon, gif: PhotoIcon, webp: PhotoIcon,
+        mp4: FilmIcon, mov: FilmIcon,
+    };
+    const getResourceIcon = (ext) => {
+        const Icon = ext ? (RESOURCE_ICONS[ext.toLowerCase()] || DocumentIcon) : LinkIcon;
+        return <Icon aria-hidden="true" />;
+    };
+
     const formatFileSize = (bytes) => {
         if (!bytes) return null;
         if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
         return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     };
-
-    const FILE_ICONS = {
-        pdf: '📄',
-        doc: '📝', docx: '📝',
-        xls: '📊', xlsx: '📊', csv: '📊',
-        ppt: '📽️', pptx: '📽️',
-        zip: '🗜️', rar: '🗜️',
-        jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️', webp: '🖼️',
-        mp4: '🎬', mov: '🎬',
-    };
-    const getFileIcon = (ext) => FILE_ICONS[ext?.toLowerCase()] || '📎';
 
     const getIcon = (iconName) => {
         if (!iconName) return <PresentationChartLineIcon className="hero-icon" />;
@@ -280,17 +342,15 @@ const ProjectDetailPage = () => {
                     />
                     <div className="hero-overlay"></div>
                 </div>
-                <div className="hero-content container">
-                    <div className="hero-welcome-area centered">
+                <div className="hero-content ed-wide">
+                    <div className="hero-welcome-area">
                         {project.statusTag && (
                             <div className="project-status-pill">
                                 {project.statusTag}
                             </div>
                         )}
-                        <h1 className="project-title-hero">
-                            <span className="welcome-text">{t('project_detail.welcome', 'Welcome to')}</span>{" "}
-                            <span className="project-name-accent">{project.name}</span>
-                        </h1>
+                        <span className="hero-welcome-eyebrow">{t('project_detail.welcome', 'Welcome to')}</span>
+                        <h1 className="project-title-hero">{project.name}</h1>
                         {(project.price || project.status) && (
                             <div className="hero-listing-row">
                                 {project.price && (
@@ -309,7 +369,7 @@ const ProjectDetailPage = () => {
                                 if (project.ctaLink) {
                                     window.open(project.ctaLink, '_blank', 'noopener,noreferrer');
                                 } else {
-                                    navigate('/#contact');
+                                    scrollToEnquiry();
                                 }
                             }}
                         >
@@ -325,7 +385,7 @@ const ProjectDetailPage = () => {
                 ref={navBannerRef}
                 className={`detail-nav-banner ${navBannerCompact ? 'nav-compact' : ''} ${mobileNavOpen ? 'mobile-nav-open' : ''}`}
             >
-                <div className="container nav-banner-inner">
+                <div className="ed-wide nav-banner-inner">
                     <button className="nav-banner-link nav-banner-back" onClick={() => navigate(project.collection ? `/properties/#${project.collection}` : '/properties/')}>
                         &larr; {t('project_detail.nav_back', 'Portfolio')}
                     </button>
@@ -352,15 +412,16 @@ const ProjectDetailPage = () => {
                         {project.agents?.length > 0 && (
                             <a href="#agent" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_agent', 'Agent')}</a>
                         )}
+                        <a href="#enquire" className="nav-banner-link" onClick={() => setMobileNavOpen(false)}>{t('project_detail.nav_enquire', 'Enquire')}</a>
                     </div>
                 </div>
             </nav>
 
             {/* 2. Overview & Stats Section */}
-            <section className="detail-overview container" id="overview">
+            <section className="detail-overview ed-wide" id="overview">
                 <div className="overview-grid">
                     <div className="overview-info">
-                        <h2 className="section-title">{t('project_detail.overview_title', 'The Project')}</h2>
+                        <h2 className="detail-section-title">{t('project_detail.overview_title', 'The Project')}</h2>
                         {Array.isArray(project.description) ? (
                             <div className="project-description-text">
                                 <PortableText value={project.description} />
@@ -395,15 +456,15 @@ const ProjectDetailPage = () => {
 
             {/* 2.5. Comparison Table (Island Collection Only) */}
             {(project.collection === 'island') && (
-                <section className="detail-comparison container" id="comparison">
+                <section className="detail-comparison ed-wide" id="comparison">
                     <ComparisonTable project={project} />
                 </section>
             )}
 
             {/* 3. Gallery & Narrative Section */}
-            <section className="detail-gallery container" id="vision">
-                <div className="section-header-flex">
-                    <h2 className="section-title">{t('project_detail.gallery_title', 'The Vision')}</h2>
+            <section className="detail-gallery" id="vision">
+                <div className="section-header-flex ed-wide">
+                    <h2 className="detail-section-title">{t('project_detail.gallery_title', 'The Vision')}</h2>
                     <div className="carousel-controls">
                         <button className="carousel-btn prev" onClick={() => scrollCarousel('left')}>‹</button>
                         <button className="carousel-btn next" onClick={() => scrollCarousel('right')}>›</button>
@@ -436,8 +497,8 @@ const ProjectDetailPage = () => {
 
             {/* 3.5. Video Section */}
             {project.videoUrl && (
-                <section className="detail-video container" id="video">
-                    <h2 className="section-title">{t('project_detail.video_title', 'The Film')}</h2>
+                <section className="detail-video ed-wide" id="video">
+                    <h2 className="detail-section-title">{t('project_detail.video_title', 'The Film')}</h2>
                     <div className="video-embed-wrapper">
                         <iframe
                             src={getYouTubeEmbedUrl(project.videoUrl)}
@@ -451,10 +512,10 @@ const ProjectDetailPage = () => {
             )}
 
             {/* 4. Resources Section */}
-            <section className="detail-resources bg-secondary" id="resources">
-                <div className="container">
-                    <h2 className="section-title">{t('project_detail.resources_title', 'Resources')}</h2>
-                    <p className="section-subtitle">{t('project_detail.resources_subtitle', 'Explore brochures, tours, and updates.')}</p>
+            <section className="detail-resources" id="resources">
+                <div className="ed-wide">
+                    <h2 className="detail-section-title">{t('project_detail.resources_title', 'Resources')}</h2>
+                    <p className="detail-section-subtitle">{t('project_detail.resources_subtitle', 'Explore brochures, tours, and updates.')}</p>
 
                     <div className="resources-grid">
                         {project.resources?.map((res) => (
@@ -469,7 +530,7 @@ const ProjectDetailPage = () => {
                                 ) : (
                                     <>
                                         <div className="resource-icon">
-                                            <span>{res.fileExt ? getFileIcon(res.fileExt) : '🔗'}</span>
+                                            {getResourceIcon(res.fileExt)}
                                         </div>
                                         <span className="resource-arrow">→</span>
                                     </>
@@ -489,8 +550,8 @@ const ProjectDetailPage = () => {
             </section>
 
             {/* 5. Location Section */}
-            <section className="detail-location container" id="location">
-                <h2 className="section-title">{t('project_detail.location_title', 'Location')}</h2>
+            <section className="detail-location ed-wide" id="location">
+                <h2 className="detail-section-title">{t('project_detail.location_title', 'Location')}</h2>
                 <div className="location-grid">
                     {project.address && (
                         <div className="address-block">
@@ -511,7 +572,7 @@ const ProjectDetailPage = () => {
                         </div>
                     )}
                     {(project.address || (project.map?.lat && project.map?.lng)) && (
-                        <div className="map-container border-accent">
+                        <div className="map-container">
                             <iframe
                                 width="100%"
                                 height="100%"
@@ -522,24 +583,24 @@ const ProjectDetailPage = () => {
                                 }
                                 title="Project Location"
                                 frameBorder="0"
-                                style={{ border: 0, filter: 'grayscale(100%) invert(90%) contrast(80%)' }} // Custom dark mode attempt
+                                className="map-frame"
                                 allowFullScreen
                             ></iframe>
                         </div>
                     )}
                 </div>
-            </section >
+            </section>
 
             {/* 6. Agent Section */}
             {project.agents?.length > 0 && (
-                <section className="detail-agents bg-secondary" id="agent">
-                    <div className="container">
-                        <h2 className="section-title">{t('project_detail.agent_title', 'Speak to an Agent')}</h2>
+                <section className="detail-agents" id="agent">
+                    <div className="ed-wide">
+                        <h2 className="detail-section-title">{t('project_detail.agent_title', 'Speak to an Agent')}</h2>
                         <div className="agents-grid">
                             {project.agents.map((agent) => (
                                 <div key={agent.id} className="agent-card">
                                     {agent.photo && (
-                                        <div className="agent-photo border-accent">
+                                        <div className="agent-photo">
                                             <img
                                                 src={agent.photo}
                                                 alt={agent.name}
@@ -558,7 +619,13 @@ const ProjectDetailPage = () => {
                                             {agent.phone && <a href={`tel:${agent.phone}`} className="agent-contact-link">{agent.phone}</a>}
                                             {agent.email && <a href={`mailto:${agent.email}`} className="agent-contact-link">{agent.email}</a>}
                                         </div>
-                                        <button className="action-btn primary-btn" onClick={() => navigate('/#contact')}>
+                                        <button
+                                            className="action-btn primary-btn"
+                                            onClick={() => {
+                                                setEnquiryAgent(agent);
+                                                scrollToEnquiry();
+                                            }}
+                                        >
                                             {t('project_detail.enquire', 'Enquire Now')}
                                         </button>
                                     </div>
@@ -569,71 +636,149 @@ const ProjectDetailPage = () => {
                 </section>
             )}
 
-            {/* 7. Lightbox Overlay */}
-            {
-                selectedImageIndex !== null && project.gallery?.[selectedImageIndex] && (
-                    <div className="lightbox-overlay" onClick={() => setSelectedImageIndex(null)}>
-                        <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-                            <button className="lightbox-close" onClick={() => setSelectedImageIndex(null)}>×</button>
+            {/* 6.5 Enquiry */}
+            <section className="detail-enquire" id="enquire">
+                <div className="ed-wide ed-panel enquiry-panel">
+                    <div className="enquiry-panel-intro">
+                        <span className="ed-eyebrow">{t('project_detail.enquire', 'Enquire Now')}</span>
+                        <h2 className="ed-title">Interested in {project.name}?</h2>
+                        <p>Leave your details and our team will be in touch about availability, pricing and next steps.</p>
+                        {enquiryAgent && (
+                            <p className="enquiry-agent-note">
+                                We'll pass your enquiry to <strong>{enquiryAgent.name}</strong>.{' '}
+                                <button type="button" className="enquiry-agent-clear" onClick={() => setEnquiryAgent(null)}>
+                                    Send to the whole team instead
+                                </button>
+                            </p>
+                        )}
+                    </div>
+                    <div className="enquiry-panel-form">
+                        <EnquiryForm
+                            subject={`Enquiry: ${project.name}${enquiryAgent ? ` (for ${enquiryAgent.name})` : ''}`}
+                            details={{
+                                Property: project.name,
+                                Price: project.price ? formatListingPrice(project.price) : '',
+                                Agent: enquiryAgent
+                                    ? [enquiryAgent.name, enquiryAgent.email].filter(Boolean).join(' – ')
+                                    : ''
+                            }}
+                            messagePlaceholder={`I'd like to know more about ${project.name}...`}
+                            idPrefix="project-enquiry"
+                        />
+                    </div>
+                </div>
+            </section>
 
+            {/* 7. Lightbox */}
+            {selectedImageIndex !== null && project.gallery?.[selectedImageIndex] && (
+                <div
+                    className="lightbox-overlay"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={t('project_detail.gallery_title', 'The Vision')}
+                    onClick={() => setSelectedImageIndex(null)}
+                >
+                    {/* Top bar: counter and close */}
+                    <div className="lightbox-topbar" onClick={(e) => e.stopPropagation()}>
+                        <span className="lightbox-counter">
+                            {String(selectedImageIndex + 1).padStart(2, '0')}
+                            <span className="lightbox-counter-total"> / {String(project.gallery.length).padStart(2, '0')}</span>
+                        </span>
+                        <button
+                            type="button"
+                            className="lightbox-btn lightbox-close"
+                            onClick={() => setSelectedImageIndex(null)}
+                            aria-label={t('common.close', 'Close')}
+                            autoFocus
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    {/* Stage: the photos crossfade in place */}
+                    <div
+                        className="lightbox-stage"
+                        onTouchStart={handleLightboxTouchStart}
+                        onTouchEnd={handleLightboxTouchEnd}
+                    >
+                        {project.gallery.length > 1 && (
                             <button
-                                className="lightbox-prev"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handlePrevImage();
-                                }}
+                                type="button"
+                                className="lightbox-btn lightbox-prev"
+                                onClick={(e) => { e.stopPropagation(); handlePrevImage(); }}
+                                aria-label={t('common.previous', 'Previous image')}
                             >
                                 ‹
                             </button>
+                        )}
 
-                            <div className="lightbox-image-container">
-                                <div className="lightbox-slider-track">
-                                    {project.gallery.map((item, index) => (
-                                        <div 
-                                            key={item.id || index} 
-                                            className={`lightbox-slide ${index === selectedImageIndex ? 'active' : ''}`}
-                                        >
-                                            <div className="lightbox-image-wrapper">
-                                                {/* Progressive Loading: Show medium thumb as blurred background while full loads */}
-                                                <img 
-                                                    src={item.thumbMedium} 
-                                                    className="lightbox-placeholder" 
-                                                    alt="" 
-                                                    aria-hidden="true"
-                                                />
-                                                <img
-                                                    src={item.url}
-                                                    alt={item.caption}
-                                                    className="lightbox-image"
-                                                    // Eager load current and adjacent images for smoothness
-                                                    loading={Math.abs(index - selectedImageIndex) <= 1 ? "eager" : "lazy"}
-                                                    onLoad={(e) => e.target.classList.add('loaded')}
-                                                />
-                                            </div>
-                                            {item.caption && <p className="lightbox-caption">{item.caption}</p>}
+                        <div className="lightbox-slider-track">
+                            {project.gallery.map((item, index) => {
+                                // Only mount the current photo and its neighbours
+                                const near = Math.abs(index - selectedImageIndex) <= 1
+                                    || (selectedImageIndex === 0 && index === project.gallery.length - 1)
+                                    || (selectedImageIndex === project.gallery.length - 1 && index === 0);
+                                if (!near) return null;
+                                return (
+                                    <div
+                                        key={item.id || index}
+                                        className={`lightbox-slide ${index === selectedImageIndex ? 'active' : ''}`}
+                                        aria-hidden={index !== selectedImageIndex}
+                                    >
+                                        <div className="lightbox-image-wrapper" onClick={(e) => e.stopPropagation()}>
+                                            <img
+                                                src={item.url}
+                                                alt={item.caption || ''}
+                                                className="lightbox-image"
+                                                onLoad={(e) => e.currentTarget.classList.add('loaded')}
+                                            />
+                                            {/* Blurred preview under the full image until it loads.
+                                                Comes after the image so the "loaded + placeholder"
+                                                sibling rule can hide it. */}
+                                            {item.thumbMedium && (
+                                                <img src={item.thumbMedium} className="lightbox-placeholder" alt="" aria-hidden="true" />
+                                            )}
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
 
+                        {project.gallery.length > 1 && (
                             <button
-                                className="lightbox-next"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleNextImage();
-                                }}
+                                type="button"
+                                className="lightbox-btn lightbox-next"
+                                onClick={(e) => { e.stopPropagation(); handleNextImage(); }}
+                                aria-label={t('common.next', 'Next image')}
                             >
                                 ›
                             </button>
-
-                            <div className="lightbox-counter">
-                                {(selectedImageIndex + 1)} / {project.gallery.length}
-                            </div>
-                        </div>
+                        )}
                     </div>
-                )
-            }
-        </div >
+
+                    {/* Caption and thumbnails */}
+                    <div className="lightbox-footer" onClick={(e) => e.stopPropagation()}>
+                        <p className="lightbox-caption">{project.gallery[selectedImageIndex].caption || ' '}</p>
+                        {project.gallery.length > 1 && (
+                            <div className="lightbox-thumbs" ref={lightboxThumbsRef}>
+                                {project.gallery.map((item, index) => (
+                                    <button
+                                        type="button"
+                                        key={item.id || index}
+                                        className={`lightbox-thumb ${index === selectedImageIndex ? 'active' : ''}`}
+                                        onClick={() => setSelectedImageIndex(index)}
+                                        aria-label={item.caption || `${t('common.image', 'Image')} ${index + 1}`}
+                                        aria-current={index === selectedImageIndex ? 'true' : undefined}
+                                    >
+                                        <img src={item.thumbMedium || item.url} alt="" loading="lazy" />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };
 

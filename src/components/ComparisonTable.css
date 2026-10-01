@@ -17,22 +17,29 @@
     margin-bottom: 50px;
 }
 
+/* Eyebrow and title match the site's editorial section headings */
 .apfg-comp-eyebrow {
     display: block;
-    font-size: 12px;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0.4em;
+    color: var(--accent-gold-light);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+
+[data-theme='light'] .apfg-comp-eyebrow {
     color: var(--accent-gold);
-    font-weight: 700;
-    margin-bottom: 12px;
 }
 
 .apfg-comp-header h2 {
-    font-size: 36px;
+    font-size: clamp(2.2rem, 4vw, 3rem);
     color: var(--text-primary);
     margin: 0 0 15px 0;
-    font-weight: 600;
+    font-weight: 300;
     line-height: 1.2;
+    text-transform: none;
+    letter-spacing: normal;
     font-family: var(--font-heading);
 }
 

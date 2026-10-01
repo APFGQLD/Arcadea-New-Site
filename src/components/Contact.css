@@ -169,6 +169,7 @@
 
 /* Dark Mode Specific Adjustments */
 [data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
 [data-theme="dark"] .form-group textarea {
     background-color: rgba(255, 255, 255, 0.05);
 }
@@ -183,4 +184,52 @@
     content: '';
     display: block;
     height: 0;
+}
+/* Enquiry panel: intro on the left, form on the right. Used by the home page
+   contact section, project pages and One Park Lane. */
+.enquiry-panel {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 5rem;
+    align-items: start;
+}
+
+.enquiry-panel-intro .ed-title {
+    margin-bottom: 1.5rem;
+}
+
+.enquiry-panel-intro p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.enquiry-panel-intro .ed-text-link {
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: 0.05em;
+}
+
+.enquiry-panel .contact-form button[type="submit"] {
+    align-self: flex-start;
+}
+
+@media (max-width: 1024px) {
+    .enquiry-panel {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+}
+
+/* "I'd like to" dropdown on the enquiry form */
+.form-group .enquiry-select {
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23a68d60' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.15rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
 }

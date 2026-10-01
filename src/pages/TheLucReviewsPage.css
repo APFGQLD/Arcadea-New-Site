@@ -1,97 +1,111 @@
-.the-luc-reviews-page {
-    min-height: 100vh;
-    background-color: var(--bg-primary);
+/* The Luc Reviews. Uses the shared editorial blocks (EditorialPage.css).
+   The .container rule this file used to define now lives in
+   src/legacy-globals.css. */
+.luc-reviews-page {
+    padding-bottom: 8rem;
 }
 
-.reviews-hero {
-    padding: 120px 0 60px;
-    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), 
-                var(--hero-bg-image);
-    background-size: cover;
-    background-position: center;
-    color: white;
-    text-align: center;
+.luc-reviews-top {
+    padding-top: 8rem;
 }
 
-.reviews-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-family: var(--font-heading);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+.luc-reviews-back {
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
 }
 
-.reviews-subtitle {
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto 2.5rem;
-    opacity: 0.9;
+.luc-reviews-back:hover {
+    color: var(--text-primary);
 }
 
-.reviews-toggle-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
+/* Photo banner, same as the collection listing banner */
+.luc-reviews-banner {
+    min-height: 45vh;
 }
 
-.reviews-toggle {
-    display: flex;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 5px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.toggle-btn {
-    padding: 12px 30px;
-    border-radius: 40px;
-    border: none;
-    background: transparent;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.toggle-btn.active {
-    background-color: var(--gold-primary, #C5A059);
-    color: black;
-    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
-}
-
-.toggle-btn:not(.active):hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.reviews-container {
-    padding: 80px 0;
-}
-
-.widget-wrapper {
-    min-height: 600px;
+.luc-reviews-banner-content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
 }
 
-/* Ensure container max-width from main styles is respected */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
+.luc-reviews-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 6vw, 5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: #ffffff;
+    margin: 0 0 1rem;
+}
+
+.luc-reviews-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Source toggle: outline pills, like the News categories */
+.luc-reviews-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 3rem 0 2.5rem;
+}
+
+.luc-reviews-pill {
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.luc-reviews-pill:hover {
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.luc-reviews-pill.active {
+    color: var(--text-primary);
+    border-color: var(--accent-gold-light);
+}
+
+[data-theme='light'] .luc-reviews-pill.active {
+    border-color: var(--accent-gold);
+}
+
+/* The Elfsight widget styles itself; just give it room */
+.luc-reviews-widget {
+    min-height: 400px;
 }
 
 @media (max-width: 768px) {
-    .reviews-hero {
-        padding: 100px 0 40px;
+    .luc-reviews-page {
+        padding-bottom: 5rem;
     }
-    
-    .toggle-btn {
-        padding: 10px 20px;
-        font-size: 0.8rem;
+
+    .luc-reviews-top {
+        padding-top: 7rem;
+    }
+
+    .luc-reviews-banner {
+        min-height: 40vh;
+    }
+
+    .luc-reviews-toggle {
+        padding: 2rem 0;
     }
 }

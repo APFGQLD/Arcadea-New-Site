@@ -1,467 +1,254 @@
+/* IPDC explainer. Built on the shared editorial blocks (EditorialPage.css);
+   the enquiry panel and form come from Contact.css / EnquiryForm. The global
+   .btn rules this file used to define now live in src/legacy-globals.css. */
 .ipdc-page {
-    padding-top: 80px;
-    background-color: var(--color-background);
-    color: var(--color-text);
-    min-height: 100vh;
-    --color-success: #10b981;
-    /* Green for Active Returns */
+    padding-bottom: 6rem;
 }
 
-/* Hero Section */
-.ipdc-hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), var(--color-background-alt);
-    padding: 6rem 0;
-    margin-bottom: 4rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    border-bottom: 1px solid var(--color-border);
+/* ----------------------------------------
+   HEADING
+   ---------------------------------------- */
+.ipdc-header {
+    padding-top: 9rem;
 }
 
-.ipdc-hero-content {
-    max-width: 800px;
-    margin: 0 auto;
+.ipdc-back {
+    margin-bottom: 2.5rem;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
 }
 
-.ipdc-category {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-brand-secondary);
-    display: block;
-    margin-bottom: 1rem;
-    font-weight: 600;
+.ipdc-back:hover {
+    color: var(--text-primary);
 }
 
 .ipdc-title {
-    font-size: 3rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
     line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--text-primary);
+    max-width: 20ch;
+    margin: 0 0 1.5rem;
+}
+
+.ipdc-accent {
+    font-style: normal;
+    color: var(--accent-gold-light);
+}
+
+[data-theme='light'] .ipdc-accent {
+    color: var(--accent-gold);
 }
 
 .ipdc-subtitle {
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 300;
-}
-
-.ipdc-content {
-    max-width: 1000px;
-    margin: 0 auto 5rem;
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
 }
 
 .ipdc-intro {
-    font-size: 1.25rem;
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto 4rem;
-    line-height: 1.6;
-    color: var(--color-text-emphasis);
+    padding-top: 6rem;
 }
 
-/* Comparison Section */
-.ipdc-comparison-section {
+/* ----------------------------------------
+   TRADITIONAL vs ARCADEA
+   ---------------------------------------- */
+.ipdc-compare {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 4rem;
-}
-
-.comparison-card {
-    background-color: var(--color-background-alt);
-    padding: 2.5rem;
-    border-radius: 12px;
-    border: 1px solid var(--color-border);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.comparison-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
-}
-
-.comparison-card.problem {
-    border-top: 4px solid #ef4444;
-    /* Error red for "Problem" */
-}
-
-/* Active Returns - Green Styling */
-.comparison-card.solution {
-    border-top: 4px solid var(--color-success);
-    background: linear-gradient(to bottom, rgba(16, 185, 129, 0.08), var(--color-background-alt));
-}
-
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.card-icon {
-    width: 32px;
-    height: 32px;
-}
-
-.problem .card-icon {
-    color: #ef4444;
-}
-
-.solution .card-icon {
-    color: var(--color-success);
-}
-
-.card-header h3 {
-    font-size: 1.4rem;
-    margin: 0;
-    font-weight: 600;
-}
-
-.concept-problem {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #ef4444;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-}
-
-.concept-solution {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--color-success);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-}
-
-.comparison-list {
-    margin-top: 1.5rem;
-    padding-left: 0;
-    list-style: none;
-}
-
-.comparison-list li {
-    position: relative;
-    padding-left: 1.5rem;
-    margin-bottom: 0.8rem;
-    font-weight: 500;
-}
-
-.problem .comparison-list li::before {
-    content: '✕';
-    color: #ef4444;
-    position: absolute;
-    left: 0;
-}
-
-.solution .comparison-list li::before {
-    content: '✓';
-    color: var(--color-success);
-    position: absolute;
-    left: 0;
-}
-
-/* Section Divider */
-.section-divider {
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--color-border), transparent);
-    margin: 4rem 0;
-}
-
-/* Process Timeline (How It Works) - Vertical Scrollable */
-.ipdc-timeline-section h2,
-.ipdc-benefits-section h2 {
-    text-align: center;
-    font-size: 2.2rem;
-    margin-bottom: 3rem;
-    color: var(--color-brand-primary);
-}
-
-.timeline-container {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-    padding: 2rem 0;
-}
-
-.timeline-item {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    position: relative;
-}
-
-.timeline-marker {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 60px;
-    /* Reduced width for better mobile fit */
-}
-
-.timeline-icon {
-    width: 60px;
-    height: 60px;
-    background-color: var(--color-background);
-    border: 2px solid var(--color-brand-secondary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-brand-secondary);
-    z-index: 2;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
-}
-
-.timeline-icon.icon-success {
-    border-color: var(--color-success);
-    color: var(--color-success);
-}
-
-.timeline-icon svg {
-    width: 28px;
-    height: 28px;
-}
-
-.timeline-line {
-    width: 2px;
-    background-color: var(--color-border);
-    flex-grow: 1;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    min-height: 50px;
-    /* Ensure line is visible even with short content */
-}
-
-.timeline-content {
-    padding-top: 0.5rem;
-    padding-bottom: 2rem;
-}
-
-.timeline-content h3 {
-    font-size: 1.4rem;
-    margin-bottom: 0.8rem;
-    color: var(--color-text-emphasis);
-    font-weight: 600;
-}
-
-.timeline-content p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: var(--color-text-muted);
-    margin-bottom: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .timeline-item {
-        gap: 1.5rem;
-    }
-
-    .timeline-icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .timeline-icon svg {
-        width: 24px;
-        height: 24px;
-    }
-
-    .timeline-marker {
-        min-width: 50px;
-    }
-}
-
-/* Scroll Animation */
-.timeline-item {
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    opacity: 1;
-    /* Default to visible */
-    transform: translateY(0);
-}
-
-.timeline-item.hidden {
-    opacity: 0;
-    transform: translateY(40px);
-}
-
-.timeline-item.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Stagger delays slightly for a nicer effect if multiple appear at once */
-.timeline-item:nth-child(1) {
-    transition-delay: 0.1s;
-}
-
-.timeline-item:nth-child(2) {
-    transition-delay: 0.2s;
-}
-
-.timeline-item:nth-child(3) {
-    transition-delay: 0.3s;
-}
-
-.timeline-item:nth-child(4) {
-    transition-delay: 0.4s;
-}
-
-
-/* Benefits Grid */
-.benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-}
-
-.benefit-card {
-    background-color: var(--color-background-alt);
-    padding: 2rem;
-    border-radius: 8px;
-    border-left: 4px solid var(--color-brand-secondary);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
-.benefit-icon {
-    width: 48px;
-    height: 48px;
-    color: var(--color-brand-secondary);
-    margin-bottom: 1.5rem;
-}
-
-.benefit-card h3 {
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-    color: var(--color-text-emphasis);
-}
-
-.benefit-card p {
-    color: var(--color-text);
-    line-height: 1.6;
-    margin-bottom: 0;
-}
-
-/* CTA Section */
-.ipdc-cta-section {
-    background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-dark));
-    padding: 4rem 2rem;
-    border-radius: 12px;
-    text-align: center;
-    color: white;
-    margin-top: 5rem;
-}
-
-.ipdc-cta-section h3 {
-    font-size: 2rem;
-    color: white;
-    margin-bottom: 1rem;
-}
-
-.ipdc-cta-section p {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 2.5rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.ipdc-actions {
-    display: flex;
-    justify-content: center;
     gap: 1.5rem;
 }
 
-.btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    border-radius: 4px;
+.ipdc-compare-card {
+    padding: 3.5rem;
+    border-radius: 40px;
+    border: 1px solid var(--border-color);
+}
+
+/* .ed-panel supplies the gold wash; keep its gold border too */
+.ipdc-compare-card.is-arcadea {
+    border-color: rgba(var(--accent-gold-rgb), 0.35);
+}
+
+.ipdc-compare-label {
+    display: block;
+    font-size: 0.78rem;
     font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
 }
 
-.btn-primary {
-    background-color: var(--color-brand-secondary);
-    color: var(--color-background-dark);
-    border: 2px solid var(--color-brand-secondary);
+.ipdc-compare-card.is-arcadea .ipdc-compare-label {
+    color: var(--accent-gold-light);
 }
 
-.btn-primary:hover {
-    background-color: transparent;
-    color: white;
+[data-theme='light'] .ipdc-compare-card.is-arcadea .ipdc-compare-label {
+    color: var(--accent-gold);
 }
 
-.btn-secondary {
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
+.ipdc-compare-concept {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 4vw, 3.25rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
 }
 
-.btn-secondary:hover {
-    background-color: white;
-    color: var(--color-brand-primary);
+.ipdc-compare-card.is-arcadea .ipdc-compare-concept {
+    color: var(--text-primary);
 }
 
-/* Disclaimer */
+.ipdc-compare-text {
+    font-size: 1.02rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 1.75rem;
+}
+
+.ipdc-compare-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.ipdc-compare-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ipdc-compare-list li {
+    position: relative;
+    padding: 0.85rem 0 0.85rem 1.6rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+}
+
+.ipdc-compare-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0.7rem;
+    height: 1px;
+    background: var(--text-secondary);
+}
+
+.ipdc-compare-card.is-arcadea .ipdc-compare-list li {
+    color: var(--text-primary);
+}
+
+.ipdc-compare-card.is-arcadea .ipdc-compare-list li::before {
+    background: var(--accent-gold-light);
+}
+
+/* ----------------------------------------
+   BENEFITS
+   ---------------------------------------- */
+.ipdc-benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.ipdc-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 2.5rem;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.ipdc-benefit-icon {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    color: var(--accent-gold-light);
+}
+
+[data-theme='light'] .ipdc-benefit-icon {
+    color: var(--accent-gold);
+}
+
+.ipdc-benefit-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1.25;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.ipdc-benefit-text {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+}
+
+/* ----------------------------------------
+   ENQUIRY + DISCLAIMER
+   ---------------------------------------- */
+#enquire {
+    scroll-margin-top: 80px;
+}
+
 .ipdc-disclaimer {
-    margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--color-border);
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-    text-align: center;
+    border-top: 1px solid var(--border-color);
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-    .ipdc-title {
-        font-size: 2.5rem;
-    }
+.ipdc-disclaimer p {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 900px;
+}
 
-    .ipdc-comparison-section {
+.ipdc-disclaimer strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* ----------------------------------------
+   RESPONSIVE
+   ---------------------------------------- */
+@media (max-width: 1024px) {
+    .ipdc-compare,
+    .ipdc-benefits {
         grid-template-columns: 1fr;
     }
 
-    .benefits-grid {
-        grid-template-columns: 1fr;
+    .ipdc-compare-card {
+        border-radius: 20px;
     }
 }
 
 @media (max-width: 768px) {
-    .process-timeline {
-        grid-template-columns: 1fr;
-        /* Stack vertically on mobile */
-        gap: 2rem;
+    .ipdc-header {
+        padding-top: 7.5rem;
     }
 
-    .process-timeline::before {
-        display: none;
-        /* Hide the connecting line on mobile */
+    .ipdc-intro {
+        padding-top: 4rem;
     }
 
-    .process-step {
-        width: 100%;
-        max-width: 400px;
-        margin: 0 auto;
+    .ipdc-compare-card {
+        padding: 2.25rem 1.75rem;
     }
 
-    .ipdc-actions {
+    .ipdc-benefit {
         flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
-        text-align: center;
+        gap: 1rem;
+        padding: 2rem 1.75rem;
     }
 }

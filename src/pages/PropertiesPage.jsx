@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../context/ThemeContext';
 import { SunIcon } from '@heroicons/react/24/solid';
 import { FaBed, FaBath, FaCar } from 'react-icons/fa6';
 import { fetchPropertyCollections, fetchProperties, fetchPageAssets } from '../services/sanityService';
 import { formatListingPrice } from '../utils/priceFormat';
-import { rafThrottle } from '../utils/rafThrottle';
 import LoadingSpinner from '../components/LoadingSpinner';
+import CinematicHero from '../components/CinematicHero';
 import './PropertiesPage.css';
 import usePageTitle from '../hooks/usePageTitle';
 
@@ -18,14 +17,12 @@ const PropertiesPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
-    const { theme } = useTheme();
     const [selectedCollection, setSelectedCollection] = useState(null);
     const [collections, setCollections] = useState([]);
     const [listings, setListings] = useState([]);
     const [assets, setAssets] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [scrollY, setScrollY] = useState(0);
     const [sortOption, setSortOption] = useState('featured');
 
     // Fetch data on mount
@@ -49,14 +46,8 @@ const PropertiesPage = () => {
         loadInitialData();
     }, []);
 
-    // Track scroll for cinematic effect
+    // Setup intersection observer for scroll animations
     useEffect(() => {
-        const handleScroll = rafThrottle(() => {
-            setScrollY(window.scrollY);
-        });
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        // Setup intersection observer for scroll animations
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
@@ -72,19 +63,8 @@ const PropertiesPage = () => {
         const animateElements = document.querySelectorAll('.animate-on-scroll');
         animateElements.forEach((el) => observer.observe(el));
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            handleScroll.cancel();
-            observer.disconnect();
-        };
+        return () => observer.disconnect();
     }, [collections, selectedCollection]);
-
-    // Calculate cinematic transform values
-    const scrollProgress = Math.min(scrollY / 600, 1); // 0 to 1 over 600px of scroll
-    const heroScale = 1 - (scrollProgress * 0.15); // Scales from 1 to 0.85
-    const heroRadius = scrollProgress * 40; // Border radius from 0 to 40px
-    const textOpacity = 1 - (scrollProgress * 2); // Fades out faster
-    const textTranslate = scrollProgress * -100; // Moves up
 
     // Fetch listings when collection changes
     useEffect(() => {
@@ -160,6 +140,8 @@ const PropertiesPage = () => {
         return sorted;
     }, [listings, sortOption]);
 
+    const activeCollection = collections.find(c => c.id === selectedCollection);
+
     const handleSelectCollection = (collectionId) => {
         setSelectedCollection(collectionId);
         navigate(`/properties/#${collectionId}`);
@@ -177,59 +159,25 @@ const PropertiesPage = () => {
             {!selectedCollection ? (
                 <div className="selection-view-cinematic">
                     
-                    {/* Spacer to allow scrolling */}
-                    <div className="cinematic-scroll-container">
-                        <div className="cinematic-sticky-wrapper">
-                            
-                            <div 
-                                className="cinematic-hero-bg"
-                                style={{
-                                    transform: `scale(${heroScale})`,
-                                    borderRadius: `${heroRadius}px`,
-                                }}
+                    <CinematicHero
+                        variant="feature"
+                        image={assets['oneparklane-v03']}
+                        imageAlt="One Park Lane"
+                        tag="Exclusive Pre-Launch"
+                        title="One Park Lane"
+                        subtitle="Southport, Gold Coast"
+                        action={(
+                            <button
+                                className="btn cine-hero-btn"
+                                onClick={() => navigate('/project/one-park-lane')}
                             >
-                                {assets['oneparklane-v03'] && (
-                                    <img 
-                                        src={assets['oneparklane-v03']}
-                                        alt="One Park Lane" 
-                                        className="cinematic-hero-image"
-                                    />
-                                )}
-                                <div className="cinematic-hero-overlay"></div>
-                            </div>
-                            
-                            <div 
-                                className="cinematic-text-wrapper"
-                                style={{
-                                    opacity: Math.max(0, textOpacity),
-                                    transform: `translate(-50%, calc(-50% + ${textTranslate}px))`
-                                }}
-                            >
-                                <div className="cinematic-tag">Exclusive Pre-Launch</div>
-                                <h1 className="cinematic-title">One Park Lane</h1>
-                                <p className="cinematic-location">Southport, Gold Coast</p>
-                                
-                                <button 
-                                    className="btn cinematic-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate('/project/one-park-lane');
-                                    }}
-                                >
-                                    Explore the Masterpiece
-                                </button>
-                            </div>
-                            
-                            {/* Scroll Indicator */}
-                            <div className="scroll-indicator" style={{ opacity: Math.max(0, textOpacity) }}>
-                                <span>Scroll to Explore</span>
-                                <div className="scroll-line"></div>
-                            </div>
-                        </div>
-                    </div>
+                                Explore the Masterpiece
+                            </button>
+                        )}
+                    />
 
                     {/* Global Collections - Stacked Cards */}
-                    <div className="stacked-collections-section relative-content">
+                    <div className="stacked-collections-section cine-hero-follow">
                         
                         <div className="properties-intro-block animate-on-scroll">
                             <p>
@@ -281,46 +229,48 @@ const PropertiesPage = () => {
                 </div>
             ) : (
                 <div className="listing-view">
-                    <div className="listing-header wave-header slide-down">
-                        <div className="container header-content">
-                            {collections.find(c => c.id === selectedCollection)?.logoLight && collections.find(c => c.id === selectedCollection)?.logoDark ? (
-                                <div className="listing-logo-container">
-                                    <img
-                                        src={theme === 'dark' ? collections.find(c => c.id === selectedCollection)?.logoLight : collections.find(c => c.id === selectedCollection)?.logoDark}
-                                        alt={collections.find(c => c.id === selectedCollection)?.title}
-                                        className="listing-brand-logo"
-                                    />
-                                </div>
-                            ) : (
-                                <h1 className="page-title">{collections.find(c => c.id === selectedCollection)?.title}</h1>
-                            )}
-                        </div>
-
-                        {/* Wave Divider */}
-                        <div className="wave-container">
-                            <svg className="waves" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
-                                viewBox="0 24 150 28" preserveAspectRatio="none" shapeRendering="auto">
-                                <defs>
-                                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
-                                </defs>
-                                <g className="parallax">
-                                    <use xlinkHref="#gentle-wave" x="48" y="0" fill="rgba(var(--wave-color-rgb), 0.25)" />
-                                    <use xlinkHref="#gentle-wave" x="48" y="2" fill="rgba(var(--wave-secondary-rgb), 0.2)" />
-                                    <use xlinkHref="#gentle-wave" x="48" y="4" fill="rgba(var(--wave-tertiary-rgb), 0.15)" />
-                                    <use xlinkHref="#gentle-wave" x="48" y="6" fill="rgba(var(--wave-color-rgb), 0.1)" />
-                                    <use xlinkHref="#gentle-wave" x="48" y="8" fill="rgba(var(--wave-secondary-rgb), 0.05)" />
-                                </g>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div className="container">
-                        <button className="back-link" onClick={handleBack}>
-                            ← {t('properties.actions.back_to_portfolio', 'Back to Portfolio')}
+                    {/* Collection banner: the same photo card the visitor clicked, now full width */}
+                    <div className="ed-wide listing-hero-wrap">
+                        <button className="ed-text-link listing-back" onClick={handleBack}>
+                            &larr; {t('properties.actions.back_to_portfolio', 'Back to Portfolio')}
                         </button>
+                        <div className="ed-card listing-hero slide-down">
+                            {activeCollection?.image && (
+                                <img src={activeCollection.image} alt="" className="ed-card-bg" />
+                            )}
+                            <div className="ed-card-overlay"></div>
+
+                            {/* Animated waves lapping along the bottom edge of the banner */}
+                            <div className="listing-hero-waves" aria-hidden="true">
+                                <svg className="waves" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
+                                    viewBox="0 24 150 28" preserveAspectRatio="none" shapeRendering="auto">
+                                    <defs>
+                                        <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                                    </defs>
+                                    <g className="parallax">
+                                        <use xlinkHref="#gentle-wave" x="48" y="0" fill="rgba(var(--wave-color-rgb), 0.55)" />
+                                        <use xlinkHref="#gentle-wave" x="48" y="2" fill="rgba(var(--wave-secondary-rgb), 0.5)" />
+                                        <use xlinkHref="#gentle-wave" x="48" y="4" fill="rgba(var(--wave-tertiary-rgb), 0.45)" />
+                                        <use xlinkHref="#gentle-wave" x="48" y="6" fill="rgba(var(--wave-color-rgb), 0.35)" />
+                                        <use xlinkHref="#gentle-wave" x="48" y="8" fill="rgba(var(--wave-secondary-rgb), 0.3)" />
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <div className="ed-card-content listing-hero-content">
+                                <h1 className="listing-hero-heading">
+                                    {/* Banner keeps a dark scrim in both themes, so always use the white logo */}
+                                    {activeCollection?.logoLight ? (
+                                        <img src={activeCollection.logoLight} alt={activeCollection.title} className="listing-hero-logo" />
+                                    ) : (
+                                        activeCollection?.title
+                                    )}
+                                </h1>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="container animate-in" style={{ marginTop: '0' }}>
+                    <div className="ed-wide animate-in">
                         {loading ? (
                             <LoadingSpinner message={t('properties.loading', 'Loading properties...')} />
                         ) : error ? (
@@ -337,23 +287,23 @@ const PropertiesPage = () => {
                                 </div>
                                 <h2 className="empty-state-title">No Properties Available</h2>
                                 <p className="empty-state-message">
-                                    We're currently updating our {collections.find(c => c.id === selectedCollection)?.title} collection.
+                                    We're currently updating our {activeCollection?.title} collection.
                                     <br />
                                     Check back soon for new exclusive listings.
                                 </p>
-                                <button className="btn btn-primary" onClick={handleBack}>
-                                    ← {t('properties.actions.back_to_portfolio', 'Back to Collections')}
+                                <button className="ed-text-link" onClick={handleBack}>
+                                    &larr; {t('properties.actions.back_to_portfolio', 'Back to Collections')}
                                 </button>
                             </div>
                         ) : (
                             <>
-                                <div className="properties-toolbar">
-                                    <span className="properties-count">
+                                <div className="listing-toolbar">
+                                    <span className="ed-eyebrow listing-count">
                                         {listings.length} {listings.length === 1
                                             ? t('properties.count_singular', 'Property')
                                             : t('properties.count_plural', 'Properties')}
                                     </span>
-                                    <div className="sort-control">
+                                    <div className="listing-sort">
                                         <label htmlFor="property-sort">{t('properties.sort.label', 'Sort by')}</label>
                                         <select
                                             id="property-sort"
@@ -368,64 +318,60 @@ const PropertiesPage = () => {
                                         </select>
                                     </div>
                                 </div>
-                                <div className="property-grid">
-                                {sortedListings.map((property) => {
-                                    if (!property) return null;
-                                    return (
-                                        // A real <a href> (not an onClick navigate) so search
-                                        // engines can discover each listing by crawling this page.
-                                        <Link
-                                            key={property.id}
-                                            to={`/project/${property.slug || property.id}`}
-                                            className="property-card"
-                                        >
-                                            <div className="property-image">
-                                                <img
-                                                    src={property.image}
-                                                    alt={`${property.title} - ${property.location}`}
-                                                    loading="lazy"
-                                                    decoding="async"
-                                                    width="600"
-                                                    height="400"
-                                                />
-                                                {property.tag && <span className="property-tag">{property.tag}</span>}
-                                            </div>
-                                            <div className="property-info">
-                                                <div className="property-location">{property.location}</div>
-                                                <h3 className="property-title">{property.title}</h3>
-                                                <p className="property-price">{formatListingPrice(property.price)}</p>
-                                                {(property.bedrooms != null || property.bathrooms != null || property.carSpaces != null) && (
-                                                    <div className="property-stats">
-                                                        {property.bedrooms != null && (
-                                                            <span className="property-stat">
-                                                                <FaBed /> {property.bedrooms}
-                                                            </span>
-                                                        )}
-                                                        {property.bathrooms != null && (
-                                                            <span className="property-stat">
-                                                                <FaBath /> {property.bathrooms}
-                                                            </span>
-                                                        )}
-                                                        {property.carSpaces != null && (
-                                                            <span className="property-stat">
-                                                                <FaCar /> {property.carSpaces}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                )}
-                                                <ul className="property-features">
-                                                    {property.features?.map((feat, idx) => (
-                                                        <li key={idx}>{feat}</li>
-                                                    ))}
-                                                </ul>
-                                                <span className="property-link">
-                                                    {t('properties.exploreDetails', 'Explore Details')}
-                                                </span>
-                                            </div>
-                                        </Link>
-                                    );
-                                })}
-                            </div>
+                                <div className="listing-grid">
+                                    {sortedListings.map((property) => {
+                                        if (!property) return null;
+                                        return (
+                                            // A real <a href> (not an onClick navigate) so search
+                                            // engines can discover each listing by crawling this page.
+                                            <Link
+                                                key={property.id}
+                                                to={`/project/${property.slug || property.id}`}
+                                                className="listing-card"
+                                            >
+                                                <div className="listing-card-image">
+                                                    <img
+                                                        src={property.image}
+                                                        alt={`${property.title} - ${property.location}`}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        width="600"
+                                                        height="450"
+                                                    />
+                                                    {property.tag && <span className="listing-card-tag">{property.tag}</span>}
+                                                </div>
+                                                <div className="listing-card-body">
+                                                    <span className="listing-card-location">{property.location}</span>
+                                                    <h3 className="listing-card-title">{property.title}</h3>
+                                                    <p className="listing-card-price">{formatListingPrice(property.price)}</p>
+                                                    {(property.bedrooms != null || property.bathrooms != null || property.carSpaces != null) && (
+                                                        <div className="listing-card-stats">
+                                                            {property.bedrooms != null && (
+                                                                <span><FaBed /> {property.bedrooms}</span>
+                                                            )}
+                                                            {property.bathrooms != null && (
+                                                                <span><FaBath /> {property.bathrooms}</span>
+                                                            )}
+                                                            {property.carSpaces != null && (
+                                                                <span><FaCar /> {property.carSpaces}</span>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    {property.features?.length > 0 && (
+                                                        <ul className="listing-card-features">
+                                                            {property.features.map((feat, idx) => (
+                                                                <li key={idx}>{feat}</li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                    <span className="ed-text-link listing-card-link">
+                                                        {t('properties.exploreDetails', 'Explore Details')} &rarr;
+                                                    </span>
+                                                </div>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
                             </>
                         )}
                     </div>
