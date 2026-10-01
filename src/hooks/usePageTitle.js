@@ -3,7 +3,9 @@ import { useEffect } from 'react';
 const BASE_TITLE = 'Arcadea Property';
 const DEFAULT_TITLE = `${BASE_TITLE} | Exquisite Living, Refined Investments`;
 const DEFAULT_DESCRIPTION = "Discover premium off-plan investment properties in Bali and Australia. Arcadea Property offers curated coastal and island collections with expert guidance.";
-const SITE_URL = 'https://arcadea.com.au';
+// Must be the www host: the bare domain 301-redirects to www, and a canonical
+// pointing at a redirect conflicts with the prerendered (www) canonical.
+const SITE_URL = 'https://www.arcadea.com.au';
 
 /**
  * Sets the document title, canonical URL, meta description, and robots tag

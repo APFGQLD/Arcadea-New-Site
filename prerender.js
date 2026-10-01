@@ -102,14 +102,40 @@ function blogPostBodyHTML(post) {
       ${paragraphs(post.excerpt)}`;
 }
 
-function staticPageBodyHTML(routeObj, listLinks = []) {
-    const list = listLinks.length
-        ? `<ul>${listLinks.map(l => `<li><a href="${escapeAttr(l.href)}">${escapeAttr(l.label)}</a></li>`).join('')}</ul>`
+function linkList(links) {
+    return links.length
+        ? `<ul>${links.map(l => `<li><a href="${escapeAttr(l.href)}">${escapeAttr(l.label)}</a></li>`).join('')}</ul>`
         : '';
+}
+
+function staticPageBodyHTML(routeObj, listLinks = []) {
     return `
       <h1>${escapeAttr(routeObj.title || 'Arcadea Property')}</h1>
       ${routeObj.description ? `<p>${escapeAttr(routeObj.description)}</p>` : ''}
-      ${list}`;
+      ${linkList(listLinks)}`;
+}
+
+function homeBodyHTML(projects, blogPosts, staticRoutes) {
+    const listingLinks = projects.map(p => ({
+        href: `/project/${p.slug}`,
+        label: p.location ? `${p.title} — ${p.location}` : p.title,
+    }));
+    // Hand-built pages (One Park Lane, The Luc sub-pages, IPDC, ...) that
+    // aren't Sanity projects or posts. Skip any a project link already covers.
+    const covered = new Set(['/properties', '/news', ...listingLinks.map(l => l.href)]);
+    const pageLinks = staticRoutes
+        .filter(r => !covered.has(r.path))
+        .map(r => ({ href: r.path, label: r.title }));
+
+    return `
+      <h1>Arcadea Property — Exquisite Living, Refined Investments</h1>
+      <p>${escapeAttr(DEFAULT_DESCRIPTION)}</p>
+      <h2><a href="/properties">Our Collections</a></h2>
+      ${linkList(listingLinks)}
+      <h2><a href="/news">News &amp; Insights</a></h2>
+      ${linkList(blogPosts.map(p => ({ href: `/news/${p.slug}`, label: p.title })))}
+      <h2>More from Arcadea</h2>
+      ${linkList(pageLinks)}`;
 }
 
 /**
@@ -345,7 +371,17 @@ async function prerender() {
         process.exit(1);
     }
 
-    const baseHTML = fs.readFileSync(indexPath, 'utf-8');
+    // dist/index.html gets the homepage's crawlable content (written at the end),
+    // so the untouched template is kept as dist/app.html: .htaccess serves that
+    // for every route without its own prerendered file. Prefer an existing
+    // app.html so re-running `npm run prerender` never templates from an
+    // already-populated homepage (`vite build` empties dist/ each time).
+    const appShellPath = path.join(distPath, 'app.html');
+    const baseHTML = fs.readFileSync(fs.existsSync(appShellPath) ? appShellPath : indexPath, 'utf-8');
+    // The template's canonical points at the homepage; on fallback routes that
+    // would wrongly canonicalise every page to "/". usePageTitle sets the real
+    // one client-side.
+    fs.writeFileSync(appShellPath, baseHTML.replace(/<link\s+rel="canonical"[^>]*\/>\s*/gi, ''));
     console.log('✅ Loaded base HTML template\n');
 
     // Fetch all projects
@@ -469,6 +505,13 @@ async function prerender() {
         generated++;
         console.log(`  ✓ Generated: ${route.path}/index.html`);
     }
+
+    // Homepage: the page search engines crawl most often, so it links directly
+    // to every listing, article and section. Head tags stay as the template's
+    // (they're already the homepage's).
+    fs.writeFileSync(indexPath, injectBody(baseHTML, homeBodyHTML(projects, blogPosts, staticRoutes)));
+    generated++;
+    console.log('  ✓ Generated: /index.html (homepage links)');
 
     console.log(`\n✅ Pre-rendering complete! Generated ${generated} pages (Projects + Blog Posts + Static Routes).`);
     console.log('📦 Your site is ready for deployment with SEO-friendly HTML!\n');
