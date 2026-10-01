@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { SunIcon } from '@heroicons/react/24/solid';
@@ -372,11 +372,12 @@ const PropertiesPage = () => {
                                 {sortedListings.map((property) => {
                                     if (!property) return null;
                                     return (
-                                        <div
+                                        // A real <a href> (not an onClick navigate) so search
+                                        // engines can discover each listing by crawling this page.
+                                        <Link
                                             key={property.id}
+                                            to={`/project/${property.slug || property.id}`}
                                             className="property-card"
-                                            onClick={() => navigate(`/project/${property.slug || property.id}`)}
-                                            style={{ cursor: 'pointer' }}
                                         >
                                             <div className="property-image">
                                                 <img
@@ -417,17 +418,11 @@ const PropertiesPage = () => {
                                                         <li key={idx}>{feat}</li>
                                                     ))}
                                                 </ul>
-                                                <button
-                                                    className="property-link"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        navigate(`/project/${property.slug || property.id}`);
-                                                    }}
-                                                >
+                                                <span className="property-link">
                                                     {t('properties.exploreDetails', 'Explore Details')}
-                                                </button>
+                                                </span>
                                             </div>
-                                        </div>
+                                        </Link>
                                     );
                                 })}
                             </div>

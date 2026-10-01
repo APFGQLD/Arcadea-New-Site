@@ -36,21 +36,30 @@ async function fetchOrFail(label, query) {
 
 /**
  * All published projects. `propertyId` is the slug used by /project/:id.
- * Extra fields (location, price, address, map, collectionTitle) feed the
- * JSON-LD structured data generated in prerender.js.
+ * Extra fields feed the meta tags, JSON-LD and static body content generated
+ * in prerender.js, and `updatedAt` gives the sitemap a real <lastmod>.
+ *
+ * `description` is Portable Text in Studio — pt::text() flattens it to plain
+ * text (paragraphs joined by blank lines). The coalesce keeps any legacy
+ * plain-string descriptions working.
  */
 export async function fetchAllProjects() {
     return fetchOrFail('projects', `
         *[_type == "property" && defined(propertyId) && !(_id in path("drafts.**"))] {
             "slug": propertyId,
             title,
-            description,
+            "description": coalesce(pt::text(description), description),
             location,
             price,
+            bedrooms,
+            bathrooms,
+            carSpaces,
+            features,
             address,
             map,
             "image": image.asset->url,
-            "collectionTitle": *[_type == "propertyCollection" && references(^._id)][0].title
+            "collectionTitle": *[_type == "propertyCollection" && references(^._id)][0].title,
+            "updatedAt": _updatedAt
         }
     `);
 }
@@ -67,7 +76,8 @@ export async function fetchAllBlogPosts() {
             excerpt,
             "image": featuredImage.asset->url,
             publishedAt,
-            "authorName": author->name
+            "authorName": author->name,
+            "updatedAt": _updatedAt
         }
     `);
 }

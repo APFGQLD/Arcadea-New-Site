@@ -1,0 +1,56 @@
+# Rebuild the live site when content is published in Sanity.
+#
+# Hostinger builds and deploys this site itself whenever `main` is pushed
+# (npm run build fetches listings/posts from Sanity at build time, then
+# prerenders pages and regenerates sitemap.xml). Publishing in Sanity doesn't
+# touch git, so on its own it never reaches the prerendered pages or sitemap.
+#
+# Flow: Sanity webhook -> GitHub repository_dispatch (this workflow)
+#       -> empty commit on main -> Hostinger's normal auto-deploy.
+#
+# Setup lives in Sanity (manage.sanity.io -> API -> Webhooks); see
+# docs/sanity-auto-rebuild.md.
+
+name: Rebuild on Sanity publish
+
+on:
+  repository_dispatch:
+    types: [sanity-content-change]
+  # "Run workflow" button in the Actions tab for a manual rebuild.
+  workflow_dispatch:
+
+# Debounce: each new publish cancels a run that is still waiting, so editing
+# ten listings in a row produces one rebuild (after the last edit), not ten.
+concurrency:
+  group: sanity-rebuild
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  trigger-rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for further edits
+        if: github.event_name == 'repository_dispatch'
+        run: sleep 180
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Push empty commit to trigger Hostinger deploy
+        env:
+          DOC_TYPE: ${{ github.event.client_payload.type }}
+          DOC_ID: ${{ github.event.client_payload.id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$DOC_TYPE" ]; then
+            msg="Rebuild site for Sanity content update ($DOC_TYPE $DOC_ID)"
+          else
+            msg="Rebuild site (manual trigger)"
+          fi
+          git commit --allow-empty -m "$msg"
+          git push origin main
