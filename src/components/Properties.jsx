@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { fetchPropertyCollections } from '../services/sanityService';
 import useScrollReveal from '../hooks/useScrollReveal';
@@ -9,7 +9,6 @@ import './Properties.css';
 const Properties = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
-    const navigate = useNavigate();
     const sectionRef = useRef(null);
 
     const [collections, setCollections] = useState([]);
@@ -36,11 +35,12 @@ const Properties = () => {
 
                 <div className="collections-showcase">
                     {collections.map((collection, index) => (
-                        <div
+                        // A real <a href> (not an onClick navigate) so crawlers can follow it
+                        <Link
                             key={collection.id}
+                            to={`/properties/#${collection.id}`}
                             className={`collection-showcase-card reveal reveal-up delay-${(index % 3 + 1) * 100}`}
                             data-theme={theme}
-                            onClick={() => navigate(`/properties/#${collection.id}`)}
                         >
                             <div className="collection-showcase-image" style={{ overflow: 'hidden' }}>
                                 <img
@@ -69,11 +69,11 @@ const Properties = () => {
                                 )}
                                 <div className="collection-showcase-location">{collection.location}</div>
                                 <p className="collection-showcase-description">{collection.description}</p>
-                                <button className="btn btn-secondary btn-sm">
+                                <span className="btn btn-secondary btn-sm">
                                     {t('properties.exploreCollection', 'Explore Collection')}
-                                </button>
+                                </span>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
 
