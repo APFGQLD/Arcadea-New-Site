@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import './Services.css';
 
@@ -8,44 +9,31 @@ const Services = () => {
     const sectionRef = useRef(null);
     useScrollReveal(sectionRef);
 
-    const sections = ['hotel', 'financial', 'australian'];
+    const sections = ['australian', 'financial', 'hotel'];
 
     return (
-        <section ref={sectionRef} id="services" className="services section-padding">
-            <div className="container">
-                <div className="section-header reveal reveal-up">
-                    <h2 className="section-title">
-                        {t('services.title').split(' ')[0]} <span className="text-gold">{t('services.title').split(' ')[1]}</span>
-                    </h2>
-                    <p className="section-description">
-                        {t('services.subtitle')}
-                    </p>
-                </div>
+        <section ref={sectionRef} id="services" className="ed-section">
+            <div className="ed-header reveal reveal-up">
+                <span className="ed-eyebrow">{t('services.title')}</span>
+                <h2 className="ed-title">{t('services.subtitle')}</h2>
+            </div>
 
-                <div className="services-grid">
-                    {sections.map((key, index) => (
-                        <div key={key} className={`service-card reveal reveal-up delay-${(index % 3 + 1) * 100}`}>
-                            <div className="service-card-content">
-                                <h3 className="service-card-title">{t(`services.pillars.${key}.title`)}</h3>
-                                {key === 'financial' && (
-                                    <p className="service-card-subtitle">{t(`services.pillars.${key}.subtitle`)}</p>
-                                )}
-                                <ul className="service-list">
-                                    {t(`services.pillars.${key}.items`, { returnObjects: true }).map((item, index) => (
-                                        <li key={index} className="service-item">
-                                            <span className="service-icon">
-                                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                                </svg>
-                                            </span>
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            <div className="ed-wide ed-numbered" style={{ '--ed-cols': 3 }}>
+                {sections.map((key, index) => (
+                    <div key={key} className={`ed-numbered-item reveal reveal-up delay-${(index + 1) * 100}`}>
+                        <span className="ed-numbered-index">0{index + 1}</span>
+                        <h3 className="ed-numbered-title">{t(`services.pillars.${key}.title`)}</h3>
+                        <ul className="home-service-list">
+                            {t(`services.pillars.${key}.items`, { returnObjects: true }).map(item => (
+                                <li key={item}>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
+
+            <div className="home-section-action reveal reveal-up">
+                <Link to="/services" className="ed-text-link">{t('services.home_cta', 'Explore Our Services')} &rarr;</Link>
             </div>
         </section>
     );

@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-    CalendarDaysIcon,
-    UserIcon,
-    ClockIcon,
-    ArrowRightIcon
-} from '@heroicons/react/24/solid';
 import { fetchBlogPosts, fetchCategories } from '../services/sanityService';
 import { getReadingTime } from '../utils/readingTime';
 import LoadingSpinner from '../components/LoadingSpinner';
 import usePageTitle from '../hooks/usePageTitle';
+import './EditorialPage.css';
 import './BlogPage.css';
 
 const BlogPage = () => {
@@ -83,24 +78,29 @@ const BlogPage = () => {
     const featuredPost = currentPage === 1 ? posts[0] : null;
     const gridPosts = featuredPost ? posts.slice(1) : posts;
 
-    return (
-        <div className="blog-page">
-            {/* Hero Section */}
-            <div className="blog-hero">
-                <div className="container">
-                    <h1 className="blog-hero-title">INSIGHTS & INSPIRATION</h1>
-                    <p className="blog-hero-subtitle">
-                        Expert insights on luxury property investment, market trends, and lifestyle destinations
-                    </p>
-                </div>
-            </div>
+    // "12 September 2026 · 4 min read"
+    const metaLine = (post) => {
+        const minutes = getReadingTime(post.content);
+        return [formatDate(post.date), minutes ? `${minutes} min read` : null].filter(Boolean).join(' · ');
+    };
 
-            {/* Blog Grid */}
-            <div className="container">
+    return (
+        <div className="editorial-page blog-page">
+            {/* Page heading */}
+            <header className="ed-wide blog-header">
+                <span className="ed-eyebrow">News &amp; Insights</span>
+                <h1 className="blog-header-title">Insights &amp; Inspiration</h1>
+                <p className="blog-header-subtitle">
+                    Expert insights on luxury property investment, market trends, and lifestyle destinations.
+                </p>
+            </header>
+
+            <div className="ed-wide">
                 {categories.length > 0 && (
-                    <div className="blog-categories">
+                    <div className="blog-categories" role="group" aria-label="Filter by category">
                         <button
                             className={`blog-category-pill ${activeCategory === null ? 'active' : ''}`}
+                            aria-pressed={activeCategory === null}
                             onClick={() => handleCategoryClick(null)}
                         >
                             All
@@ -109,6 +109,7 @@ const BlogPage = () => {
                             <button
                                 key={cat.id}
                                 className={`blog-category-pill ${activeCategory === cat.slug ? 'active' : ''}`}
+                                aria-pressed={activeCategory === cat.slug}
                                 onClick={() => handleCategoryClick(cat.slug)}
                             >
                                 {cat.name}
@@ -138,57 +139,39 @@ const BlogPage = () => {
                     </div>
                 ) : (
                     <>
+                        {/* Latest article: a large photo card, like the collection banners */}
                         {featuredPost && (
-                            <article className="blog-featured">
+                            <Link to={`/news/${featuredPost.slug}`} className="ed-card blog-featured">
                                 {featuredPost.featuredImage && (
-                                    <Link to={`/news/${featuredPost.slug}`} className="blog-featured-image">
-                                        <img
-                                            src={featuredPost.featuredImage}
-                                            alt={featuredPost.featuredImageAlt || featuredPost.title}
-                                            loading="eager"
-                                            decoding="async"
-                                            width="1200"
-                                            height="800"
-                                        />
-                                    </Link>
+                                    <img
+                                        src={featuredPost.featuredImage}
+                                        alt={featuredPost.featuredImageAlt || featuredPost.title}
+                                        className="ed-card-bg"
+                                        loading="eager"
+                                        decoding="async"
+                                    />
                                 )}
-                                <div className="blog-featured-content">
+                                <div className="ed-card-overlay blog-featured-overlay"></div>
+                                <div className="ed-card-content blog-featured-content">
                                     <span className="blog-featured-badge">Latest Article</span>
-                                    <div className="blog-card-meta">
-                                        <span className="blog-card-date">
-                                            <CalendarDaysIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                            {formatDate(featuredPost.date)}
-                                        </span>
-                                        <span className="blog-card-author">
-                                            <UserIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                            {featuredPost.author}
-                                        </span>
-                                        {getReadingTime(featuredPost.content) && (
-                                            <span className="blog-card-readtime">
-                                                <ClockIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                                {getReadingTime(featuredPost.content)} min read
-                                            </span>
-                                        )}
-                                    </div>
-                                    <h2 className="blog-featured-title">
-                                        <Link to={`/news/${featuredPost.slug}`}>{featuredPost.title}</Link>
-                                    </h2>
+                                    <span className="blog-featured-meta ed-on-photo-gold">
+                                        {metaLine(featuredPost)}{featuredPost.author ? ` · ${featuredPost.author}` : ''}
+                                    </span>
+                                    <h2 className="blog-featured-title">{featuredPost.title}</h2>
                                     <p className="blog-featured-excerpt">
                                         {truncateExcerpt(featuredPost.excerpt, 220)}
                                     </p>
-                                    <Link to={`/news/${featuredPost.slug}`} className="blog-card-link">
-                                        Read Article <ArrowRightIcon className="hero-icon-sm" style={{ marginLeft: '0.25rem' }} />
-                                    </Link>
+                                    <span className="ed-text-link">Read Article &rarr;</span>
                                 </div>
-                            </article>
+                            </Link>
                         )}
 
                         {gridPosts.length > 0 && (
                             <div className="blog-grid">
-                                {gridPosts.map((post, index) => (
-                                    <article key={post.id} className="blog-card" style={{ animationDelay: `${index * 0.1}s` }}>
-                                        {post.featuredImageThumb && (
-                                            <Link to={`/news/${post.slug}`} className="blog-card-image">
+                                {gridPosts.map((post) => (
+                                    <Link key={post.id} to={`/news/${post.slug}`} className="blog-card">
+                                        <div className="blog-card-image">
+                                            {post.featuredImageThumb && (
                                                 <img
                                                     src={post.featuredImageThumb}
                                                     alt={post.featuredImageAlt || post.title}
@@ -197,62 +180,37 @@ const BlogPage = () => {
                                                     width="800"
                                                     height="600"
                                                 />
-                                                <div className="blog-card-overlay"></div>
-                                            </Link>
-                                        )}
-                                        <div className="blog-card-content">
-                                            <div className="blog-card-meta">
-                                                <span className="blog-card-date">
-                                                    <CalendarDaysIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                                    {formatDate(post.date)}
-                                                </span>
-                                                <span className="blog-card-author">
-                                                    <UserIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                                    {post.author}
-                                                </span>
-                                                {getReadingTime(post.content) && (
-                                                    <span className="blog-card-readtime">
-                                                        <ClockIcon className="hero-icon-sm" style={{ marginRight: '0.5rem' }} />
-                                                        {getReadingTime(post.content)} min read
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <h2 className="blog-card-title">
-                                                <Link to={`/news/${post.slug}`}>{post.title}</Link>
-                                            </h2>
-                                            <p className="blog-card-excerpt">
-                                                {truncateExcerpt(post.excerpt)}
-                                            </p>
-                                            <Link to={`/news/${post.slug}`} className="blog-card-link">
-                                                Read More <ArrowRightIcon className="hero-icon-sm" style={{ marginLeft: '0.25rem' }} />
-                                            </Link>
+                                            )}
                                         </div>
-                                    </article>
+                                        <span className="blog-card-meta">{metaLine(post)}</span>
+                                        <h2 className="blog-card-title">{post.title}</h2>
+                                        <p className="blog-card-excerpt">{truncateExcerpt(post.excerpt)}</p>
+                                        <span className="ed-text-link blog-card-link">Read Article &rarr;</span>
+                                    </Link>
                                 ))}
                             </div>
                         )}
 
-                        {/* Pagination */}
                         {totalPages > 1 && (
-                            <div className="blog-pagination">
+                            <nav className="blog-pagination" aria-label="Pagination">
                                 <button
                                     className="pagination-btn"
                                     onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                     disabled={currentPage === 1}
                                 >
-                                    ← Previous
+                                    &larr; Previous
                                 </button>
                                 <span className="pagination-info">
-                                    Page {currentPage} of {totalPages}
+                                    {String(currentPage).padStart(2, '0')} / {String(totalPages).padStart(2, '0')}
                                 </span>
                                 <button
                                     className="pagination-btn"
                                     onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                                     disabled={currentPage === totalPages}
                                 >
-                                    Next →
+                                    Next &rarr;
                                 </button>
-                            </div>
+                            </nav>
                         )}
                     </>
                 )}

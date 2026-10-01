@@ -37,10 +37,19 @@ const LanguageSelector = () => {
 
     return (
         <div className="language-selector" ref={dropdownRef}>
-            <div className="lang-selected" onClick={() => setIsOpen(!isOpen)}>
-                <img src={currentLang.flag} alt="" className="flag" />
+            <button
+                type="button"
+                className="lang-selected"
+                onClick={() => setIsOpen(!isOpen)}
+                aria-haspopup="listbox"
+                aria-expanded={isOpen}
+                aria-label={`Language: ${currentLang.name}`}
+            >
                 <span>{currentLang.code.toUpperCase()}</span>
-            </div>
+                <svg className="lang-chevron" width="9" height="6" viewBox="0 0 10 6" aria-hidden="true">
+                    <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+            </button>
 
             {isOpen && (
                 <div className="lang-dropdown">

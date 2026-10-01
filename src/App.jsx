@@ -19,6 +19,9 @@ import OffThePlanCalculatorPage from './pages/OffThePlanCalculatorPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TheLucReviewsPage from './pages/TheLucReviewsPage';
 import LucPrivateSalesPage from './pages/LucPrivateSalesPage';
+// Site-wide rules that used to leak from the Luc page stylesheets. Must stay
+// at this point in the import order to keep the cascade unchanged (see file).
+import './legacy-globals.css';
 import Footer from './components/Footer';
 import ShortLinkRedirect from './pages/ShortLinkRedirect';
 import PageLoader from './components/PageLoader';

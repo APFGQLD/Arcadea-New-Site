@@ -1,38 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
-
-/* One Park Lane Special Layout */
-:root {
-    --opl-gold: #c5a065;
-    --opl-dark: #0a0a0a;
-    --opl-font-heading: 'Prata', serif;
-    --opl-hero-overlay: radial-gradient(circle at center, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.4));
-    --opl-blueprint-bg: #050a14;
-    --opl-hero-bg: #050b14;
-    --opl-blob-1: rgba(16, 55, 131, 0.8);
-    --opl-blob-2: rgba(46, 140, 207, 0.5);
-    --opl-blob-3: rgba(100, 32, 170, 0.4);
-    --opl-glass-bg: rgba(10, 20, 35, 0.15);
-    /* Dark Mode: Deep Blue */
-}
-
-:root[data-theme='light'] {
-    --opl-hero-overlay: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.4));
-    --opl-blueprint-bg: #f0ece4;
-    --opl-hero-bg: #f0f4f8; /* Soft light blue/grey base */
-    --opl-blob-1: rgba(90, 140, 220, 0.85); /* Increased opacity & saturation */
-    --opl-blob-2: rgba(110, 180, 230, 0.75);
-    --opl-blob-3: rgba(160, 110, 200, 0.65);
-    --opl-glass-bg: rgba(255, 255, 255, 0.3);
-    /* Light Mode: Very Muted Gold */
-}
-
+/* One Park Lane: a scroll-driven intro, then the shared editorial layout
+   (EditorialPage.css). The intro glows use the site's gold, slate blue and
+   teal (the same trio as the collection banner waves). */
 .opl-page {
-    background-color: var(--bg-primary);
-    min-height: 100vh;
-    color: var(--text-primary);
-    font-family: 'Inter', sans-serif;
+    --opl-hero-bg: #08090c;
+    --opl-blob-1: rgba(133, 113, 77, 0.55);
+    --opl-blob-2: rgba(77, 125, 133, 0.45);
+    --opl-blob-3: rgba(77, 97, 133, 0.45);
+    --opl-glass-bg: rgba(8, 9, 12, 0.25);
 }
 
+[data-theme='light'] .opl-page {
+    --opl-hero-bg: #f4f1ea;
+    --opl-blob-1: rgba(166, 141, 96, 0.55);
+    --opl-blob-2: rgba(77, 125, 133, 0.35);
+    --opl-blob-3: rgba(77, 97, 133, 0.3);
+    --opl-glass-bg: rgba(255, 255, 255, 0.3);
+}
+
+/* ----------------------------------------
+   1. INTRO: 400vh track, content pinned by JS
+   ---------------------------------------- */
 .opl-hero-track {
     height: 400vh;
     width: 100%;
@@ -53,6 +40,32 @@
     z-index: 10;
 }
 
+.opl-back {
+    position: absolute;
+    top: 7.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+.opl-back-link {
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
+    font-family: inherit;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.opl-back-link:hover {
+    color: #ffffff;
+}
+
+[data-theme='light'] .opl-back-link {
+    color: var(--text-secondary);
+}
+
 .opl-hero-bg {
     position: absolute;
     inset: 0;
@@ -66,21 +79,19 @@
     object-fit: cover;
 }
 
-/* Gradient & Glassmorphism Background */
 .opl-hero-gradient-bg {
     width: 100%;
     height: 100%;
     background-color: var(--opl-hero-bg);
     position: relative;
     overflow: hidden;
-    transition: background-color 0.3s ease;
 }
 
 .opl-gradient-blob {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.6;
+    opacity: 0.7;
     animation: blobFloat 12s infinite alternate ease-in-out;
 }
 
@@ -90,7 +101,6 @@
     background: radial-gradient(circle, var(--opl-blob-1) 0%, transparent 70%);
     top: -10%;
     left: -10%;
-    animation-delay: 0s;
     translate: calc(var(--mouse-x, 0) * -1px) calc(var(--mouse-y, 0) * -1px);
     transition: translate 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -124,7 +134,6 @@
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     z-index: 1;
-    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 @keyframes blobFloat {
@@ -133,10 +142,13 @@
     100% { transform: translate(-5%, 10%) scale(0.9); }
 }
 
+/* Same vignette as the Properties hero, for legibility over the photo */
 .opl-overlay {
     position: absolute;
     inset: 0;
-    background: var(--opl-hero-overlay);
+    background:
+        var(--hero-nav-scrim),
+        radial-gradient(circle at center, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
     z-index: 1;
     pointer-events: none;
 }
@@ -151,431 +163,361 @@
     pointer-events: none;
 }
 
-.opl-title-init {
-    font-family: var(--opl-font-heading);
-    font-size: 3rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 400;
+.opl-intro {
     text-align: center;
-    color: var(--text-primary);
-    margin: 0;
-    padding: 20px;
-    animation: fadeInUp 1.5s ease-out forwards;
+    padding: 0 1.5rem;
+    animation: oplFadeInUp 1.5s ease-out forwards;
 }
 
+.opl-intro-eyebrow {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: #d6c08a;
+    margin-bottom: 1.5rem;
+}
+
+[data-theme='light'] .opl-intro-eyebrow {
+    color: var(--accent-gold);
+}
+
+.opl-title-init {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: #ffffff;
+    margin: 0;
+}
+
+[data-theme='light'] .opl-title-init {
+    color: var(--text-primary);
+}
+
+/* Matches the "One Park Lane" title on the Properties page hero */
 .opl-title-seq-wrapper {
     display: flex;
     justify-content: center;
-    gap: 2rem;
-    align-items: center;
+    align-items: baseline;
+    gap: 0.25em;
+    font-size: clamp(4rem, 10vw, 9rem);
 }
 
 .opl-seq-word {
-    font-family: var(--opl-font-heading);
-    font-size: 5rem;
-    font-weight: 400;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    font-family: var(--font-heading);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .opl-scroll-prompt {
     position: absolute;
     bottom: 2rem;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: #ffffff;
+}
+
+.opl-scroll-prompt span {
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    font-size: 0.8rem;
-    opacity: 0.7;
+    opacity: 0.6;
+}
+
+[data-theme='light'] .opl-scroll-prompt {
     color: var(--text-primary);
-    animation: moveDown 2s infinite;
 }
 
-@keyframes moveDown {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(5px);
-    }
+.opl-scroll-line {
+    width: 1px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes fadeInUp {
-    0% {
+.opl-scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: currentColor;
+    animation: oplScrollDown 2s infinite ease-in-out;
+}
+
+@keyframes oplScrollDown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(300%); }
+}
+
+@keyframes oplFadeInUp {
+    from {
         opacity: 0;
         transform: translateY(20px);
     }
 
-    100% {
+    to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* Text Section Styles */
-.opl-section-text {
+/* ----------------------------------------
+   2. THE LANDMARK
+   ---------------------------------------- */
+.opl-landmark {
     position: relative;
     z-index: 20;
-    background-color: var(--bg-primary);
-    padding: 150px 20px;
-    text-align: center;
+    background: var(--bg-primary);
 }
 
-.opl-container-narrow {
-    max-width: 800px;
-    margin: 0 auto;
+.opl-landmark .ed-title {
+    margin-bottom: 2.5rem;
 }
 
-.opl-subtitle {
-    display: block;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    color: var(--opl-gold);
+/* .ed-intro sets large heading-font paragraphs; scale the body copy down */
+.ed-intro.opl-landmark p.opl-lead {
+    font-size: 1.6rem;
+    line-height: 1.6;
     margin-bottom: 2rem;
 }
 
-.opl-heading-lux {
-    font-family: var(--opl-font-heading);
-    font-size: 3.5rem;
-    font-weight: 400;
-    margin-bottom: 2rem;
-    color: var(--text-primary);
-    line-height: 1.2;
-}
-
-.opl-divider {
-    width: 60px;
-    height: 3px;
-    background-color: var(--opl-gold);
-    margin: 0 auto 3rem auto;
-}
-
-.opl-body-text {
-    font-size: 1.1rem;
-    line-height: 1.9;
+.ed-intro.opl-landmark p.opl-body {
+    font-family: inherit;
+    font-size: 1.05rem;
+    line-height: 1.85;
     color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-}
-
-/* Overview Section & Mesh Gradient */
-.opl-section-overview {
-    position: relative;
-    padding: 150px 0;
-    overflow: hidden;
-    background-color: var(--bg-primary);
-}
-
-/* Container for Overview */
-.opl-container {
-    max-width: 1200px;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 0 2rem;
-    position: relative;
-    z-index: 2;
 }
 
-.opl-mesh-gradient {
-    position: absolute;
-    inset: 0;
-    opacity: 0.15;
-    /* Subtle blend */
-    background: radial-gradient(at 10% 10%, #c5a065 0px, transparent 50%),
-        radial-gradient(at 90% 10%, #4e7e85 0px, transparent 50%),
-        /* Teal introduced */
-        radial-gradient(at 50% 50%, #4a3e26 0px, transparent 50%),
-        radial-gradient(at 10% 90%, #4e7e85 0px, transparent 50%),
-        /* Teal introduced */
-        radial-gradient(at 90% 90%, #c5a065 0px, transparent 50%);
-    background-size: 200% 200%;
-    animation: meshFlow 20s ease-in-out infinite alternate;
-    pointer-events: none;
-}
-
-@keyframes meshFlow {
-    0% {
-        background-position: 0% 0%;
-    }
-
-    100% {
-        background-position: 100% 100%;
-    }
-}
-
-/* Stats Grid */
-.opl-stats-grid {
+/* ----------------------------------------
+   3. STATS
+   ---------------------------------------- */
+.opl-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* 3 Columns */
-    gap: 2rem;
     text-align: center;
-    margin-bottom: 8rem;
-    position: relative;
-    z-index: 2;
+    margin-bottom: 7rem;
+}
+
+.opl-stat {
+    padding: 1rem 2rem;
+}
+
+.opl-stat + .opl-stat {
+    border-left: 1px solid rgba(var(--accent-gold-rgb), 0.4);
 }
 
 .opl-stat-number {
     display: block;
-    font-family: var(--opl-font-heading);
-    font-size: 5rem;
-    color: var(--opl-gold);
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    font-weight: 300;
     line-height: 1;
+    color: var(--text-primary);
     margin-bottom: 1rem;
 }
 
 .opl-stat-label {
     display: block;
-    font-family: 'Inter', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
     font-size: 0.85rem;
-    color: var(--text-primary);
-    opacity: 0.8;
-}
-
-/* Features Text Grid */
-.opl-features-text-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4rem;
-    position: relative;
-    z-index: 2;
-}
-
-.opl-feature-text-block h4 {
-    color: var(--opl-gold);
-    font-family: var(--opl-font-heading);
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    font-weight: 400;
-}
-
-.opl-feature-text-block p {
-    font-size: 1rem;
-    line-height: 1.8;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
     color: var(--text-secondary);
 }
 
-/* Fixed Image Section (Parallax) */
-.opl-fixed-image-section {
-    width: 100%;
-    height: 100vh;
-    /* Full viewport height */
-    background-image: var(--hero-bg-image);
+/* ----------------------------------------
+   4. PHOTO WINDOW: the image stays fixed while the rounded frame scrolls
+   ---------------------------------------- */
+.opl-window {
+    height: 80vh;
+    border-radius: 40px;
+    background-color: var(--bg-secondary);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    /* Creates the "fixed" parallax effect */
-    background-repeat: no-repeat;
-    position: relative;
-    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Amenities Section */
-.opl-section-amenities {
-    padding: 150px 0;
-    background-color: var(--bg-primary);
-    text-align: center;
-    position: relative;
-    z-index: 20;
-}
-
-.opl-amenities-grid {
+/* ----------------------------------------
+   5. AMENITIES
+   ---------------------------------------- */
+.opl-amenities {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4rem;
-    margin-bottom: 6rem;
+    gap: 2.5rem;
 }
 
-.opl-amenity-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(197, 160, 101, 0.2);
-    display: flex;
-    flex-direction: column;
-}
-
-.opl-amenity-img {
-    width: 100%;
-    height: 250px;
+.opl-amenity-image {
+    aspect-ratio: 4 / 3;
+    border-radius: 24px;
     overflow: hidden;
-    position: relative;
+    background: var(--bg-secondary);
+    margin-bottom: 1.75rem;
 }
 
-.opl-amenity-img img {
+.opl-amenity-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transform: scale(1.03);
+    transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.opl-amenity-card:hover .opl-amenity-img img {
-    transform: scale(1.05);
-    /* Subtle zoom on image only */
+.opl-amenity:hover .opl-amenity-image img {
+    transform: scale(1.08);
 }
 
-.opl-amenity-content {
-    padding: 2rem;
-    text-align: left;
+.opl-amenity-title {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 300;
+    line-height: 1.25;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
 }
 
-.opl-amenity-card h3 {
-    font-family: var(--opl-font-heading);
-    font-size: 1.5rem;
-    color: var(--opl-gold);
-    margin-bottom: 1rem;
-}
-
-.opl-amenity-card p {
+.opl-amenity-text {
     font-size: 1rem;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--text-secondary);
 }
 
-.opl-premium-list-wrapper {
-    max-width: 800px;
-    margin: 0 auto;
+.opl-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border-color);
 }
 
-.opl-premium-list-wrapper h4 {
-    font-family: var(--opl-font-heading);
-    font-size: 1.5rem;
-    color: var(--text-primary);
-    margin-bottom: 2rem;
+.opl-more-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: var(--accent-gold-light);
 }
 
-.opl-premium-list {
+[data-theme='light'] .opl-more-label {
+    color: var(--accent-gold);
+}
+
+.opl-more-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2rem;
-    list-style: none;
+    gap: 0.6rem;
+    margin: 0;
     padding: 0;
+    list-style: none;
 }
 
-.opl-premium-list li {
-    font-size: 1.1rem;
-    color: var(--opl-gold);
-    font-family: 'Inter', sans-serif;
+.opl-more-list li {
+    font-size: 0.85rem;
     letter-spacing: 0.05em;
-    position: relative;
+    color: var(--text-secondary);
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
 }
 
-/* Final Info Section (Blueprint Grid) */
-.opl-section-final {
-    position: relative;
-    padding: 150px 0;
-    background-color: var(--opl-blueprint-bg);
-    /* slightly darker base for blueprint */
-    text-align: center;
-    overflow: hidden;
-}
-
-.opl-blueprint-grid {
-    position: absolute;
-    inset: 0;
-    opacity: 0.15;
-    background-size: 50px 50px;
-    background-image:
-        linear-gradient(to right, rgba(197, 160, 101, 0.5) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(197, 160, 101, 0.5) 1px, transparent 1px);
-    animation: gridMove 20s linear infinite;
-    pointer-events: none;
-}
-
-@keyframes gridMove {
-    0% {
-        transform: translateY(0);
-    }
-
-    100% {
-        transform: translateY(50px);
-    }
-}
-
-.opl-cta-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 3rem;
-    position: relative;
-    z-index: 2;
-}
-
-.opl-btn-cta {
-    background: transparent;
-    border: 1px solid var(--opl-gold);
-    color: var(--opl-gold);
-    padding: 1rem 2rem;
-    font-family: 'Inter', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+/* ----------------------------------------
+   6. NEXT STEPS
+   ---------------------------------------- */
+/* Ghost buttons here include <button>s, which need the browser defaults reset */
+.opl-cta-actions .ed-btn-ghost {
+    background: none;
+    font-family: inherit;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
 }
 
-.opl-btn-cta:hover {
-    background: var(--opl-gold);
-    color: var(--bg-primary);
-    transform: translateY(-2px);
+.opl-cta-actions {
+    max-width: 760px;
 }
 
-@media (max-width: 900px) {
-
-    .opl-stats-grid,
-    .opl-features-text-grid,
-    .opl-amenities-grid {
-        grid-template-columns: 1fr;
-        gap: 3rem;
+/* ----------------------------------------
+   RESPONSIVE
+   ---------------------------------------- */
+@media (max-width: 1024px) {
+    .opl-amenities {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .opl-stats-grid {
-        margin-bottom: 5rem;
+    .opl-window {
+        height: 60vh;
+        border-radius: 20px;
     }
+}
 
-    .opl-stat-number {
-        font-size: 4rem;
-    }
-
-    .opl-heading-lux {
-        font-size: 2.5rem;
-    }
-
-    .opl-section-text,
-    .opl-section-amenities {
-        padding: 100px 20px;
-    }
-
-    .opl-premium-list {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .opl-cta-wrapper {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 0 2rem;
+@media (max-width: 768px) {
+    .opl-back {
+        top: 6.5rem;
     }
 
     .opl-title-seq-wrapper {
         flex-direction: column;
-        gap: 1rem;
+        align-items: center;
+        gap: 0.1em;
+        font-size: clamp(3.5rem, 16vw, 5rem);
     }
 
-    .opl-seq-word {
-        font-size: 3rem;
+    .ed-intro.opl-landmark p.opl-lead {
+        font-size: 1.3rem;
+    }
+
+    .opl-stats {
+        grid-template-columns: 1fr;
+        margin-bottom: 4rem;
+    }
+
+    .opl-stat {
+        padding: 2rem 1rem;
+    }
+
+    .opl-stat + .opl-stat {
+        border-left: none;
+        border-top: 1px solid rgba(var(--accent-gold-rgb), 0.4);
+    }
+
+    .opl-amenities {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .opl-more {
+        margin-top: 3.5rem;
     }
 }
 
+/* Fixed backgrounds are janky or ignored on touch devices */
 @media (hover: none) {
-
-    /* Disable fixed attachment on mobile if needed, though modern support is okay-ish */
-    .opl-fixed-image-section {
+    .opl-window {
         background-attachment: scroll;
     }
 }
-
+
+/* ----------------------------------------
+   7. ENQUIRY (panel layout and form come from Contact.css / EnquiryForm)
+   ---------------------------------------- */
+.opl-enquire {
+    scroll-margin-top: 80px;
+}

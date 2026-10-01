@@ -1,27 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
-import {
-    BuildingOffice2Icon,
-    ChartBarIcon,
-    HomeIcon,
-    ShieldCheckIcon,
-    UsersIcon,
-    LightBulbIcon,
-    CheckCircleIcon
-} from '@heroicons/react/24/solid';
-import './ServicesPage.css';
-import usePageTitle from '../hooks/usePageTitle';
+import CinematicHero from '../components/CinematicHero';
+import useScrollReveal from '../hooks/useScrollReveal';
 import { fetchPageAssets } from '../services/sanityService';
+import usePageTitle from '../hooks/usePageTitle';
+import './EditorialPage.css';
+import './ServicesPage.css';
 
 const ServicesPage = () => {
     usePageTitle('Our Services', {
         description: 'End-to-end property and financial solutions: Australian property, hotel and resort investments, and financial service partnerships through trusted advisors.'
     });
     const { t } = useTranslation();
-    const { theme } = useTheme();
     const [assets, setAssets] = useState({});
+    const pageRef = useRef(null);
+
+    useScrollReveal(pageRef);
 
     useEffect(() => {
         const loadAssets = async () => {
@@ -37,171 +32,187 @@ const ServicesPage = () => {
     const services = [
         {
             id: 'australian',
-            icon: HomeIcon,
             title: t('services.pillars.australian.title'),
             subtitle: 'Premium Coastal Living',
             description: 'Curated selection of high-quality Australian properties with transparent sales processes and exclusive access.',
-            benefits: [
-                'High Quality & Curated Australian Property',
-                'Transparent Sales Process',
-                'CoPosit and Deposit Bonds',
-                'Exclusive Listings and Developments'
-            ],
-            image: assets['services-hero'] || '',
-            color: '#c5a065'
+            benefits: t('services.pillars.australian.items', { returnObjects: true }),
+            image: assets['services-hero'],
+            link: { to: '/properties/#coastal', label: 'View the Coastal Collection' }
         },
         {
             id: 'financial',
-            icon: ChartBarIcon,
             title: t('services.pillars.financial.title'),
             subtitle: t('services.pillars.financial.subtitle'),
             description: 'Comprehensive financial solutions through our trusted network of partners and advisors.',
-            benefits: [
-                'Equity Release',
-                'SMSF Creation and Rollover',
-                'Tax Depreciation On Overseas Properties',
-                'Tax effective ownership',
-                'Fractional Investing'
-            ],
-            image: assets['services-3'] || '',
-            color: '#c5a065'
+            benefits: t('services.pillars.financial.items', { returnObjects: true }),
+            image: assets['services-3'],
+            link: { to: '/#contact', label: 'Speak with an Advisor' }
         },
         {
             id: 'hotel',
-            icon: BuildingOffice2Icon,
             title: t('services.pillars.hotel.title'),
             subtitle: 'High-Yield International Investments',
             description: 'Access premium hotel and resort investment opportunities with globally respected brands.',
-            benefits: [
-
-                'Strong ROI',
-                'Access to globally respected brands',
-                'Access to experienced and trusted developers'
-            ],
-            image: assets['services-secondary'] || '',
-            color: '#c5a065'
+            benefits: t('services.pillars.hotel.items', { returnObjects: true }),
+            image: assets['services-secondary'],
+            link: { to: '/properties/#island', label: 'View the Island Collection' }
         }
     ];
 
     const whyChoose = [
         {
-            icon: ShieldCheckIcon,
             title: 'Trusted Expertise',
             description: 'Over a decade of experience in international and domestic property markets.'
         },
         {
-            icon: UsersIcon,
-            title: 'Personalized Service',
+            title: 'Personalised Service',
             description: 'Dedicated advisors who understand your unique investment goals and lifestyle needs.'
         },
         {
-            icon: LightBulbIcon,
             title: 'Strategic Insights',
             description: 'Data-driven market analysis and curated opportunities for optimal returns.'
         }
     ];
 
     return (
-        <div className="services-page" style={assets['services-hero-bg'] ? { '--hero-bg-image': `url(${assets['services-hero-bg']})` } : {}}>
-            {/* Hero Section */}
-            <section className="services-hero" data-theme={theme}>
-                <div className="services-hero-overlay"></div>
-                <div className="services-hero-content">
-                    <h1 className="services-hero-title">{t('services.title', 'OUR EXPERTISE')}</h1>
-                    <p className="services-hero-subtitle">
-                        {t('services.subtitle', 'Comprehensive Property & Financial Solutions')}
-                    </p>
-                    <p className="services-hero-description">
+        <div className="editorial-page services-page" ref={pageRef}>
+            <CinematicHero
+                image={assets['services-hero-bg']}
+                imageAlt="Arcadea services"
+                tag="Arcadea Services"
+                title={t('services.title', 'Our Expertise')}
+                subtitle={t('services.subtitle', 'Comprehensive Property & Financial Solutions')}
+                action={(
+                    <a href="#services-pillars" className="btn cine-hero-btn">
+                        Explore Our Services
+                    </a>
+                )}
+            />
+
+            <div className="cine-hero-follow">
+                {/* Opening statement */}
+                <div className="ed-intro reveal reveal-up">
+                    <p>
                         From high-yield international investments to ultra-luxury Australian residences,
                         we provide end-to-end solutions tailored to your wealth creation journey.
                     </p>
                 </div>
-            </section>
 
-            {/* Services Grid */}
-            <section className="services-grid-section section-padding">
-                <div className="container">
-                    {services.map((service, index) => (
-                        <div
-                            key={service.id}
-                            className={`service-detail-card ${index % 2 === 1 ? 'reverse' : ''}`}
-                        >
-                            <div className="service-detail-image">
+                {/* Service pillars: photo cards that stack as you scroll */}
+                <section className="ed-section" id="services-pillars">
+                    <div className="ed-header reveal reveal-up">
+                        <span className="ed-eyebrow">What We Do</span>
+                        <h2 className="ed-title">Three pillars, one seamless journey.</h2>
+                        <p className="ed-subtitle">
+                            Property, investment and finance, brought together under one trusted team.
+                        </p>
+                    </div>
+
+                    <div className="ed-wide services-stack">
+                        {services.map((service, idx) => (
+                            <article
+                                key={service.id}
+                                className="ed-card services-card"
+                                style={{ '--stack-index': idx }}
+                            >
                                 {service.image && (
-                                    <img
-                                        src={service.image}
-                                        alt={service.title}
-                                        width="800"
-                                        height="600"
-                                        loading="lazy"
-                                        decoding="async"
-                                    />
+                                    <img src={service.image} alt={service.title} className="ed-card-bg" loading="lazy" decoding="async" />
                                 )}
-                                <div className="service-detail-overlay"></div>
+                                <div className="ed-card-overlay services-card-overlay"></div>
+                                <div className="ed-card-content services-card-content">
+                                    <div className="services-card-main">
+                                        <span className="services-card-index ed-on-photo-gold">
+                                            0{idx + 1} / 0{services.length}
+                                        </span>
+                                        <h3 className="services-card-title">{service.title}</h3>
+                                        <p className="services-card-subtitle ed-on-photo-gold">{service.subtitle}</p>
+                                        <p className="services-card-desc">{service.description}</p>
+                                        <Link to={service.link.to} className="ed-text-link">
+                                            {service.link.label} &rarr;
+                                        </Link>
+                                    </div>
+                                    {Array.isArray(service.benefits) && (
+                                        <ul className="services-card-benefits">
+                                            {service.benefits.map(benefit => (
+                                                <li key={benefit}>{benefit}</li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+
+                {/* IPDC feature */}
+                <section className="ed-section">
+                    <div className="ed-wide ed-panel services-ipdc reveal reveal-up">
+                        <div className="services-ipdc-text">
+                            <span className="ed-eyebrow">Investment Insight</span>
+                            <h2 className="ed-title">Interest Paid During Construction</h2>
+                            <p>
+                                Off-plan deposits usually sit idle in a trust account for the length of the build.
+                                We prioritise developers who offer IPDC, which pays a fixed return on your capital
+                                while the property is being built.
+                            </p>
+                            <Link to="/services/ipdc" className="ed-text-link">
+                                Discover how IPDC works &rarr;
+                            </Link>
+                        </div>
+                        <div className="services-ipdc-compare">
+                            <div className="services-ipdc-col">
+                                <span className="services-ipdc-label">The Traditional Way</span>
+                                <p className="services-ipdc-value services-ipdc-muted">Dead Money</p>
+                                <p className="services-ipdc-note">Capital locked away with no income during the build.</p>
                             </div>
-                            <div className="service-detail-content">
-                                <div className="service-icon-large" style={{ color: service.color }}>
-                                    <service.icon className="hero-icon" />
-                                </div>
-                                <h2 className="service-detail-title">{service.title}</h2>
-                                <p className="service-detail-subtitle">{service.subtitle}</p>
-                                <p className="service-detail-description">{service.description}</p>
-
-                                <div className="service-benefits">
-                                    <h3 className="benefits-title">Key Benefits:</h3>
-                                    <ul className="benefits-list">
-                                        {service.benefits.map((benefit, idx) => (
-                                            <li key={idx}>
-                                                <CheckCircleIcon className="check-icon hero-icon-sm" />
-                                                <span>{benefit}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <Link to="/properties/" className="btn btn-secondary">
-                                    Explore Opportunities
-                                </Link>
+                            <div className="services-ipdc-col">
+                                <span className="services-ipdc-label">The Arcadea Way</span>
+                                <p className="services-ipdc-value">Active Returns</p>
+                                <p className="services-ipdc-note">Your capital starts working from day one.</p>
                             </div>
                         </div>
-                    ))}
-                </div>
-            </section>
+                    </div>
+                </section>
 
-            {/* Why Choose Us */}
-            <section className="services-why section-padding" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-                <div className="container">
-                    <h2 className="section-title-caps text-center">WHY CHOOSE ARCADEA</h2>
-                    <p className="section-subtitle text-center">
-                        We combine global reach with local expertise to deliver exceptional results.
-                    </p>
-
-                    <div className="why-grid">
+                {/* Why Arcadea */}
+                <section className="ed-section">
+                    <div className="ed-header reveal reveal-up">
+                        <span className="ed-eyebrow">Why Choose Arcadea</span>
+                        <h2 className="ed-title">Global reach. Local expertise.</h2>
+                        <p className="ed-subtitle">
+                            We combine global reach with local expertise to deliver exceptional results.
+                        </p>
+                    </div>
+                    <div className="ed-wide ed-numbered" style={{ '--ed-cols': 3 }}>
                         {whyChoose.map((item, idx) => (
-                            <div key={idx} className="why-card">
-                                <div className="why-icon">
-                                    <item.icon className="hero-icon" />
-                                </div>
-                                <h3 className="why-title">{item.title}</h3>
-                                <p className="why-description">{item.description}</p>
+                            <div key={item.title} className={`ed-numbered-item reveal reveal-up delay-${(idx + 1) * 100}`}>
+                                <span className="ed-numbered-index">0{idx + 1}</span>
+                                <h3 className="ed-numbered-title">{item.title}</h3>
+                                <p className="ed-numbered-text">{item.description}</p>
                             </div>
                         ))}
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* CTA Section */}
-            <section className="services-cta section-padding">
-                <div className="container text-center">
-                    <h2 className="section-title-caps">READY TO BEGIN?</h2>
-                    <p className="section-subtitle">
-                        Let's discuss how our services can help you achieve your investment goals.
-                    </p>
-                    <Link to="/#contact" className="btn btn-primary btn-large">
-                        Schedule a Consultation
-                    </Link>
-                </div>
-            </section>
+                {/* Call to action */}
+                <section className="ed-section">
+                    <div className="ed-wide ed-card ed-cta reveal reveal-up">
+                        {assets['services-hero-bg'] && <img src={assets['services-hero-bg']} alt="" className="ed-card-bg" loading="lazy" />}
+                        <div className="ed-card-overlay"></div>
+                        <div className="ed-card-content">
+                            <span className="ed-eyebrow ed-on-photo-gold">Ready to Begin?</span>
+                            <h2 className="ed-cta-title">Let's talk about your goals.</h2>
+                            <p className="ed-cta-text">
+                                Let's discuss how our services can help you achieve your investment goals.
+                            </p>
+                            <div className="ed-cta-actions">
+                                <Link to="/#contact" className="btn cine-hero-btn">Schedule a Consultation</Link>
+                                <Link to="/properties/" className="ed-btn-ghost">View Properties</Link>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     );
 };

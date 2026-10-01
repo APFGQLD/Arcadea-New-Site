@@ -1,14 +1,18 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Hero from '../components/Hero';
+import { useTranslation } from 'react-i18next';
+import CinematicHero from '../components/CinematicHero';
 import Properties from '../components/Properties';
 import Services from '../components/Services';
 import About from '../components/About';
 import Contact from '../components/Contact';
 import usePageTitle from '../hooks/usePageTitle';
+import heroVideo from '../assets/Timeline-1.mp4';
+import './EditorialPage.css';
 
 const Home = () => {
     const { hash } = useLocation();
+    const { t } = useTranslation();
 
     usePageTitle(); // default site title
 
@@ -36,8 +40,8 @@ const Home = () => {
             "url": "https://arcadea.com.au",
             "logo": "https://arcadea.com.au/logo.png",
             "sameAs": [
-                "https://www.facebook.com/arcadeaproperty",
-                "https://www.instagram.com/arcadeaproperty"
+                "https://www.facebook.com/profile.php?id=61593654575099",
+                "https://www.instagram.com/arcadea.property"
             ],
             "contactPoint": {
                 "@type": "ContactPoint",
@@ -71,13 +75,22 @@ const Home = () => {
     }, []);
 
     return (
-        <>
-            <Hero />
-            <Properties />
-            <Services />
-            <About />
-            <Contact />
-        </>
+        <div className="editorial-page home-page">
+            <CinematicHero
+                video={heroVideo}
+                align="left"
+                tag={t('hero.subtitle')}
+                title={t('hero.title')}
+                subtitle={t('hero.description')}
+                action={<a href="#properties" className="cine-hero-link">{t('hero.cta')} &rarr;</a>}
+            />
+            <div className="cine-hero-follow">
+                <About />
+                <Properties />
+                <Services />
+                <Contact />
+            </div>
+        </div>
     );
 };
 

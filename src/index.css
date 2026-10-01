@@ -145,18 +145,29 @@ button {
 .lang-selected {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 6px 10px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-sm);
+  gap: 0.4rem;
+  padding: 6px 0;
+  background: none;
+  border: none;
+  color: var(--text-primary);
   cursor: pointer;
+  font-family: inherit;
   font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   transition: var(--transition-fast);
 }
 
 .lang-selected:hover {
-  border-color: var(--accent-gold);
+  color: var(--accent-gold-light);
+}
+
+.lang-chevron {
+  transition: transform var(--transition-fast);
+}
+
+.lang-selected[aria-expanded='true'] .lang-chevron {
+  transform: rotate(180deg);
 }
 
 .lang-dropdown {
@@ -303,37 +314,76 @@ ul {
   .section-padding {
     padding: 4rem 0;
   }
+
+  /* Tighter gutters on phones (previously set from ProjectDetailPage.css,
+     but it applied site-wide) */
+  .container {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
 }
 
-.shared-back-link {
-    position: absolute;
-    top: 150px;
-    left: 2rem;
-    z-index: 50;
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    cursor: pointer;
-    transition: color 0.3s ease, opacity 0.3s ease;
-    opacity: 0.7;
-    padding: 0;
+
+/* ----------------------------------------
+   Shared hero rules. These used to live in the old home page Hero.css but
+   applied site-wide, and the project detail and Luc private sales heroes
+   rely on them (their own CSS only layers on top), so they stay global.
+   ---------------------------------------- */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom,
+      rgba(10, 10, 10, 0.8) 0%,
+      rgba(10, 10, 10, 0.6) 50%,
+      rgba(10, 10, 10, 0.9) 100%);
+  z-index: 1;
 }
 
-.shared-back-link:hover {
-    color: var(--accent-gold);
+[data-theme='light'] .hero-overlay {
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0.6) 50%,
+      rgba(255, 255, 255, 0.9) 100%);
+}
+
+.hero-content {
+  max-width: 800px;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 8vw, 5rem);
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  opacity: 0;
+  color: #ffffff;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  animation: fadeInUp 0.8s 0.2s forwards;
+}
+
+[data-theme='light'] .hero-title {
+  color: #222222;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
     opacity: 1;
-    background: transparent;
-    border: none;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
-    .shared-back-link {
-        top: 100px;
-        left: 1rem;
-        font-size: 0.7rem;
-    }
+  /* Full-width, centred buttons on phones */
+  .btn {
+    text-align: center;
+    width: 100%;
+  }
 }

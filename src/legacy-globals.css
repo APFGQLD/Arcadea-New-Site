@@ -1,0 +1,212 @@
+/* ----------------------------------------
+   LEGACY SITE-WIDE RULES
+   These rules used to live in IPDCPage.css, TheLucReviewsPage.css,
+   LucPrivateSalesPage.css and Footer.css. Because every page's stylesheet is bundled
+   together, they applied across the whole site, and other pages now depend
+   on them: the home contact form (.form-row / .form-group), the .btn-primary
+   and .btn-secondary buttons on IPDC, the calculator, New vs Established and
+   the property error states, .animate-in on Properties and IPDC, and the
+   .container width everywhere.
+
+   Moved here verbatim, and imported from App.jsx at the same point the Luc
+   pages were, so the cascade (and how those pages look) is unchanged.
+   Candidates for a proper clean-up later.
+   ---------------------------------------- */
+
+/* From IPDCPage.css (loaded before the Luc rules below, so kept first).
+   Its .btn rule is what gives every .btn on the site its 4px corners and
+   uppercase label, overriding the pill shape in index.css. */
+.btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background-color: var(--color-brand-secondary);
+    color: var(--color-background-dark);
+    border: 2px solid var(--color-brand-secondary);
+}
+
+.btn-primary:hover {
+    background-color: transparent;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-secondary:hover {
+    background-color: white;
+    color: var(--color-brand-primary);
+}
+
+/* From TheLucReviewsPage.css */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* From LucPrivateSalesPage.css */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.animate-in {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    padding: 14px 18px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+    outline: none;
+    background: var(--bg-tertiary);
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 4px rgba(133, 113, 77, 0.1);
+}
+
+.form-group select option {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 36px;
+    background: linear-gradient(45deg, var(--accent-gold), var(--accent-gold-dark));
+    color: white;
+    font-weight: 700;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 36px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: 600;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: var(--bg-secondary);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* From Footer.css: this was the last-loaded (and so winning) definition
+   of these site-wide animations, used by NotFoundPage, ProjectDetailPage
+   and the rules above. Kept here, which loads just before the footer. */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-50px, 50px) scale(1.1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
