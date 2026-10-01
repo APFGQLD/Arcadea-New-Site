@@ -113,7 +113,10 @@ const Disclaimer = ({ className = '' }) => (
 
 const HeroStats = () => {
     const ref = useRef(null);
-    const inView = useInView(ref, 0.3);
+    // Low threshold: on phones the three cards stack into a block taller than
+    // the screen, so at 0.3 the first card sat at "$0k" until the visitor
+    // scrolled well past it.
+    const inView = useInView(ref, 0.05);
     return (
         <div className="nve-stats" ref={ref}>
             {HERO_STATS.map((s) => (
