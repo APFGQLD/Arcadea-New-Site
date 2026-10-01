@@ -47,10 +47,13 @@ function generateSitemapXML(projects, blogPosts) {
     const now = new Date().toISOString();
     const urls = new Map(); // Use Map to deduplicate by URL
 
-    // Helper to add URL if not exists
-    const addUrl = (url, priority, changefreq) => {
+    // Helper to add URL if not exists. lastmod is the CMS document's
+    // _updatedAt where we have one: stamping every URL with the build time
+    // tells Google nothing about what actually changed, so it learns to ignore
+    // lastmod. Real dates let it recrawl edited/new listings first.
+    const addUrl = (url, priority, changefreq, lastmod = now) => {
         if (!urls.has(url)) {
-            urls.set(url, { url, priority, changefreq });
+            urls.set(url, { url, priority, changefreq, lastmod });
         }
     };
 
@@ -76,12 +79,12 @@ function generateSitemapXML(projects, blogPosts) {
 
     // 2. Dynamic project pages (Sanity)
     projects.forEach(project => {
-        addUrl(`/project/${project.slug}`, '0.8', 'monthly');
+        addUrl(`/project/${project.slug}`, '0.8', 'weekly', project.updatedAt || now);
     });
 
     // 3. Dynamic blog pages (Sanity)
     blogPosts.forEach(post => {
-        addUrl(`/news/${post.slug}`, '0.7', 'weekly');
+        addUrl(`/news/${post.slug}`, '0.7', 'weekly', post.updatedAt || now);
     });
 
     // Build XML
@@ -91,7 +94,7 @@ function generateSitemapXML(projects, blogPosts) {
     for (const page of urls.values()) {
         xml += '  <url>\n';
         xml += `    <loc>${SITE_URL}${page.url}</loc>\n`;
-        xml += `    <lastmod>${now}</lastmod>\n`;
+        xml += `    <lastmod>${page.lastmod}</lastmod>\n`;
         xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
         xml += `    <priority>${page.priority}</priority>\n`;
         xml += '  </url>\n';

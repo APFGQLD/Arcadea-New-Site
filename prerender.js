@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { fetchAllProjects, fetchAllBlogPosts } from './cms.js';
+import { formatListingPrice } from './src/utils/priceFormat.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,6 +50,69 @@ function escapeAttr(text) {
 }
 
 /**
+ * Static, crawlable body content placed inside #root. Without it every
+ * prerendered page ships an empty <div id="root"></div> and search engines
+ * see no content until they get round to executing the JS bundle.
+ * main.jsx uses createRoot (not hydrateRoot), so React simply replaces this
+ * on load — it only needs to be accurate, not match the app's markup.
+ */
+const SHELL_STYLE = 'max-width:960px;margin:0 auto;padding:120px 24px 64px;font-family:Urbanist,system-ui,sans-serif;line-height:1.6';
+
+function injectBody(html, bodyHTML) {
+    return html.replace('<div id="root"></div>', `<div id="root"><main style="${SHELL_STYLE}">${bodyHTML}</main></div>`);
+}
+
+/**
+ * Plain text → escaped <p> paragraphs (pt::text joins blocks with blank lines).
+ */
+function paragraphs(text) {
+    return String(text || '')
+        .split(/\n\s*\n/)
+        .map(p => p.trim())
+        .filter(Boolean)
+        .map(p => `<p>${escapeAttr(p)}</p>`)
+        .join('\n');
+}
+
+function projectBodyHTML(project) {
+    const stats = [
+        project.bedrooms != null && `${project.bedrooms} bed`,
+        project.bathrooms != null && `${project.bathrooms} bath`,
+        project.carSpaces != null && `${project.carSpaces} car`,
+    ].filter(Boolean).join(' · ');
+    const features = Array.isArray(project.features) && project.features.length
+        ? `<ul>${project.features.map(f => `<li>${escapeAttr(f)}</li>`).join('')}</ul>`
+        : '';
+
+    return `
+      <nav><a href="/">Home</a> / <a href="/properties">Our Collections</a></nav>
+      <h1>${escapeAttr(project.title || 'Project')}</h1>
+      ${project.location ? `<p>${escapeAttr(project.location)}</p>` : ''}
+      <p>${escapeAttr(formatListingPrice(project.price))}${stats ? ` · ${stats}` : ''}</p>
+      ${project.image ? `<img src="${escapeAttr(project.image)}" alt="${escapeAttr(project.title || '')}" width="960" height="640" style="max-width:100%;height:auto">` : ''}
+      ${paragraphs(project.description)}
+      ${features}`;
+}
+
+function blogPostBodyHTML(post) {
+    return `
+      <nav><a href="/">Home</a> / <a href="/news">News &amp; Insights</a></nav>
+      <h1>${escapeAttr(post.title || 'Article')}</h1>
+      ${post.image ? `<img src="${escapeAttr(post.image)}" alt="${escapeAttr(post.title || '')}" style="max-width:100%;height:auto">` : ''}
+      ${paragraphs(post.excerpt)}`;
+}
+
+function staticPageBodyHTML(routeObj, listLinks = []) {
+    const list = listLinks.length
+        ? `<ul>${listLinks.map(l => `<li><a href="${escapeAttr(l.href)}">${escapeAttr(l.label)}</a></li>`).join('')}</ul>`
+        : '';
+    return `
+      <h1>${escapeAttr(routeObj.title || 'Arcadea Property')}</h1>
+      ${routeObj.description ? `<p>${escapeAttr(routeObj.description)}</p>` : ''}
+      ${list}`;
+}
+
+/**
  * Serialize one or more JSON-LD objects into <script type="application/ld+json">
  * tags. Escapes "<" so CMS copy containing "</script>" can't break out of the tag.
  */
@@ -83,8 +147,11 @@ function breadcrumbJSONLD(items) {
  * address/geo once those are filled in on the property in Studio).
  */
 function propertyJSONLD(project, url) {
-    const numericPrice = Number(String(project.price || '').replace(/[^0-9.]/g, ''));
-    const hasPrice = project.price && !Number.isNaN(numericPrice) && numericPrice > 0;
+    // price is { enquiryOnly, prefix, amount } (legacy docs may hold a string
+    // like "POA"). Only publish an amount the site itself shows publicly.
+    const price = project.price && typeof project.price === 'object' ? project.price : null;
+    const numericPrice = Number(price?.amount);
+    const hasPrice = price && !price.enquiryOnly && Number.isFinite(numericPrice) && numericPrice > 0;
 
     return {
         '@context': 'https://schema.org',
@@ -172,7 +239,10 @@ function generateProjectHTML(project, baseHTML) {
     ${structuredData}
 `;
 
-    return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
+    return injectBody(
+        stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`),
+        projectBodyHTML(project)
+    );
 }
 
 /**
@@ -210,13 +280,17 @@ function generateBlogPostHTML(post, baseHTML) {
     ${structuredData}
 `;
 
-    return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
+    return injectBody(
+        stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`),
+        blogPostBodyHTML(post)
+    );
 }
 
 /**
- * Generate SEO-friendly HTML for static routes
+ * Generate SEO-friendly HTML for static routes. `listLinks` lets index pages
+ * (e.g. /properties, /news) carry plain <a href> links to every child page.
  */
-function generateStaticPageHTML(routeObj, baseHTML) {
+function generateStaticPageHTML(routeObj, baseHTML, listLinks = []) {
     const url = `${SITE_URL}${routeObj.path}`;
     const pageTitle = escapeAttr(routeObj.title ? `${routeObj.title} | Arcadea Property` : 'Arcadea Property | Exquisite Living, Refined Investments');
     const description = escapeAttr(routeObj.description || DEFAULT_DESCRIPTION);
@@ -245,7 +319,10 @@ function generateStaticPageHTML(routeObj, baseHTML) {
     ${structuredData}
 `;
 
-    return stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`);
+    return injectBody(
+        stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`),
+        staticPageBodyHTML(routeObj, listLinks)
+    );
 }
 
 /**
@@ -369,8 +446,15 @@ async function prerender() {
     ];
 
     console.log('\n📡 Generating static routes...');
+    // Index pages link out to every listing / article so crawlers can reach
+    // them from the HTML alone, not just via the sitemap.
+    const listLinksByPath = {
+        '/properties': projects.map(p => ({ href: `/project/${p.slug}`, label: p.location ? `${p.title} — ${p.location}` : p.title })),
+        '/news': blogPosts.map(p => ({ href: `/news/${p.slug}`, label: p.title })),
+    };
+
     for (const route of staticRoutes) {
-        const routeHTML = generateStaticPageHTML(route, baseHTML);
+        const routeHTML = generateStaticPageHTML(route, baseHTML, listLinksByPath[route.path]);
         
         // Create directory
         // Remove leading slash to make it relative to distPath

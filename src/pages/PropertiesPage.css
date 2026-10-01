@@ -819,6 +819,9 @@
 }
 
 .property-link {
+    /* A <span> inside the card's <a> (a button can't be nested in a link) */
+    display: block;
+    text-align: center;
     width: 100%;
     padding: 1rem;
     background: rgba(133, 113, 77, 0.4);
@@ -832,7 +835,8 @@
     transition: all var(--transition-fast);
 }
 
-.property-link:hover {
+.property-link:hover,
+.property-card:hover .property-link {
     background: var(--accent-gold);
     color: #ffffff !important;
 }
