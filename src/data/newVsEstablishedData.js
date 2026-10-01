@@ -7,10 +7,10 @@
  * unless stated. irr39 / irr47 = investor's marginal rate incl. Medicare.
  */
 
-// Set to the exported PDF's path (e.g. '/reports/new-vs-established-gold-coast.pdf',
-// dropped into public/reports/) once design has exported it. While null, the
-// download button renders disabled with an "available soon" note.
-export const REPORT_URL = null;
+// Direct-download link to the report PDF on Google Drive (the file must stay
+// shared as "Anyone with the link"). While null, the download button renders
+// disabled with an "available soon" note.
+export const REPORT_URL = 'https://drive.google.com/uc?export=download&id=1YUnUA1fyfHu3XbUzeqcNn7b-426-ALPR';
 export const REPORT_TITLE =
     'New vs Established Investment Property on the Gold Coast After the 2026 Tax Reforms';
 

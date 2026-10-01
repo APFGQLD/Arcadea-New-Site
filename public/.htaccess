@@ -21,9 +21,12 @@
   RewriteCond %{REQUEST_FILENAME}/index.html -f
   RewriteRule ^(.*[^/])$ $1/index.html [L]
 
+  # Everything else is a client-side route: serve the bare app shell.
+  # Not index.html — that's the homepage, prerendered with homepage links
+  # and canonical (prerender.js writes app.html as a clean copy).
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule . /app.html [L]
 </IfModule>
 
 <IfModule mod_dir.c>
