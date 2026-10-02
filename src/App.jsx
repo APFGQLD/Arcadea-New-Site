@@ -10,6 +10,7 @@ import ServicesPage from './pages/ServicesPage';
 import IPDCPage from './pages/IPDCPage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
+import InsightsPage from './pages/InsightsPage';
 
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import AdminPage from './pages/AdminPage';
@@ -64,6 +65,8 @@ function App() {
           {/* Hidden calculator — accessible by direct link only, not in nav */}
           <Route path="/tools/off-the-plan-calculator" element={<OffThePlanCalculatorPage />} />
 
+          {/* Index of research reports — noindex and out of the sitemap, like the reports it lists */}
+          <Route path="/insights" element={<InsightsPage />} />
           {/* Showcase research page — noindex and out of the sitemap until compliance sign-off */}
           <Route path="/insights/new-vs-established-gold-coast" element={<Suspense fallback={null}><NewVsEstablishedPage /></Suspense>} />
 
