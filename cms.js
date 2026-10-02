@@ -89,5 +89,7 @@ export async function fetchAllBlogPosts() {
  * /tools  — hidden calculators/tools, shared by direct backlink only.
  * /insights/new-vs-established-gold-coast — awaiting Australian Consumer Law
  *   review; remove from this list (and drop `noindex` in the page) once signed off.
+ * /insights — index of the reports above; same treatment until its first
+ *   report is signed off (drop `noindex` in InsightsPage.jsx too).
  */
-export const EXCLUDED_ROUTES = ['/admin', '/join', '/tools', '/insights/new-vs-established-gold-coast'];
+export const EXCLUDED_ROUTES = ['/admin', '/join', '/tools', '/insights', '/insights/new-vs-established-gold-coast'];
