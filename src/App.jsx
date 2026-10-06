@@ -71,7 +71,7 @@ function App() {
           {/* Hidden calculator — accessible by direct link only, not in nav */}
           <Route path="/tools/off-the-plan-calculator" element={<OffThePlanCalculatorPage />} />
 
-          {/* Showcase research page — noindex and out of the sitemap until compliance sign-off */}
+          {/* Insights index and research pages — noindex and out of the sitemap until compliance sign-off */}
           <Route path="/insights" element={<Suspense fallback={null}><InsightsIndexPage /></Suspense>} />
           <Route path="/insights/new-vs-established-gold-coast" element={<Suspense fallback={null}><NewVsEstablishedPage /></Suspense>} />
           {/* Insight pages for videos 002–006 — also noindex and out of the sitemap until signed off */}

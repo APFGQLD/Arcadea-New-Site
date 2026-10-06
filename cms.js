@@ -87,8 +87,9 @@ export async function fetchAllBlogPosts() {
  * /admin  — internal tooling.
  * /join   — internal Zoom room selector; displays the shared meeting password.
  * /tools  — hidden calculators/tools, shared by direct backlink only.
- * /insights — every insight page awaits claims and Australian Consumer Law
- *   sign-off. As each is approved, list the others here individually instead
- *   and drop `noindex` in that page (InsightPage / NewVsEstablishedPage).
+ * /insights — the index and every insight page under it await claims and
+ *   Australian Consumer Law sign-off. As pages are approved, list the rest
+ *   here individually instead and drop `noindex` in each approved page
+ *   (InsightPage / NewVsEstablishedPage), and in the index once one is live.
  */
 export const EXCLUDED_ROUTES = ['/admin', '/join', '/tools', '/insights'];
