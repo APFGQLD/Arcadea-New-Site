@@ -5,8 +5,12 @@ import { fetchBlogPosts, fetchCategories } from '../services/sanityService';
 import { getReadingTime } from '../utils/readingTime';
 import LoadingSpinner from '../components/LoadingSpinner';
 import usePageTitle from '../hooks/usePageTitle';
+import { INSIGHTS, INSIGHTS_INDEX } from '../data/insights/shared';
 import './EditorialPage.css';
 import './BlogPage.css';
+
+// Reel posters shown on the Arcadea Insights promo, newest first
+const INSIGHT_PREVIEWS = [INSIGHTS.stampDuty, INSIGHTS.rates, INSIGHTS.migration];
 
 const BlogPage = () => {
     usePageTitle('News & Insights', {
@@ -96,6 +100,24 @@ const BlogPage = () => {
             </header>
 
             <div className="ed-wide">
+                {/* Arcadea Insights: the video explainers live on their own index */}
+                <Link to={INSIGHTS_INDEX.path} className="blog-insights-promo">
+                    <div className="blog-insights-copy">
+                        <span className="ed-eyebrow">Arcadea Insights</span>
+                        <h2 className="blog-insights-title">Short, sourced explainers, with video</h2>
+                        <p className="blog-insights-text">
+                            Stamp duty, interest rates, who&apos;s moving to Queensland, the Gold Coast&apos;s growth plan
+                            and more. The numbers behind the move, with every source listed.
+                        </p>
+                        <span className="ed-text-link">Explore Insights &rarr;</span>
+                    </div>
+                    <div className="blog-insights-posters" aria-hidden="true">
+                        {INSIGHT_PREVIEWS.map((item) => (
+                            <img key={item.path} src={item.poster} alt="" loading="lazy" decoding="async" />
+                        ))}
+                    </div>
+                </Link>
+
                 {categories.length > 0 && (
                     <div className="blog-categories" role="group" aria-label="Filter by category">
                         <button

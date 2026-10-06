@@ -56,10 +56,7 @@ const HERO_IMAGE = {
 const restShare = Math.round((SETTLED[0].net / NET) * 100);
 
 const InterstateMigrationPage = () => (
-    <InsightPage
-        title="Who's Moving to Queensland, and From Where"
-        description="Queensland gained more people from other states than anywhere else in the year to March 2026: mostly from New South Wales, and mostly outside Brisbane. ABS figures, mapped."
-    >
+    <InsightPage seo={INSIGHTS.migration.seo}>
         <InsightHero
             eyebrow="Data story · Queensland · October 2026"
             title="Who's moving to Queensland,"

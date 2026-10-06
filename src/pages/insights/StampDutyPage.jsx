@@ -172,10 +172,7 @@ const Receipt = ({ title, rows, total, tone }) => (
 const EXAMPLE = 850000;
 
 const StampDutyPage = () => (
-    <InsightPage
-        title="Stamp Duty: New vs Established for First Home Buyers"
-        description="In Queensland, a first home buyer pays no transfer duty on a new home, with no price cap. Compare duty on new and established homes at any price, plus the $30,000 First Home Owner Grant."
-    >
+    <InsightPage seo={INSIGHTS.stampDuty.seo}>
         <InsightHero
             eyebrow="First home buyers · Queensland · October 2026"
             title="Same price, different duty."

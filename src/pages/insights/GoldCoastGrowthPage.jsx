@@ -56,10 +56,7 @@ const HERO_IMAGE = {
 };
 
 const GoldCoastGrowthPage = () => (
-    <InsightPage
-        title="Gold Coast: Planning for a Million People"
-        description="The Gold Coast is planning for a million residents and 185,000 new homes by 2046. Population growth, building approvals against the plan's pace, and where the strategy says growth should go."
-    >
+    <InsightPage seo={INSIGHTS.goldCoastGrowth.seo}>
         <InsightHero
             eyebrow="Data story · Gold Coast · October 2026"
             title="A million people by 2046."

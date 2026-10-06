@@ -72,10 +72,7 @@ const FeeExample = () => {
 };
 
 const DefenceHousingPage = () => (
-    <InsightPage
-        title="Defence Housing in Townsville"
-        description="How a Defence Housing Australia lease works in Townsville: who the tenant is, how rent is paid and reviewed, what DHA's 16.5% service fee covers, and the costs that stay with the owner."
-    >
+    <InsightPage seo={INSIGHTS.defenceHousing.seo}>
         <InsightHero
             eyebrow="Investor explainer · Townsville · October 2026"
             title="What if your tenant was the government?"

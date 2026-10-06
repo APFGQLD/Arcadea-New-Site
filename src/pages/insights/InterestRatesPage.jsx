@@ -140,10 +140,7 @@ const Repayments = () => {
 };
 
 const InterestRatesPage = () => (
-    <InsightPage
-        title="Four Years of Rates, One Repayment"
-        description="17 rate rises and 3 cuts took the cash rate from 0.10% to 4.60%, the highest since 2011. What that did to a $500k, $600k and $750k home loan repayment, and how lenders test you on top of it."
-    >
+    <InsightPage seo={INSIGHTS.rates.seo}>
         <InsightHero
             eyebrow="All buyers · Interest rates · October 2026"
             title="Four years of rates,"

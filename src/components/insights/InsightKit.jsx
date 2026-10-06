@@ -115,11 +115,12 @@ function ReadingProgress() {
 }
 
 /**
- * Page wrapper: title + meta (noindex until the page is signed off), scroll
- * to top, white navbar over the dark hero, scroll-reveal for `.reveal`.
+ * Page wrapper: title + meta, scroll to top, white navbar over the dark hero,
+ * scroll-reveal for `.reveal`. `seo` is { title, description } from
+ * data/insights/shared.js, which prerender.js reads too.
  */
-export function InsightPage({ title, description, children }) {
-    usePageTitle(title, { description, noindex: true });
+export function InsightPage({ seo, noindex = false, children }) {
+    usePageTitle(seo.title, { description: seo.description, noindex });
 
     const pageRef = useRef(null);
     const { setNavOverDarkHero } = useNavVisibility();

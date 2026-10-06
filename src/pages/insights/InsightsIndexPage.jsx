@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PlayIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { InsightPage, InsightHero } from '../../components/insights/InsightKit';
 import { Segmented } from '../../components/InsightCharts';
-import { INSIGHTS, GENERAL_ADVICE, LICENCE } from '../../data/insights/shared';
+import { INSIGHTS, INSIGHTS_INDEX, GENERAL_ADVICE, LICENCE } from '../../data/insights/shared';
 
 // Newest first; 001 last
 const ORDER = ['stampDuty', 'rates', 'migration', 'goldCoastGrowth', 'defenceHousing', 'newVsEstablished'];
@@ -27,10 +27,7 @@ const InsightsIndexPage = () => {
     const shown = filter === 'All' ? ITEMS : ITEMS.filter((i) => i.tag === filter);
 
     return (
-        <InsightPage
-            title="Arcadea Insights"
-            description="Short, sourced explainers on Queensland property: stamp duty, interest rates, migration, Gold Coast growth, defence housing and the 2026 tax changes."
-        >
+        <InsightPage seo={INSIGHTS_INDEX.seo}>
             <InsightHero
                 eyebrow="Arcadea Insights · Queensland property"
                 title="The numbers behind the move."
