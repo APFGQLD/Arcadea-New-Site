@@ -69,6 +69,10 @@ function generateSitemapXML(projects, blogPosts) {
             changefreq = 'daily';
         } else if (route.includes('/campaign')) {
             priority = '0.9'; // Campaigns are important
+        } else if (route.startsWith('/insights/')) {
+            // Dated explainers: updated when their figures are re-checked
+            priority = '0.7';
+            changefreq = 'monthly';
         } else if (route === '/contact' || route === '/about') {
             priority = '0.7';
             changefreq = 'monthly';

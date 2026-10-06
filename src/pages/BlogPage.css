@@ -31,6 +31,95 @@
 }
 
 /* ----------------------------------------
+   ARCADEA INSIGHTS PROMO (links to /insights)
+   ---------------------------------------- */
+.blog-insights-promo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    padding: 2.25rem 2.5rem;
+    border: 1px solid rgba(var(--accent-gold-rgb), 0.35);
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgba(var(--accent-gold-rgb), 0.12) 0%, var(--bg-secondary) 65%);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: border-color 0.3s ease;
+}
+
+.blog-insights-promo:hover,
+.blog-insights-promo:focus-visible {
+    border-color: var(--accent-gold-light);
+}
+
+.blog-insights-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    font-weight: 300;
+    line-height: 1.2;
+    text-transform: none;
+    letter-spacing: normal;
+    margin: 0.75rem 0 0.75rem;
+}
+
+.blog-insights-text {
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 58ch;
+    margin: 0 0 1.25rem;
+}
+
+/* Three overlapping reel posters */
+.blog-insights-posters {
+    display: flex;
+    padding-right: 0.5rem;
+}
+
+.blog-insights-posters img {
+    width: 110px;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.blog-insights-posters img + img {
+    margin-left: -38px;
+}
+
+.blog-insights-posters img:nth-child(1) { transform: rotate(-6deg) translateY(6px); }
+.blog-insights-posters img:nth-child(3) { transform: rotate(6deg) translateY(6px); }
+
+.blog-insights-promo:hover .blog-insights-posters img:nth-child(1) { transform: rotate(-9deg) translate(-8px, 4px); }
+.blog-insights-promo:hover .blog-insights-posters img:nth-child(3) { transform: rotate(9deg) translate(8px, 4px); }
+
+@media (max-width: 700px) {
+    .blog-insights-promo {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.6rem 1.4rem;
+        border-radius: 20px;
+    }
+
+    .blog-insights-posters {
+        order: -1;
+        justify-content: center;
+    }
+
+    .blog-insights-posters img {
+        width: 84px;
+        border-radius: 10px;
+    }
+
+    .blog-insights-posters img + img {
+        margin-left: -26px;
+    }
+}
+
+/* ----------------------------------------
    CATEGORY FILTER
    ---------------------------------------- */
 .blog-categories {

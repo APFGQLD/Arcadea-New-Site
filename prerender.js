@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { fetchAllProjects, fetchAllBlogPosts } from './cms.js';
+import { fetchAllProjects, fetchAllBlogPosts, EXCLUDED_ROUTES } from './cms.js';
 import { formatListingPrice } from './src/utils/priceFormat.js';
+import { INSIGHTS, INSIGHTS_INDEX } from './src/data/insights/shared.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -320,11 +321,12 @@ function generateStaticPageHTML(routeObj, baseHTML, listLinks = []) {
     const url = `${SITE_URL}${routeObj.path}`;
     const pageTitle = escapeAttr(routeObj.title ? `${routeObj.title} | Arcadea Property` : 'Arcadea Property | Exquisite Living, Refined Investments');
     const description = escapeAttr(routeObj.description || DEFAULT_DESCRIPTION);
-    const image = `${SITE_URL}/og-image.jpg`;
+    const image = `${SITE_URL}${routeObj.image || '/og-image.jpg'}`;
 
     const structuredData = jsonLdTags(
         breadcrumbJSONLD([
             { name: 'Home', url: `${SITE_URL}/` },
+            ...(routeObj.parent ? [{ name: routeObj.parent.title, url: `${SITE_URL}${routeObj.parent.path}` }] : []),
             { name: routeObj.title || routeObj.path, url },
         ])
     );
@@ -348,6 +350,13 @@ function generateStaticPageHTML(routeObj, baseHTML, listLinks = []) {
     return injectBody(
         stripBaseMetaTags(baseHTML).replace('</head>', `${metaTags}\n  </head>`),
         staticPageBodyHTML(routeObj, listLinks)
+    );
+}
+
+/** Insight pages that are public (have SEO copy and aren't excluded pending sign-off). */
+function insightPages() {
+    return Object.values(INSIGHTS).filter(
+        (i) => i.seo && !EXCLUDED_ROUTES.some((ex) => i.path === ex || i.path.startsWith(`${ex}/`))
     );
 }
 
@@ -478,7 +487,16 @@ async function prerender() {
             path: '/project/luc/private-sales',
             title: 'The Luc Private Sales',
             description: 'Private resale listings at The Luc. Share your unit preferences and our team will match you with current availability.'
-        }
+        },
+        // Arcadea Insights: the index plus each public insight page. Titles,
+        // descriptions and share images come from src/data/insights/shared.js,
+        // the same values the pages set in the browser.
+        { path: INSIGHTS_INDEX.path, ...INSIGHTS_INDEX.seo },
+        ...insightPages().map((i) => ({
+            path: i.path,
+            ...i.seo,
+            parent: { path: INSIGHTS_INDEX.path, title: INSIGHTS_INDEX.seo.title },
+        })),
     ];
 
     console.log('\n📡 Generating static routes...');
@@ -486,7 +504,11 @@ async function prerender() {
     // them from the HTML alone, not just via the sitemap.
     const listLinksByPath = {
         '/properties': projects.map(p => ({ href: `/project/${p.slug}`, label: p.location ? `${p.title} — ${p.location}` : p.title })),
-        '/news': blogPosts.map(p => ({ href: `/news/${p.slug}`, label: p.title })),
+        '/news': [
+            { href: INSIGHTS_INDEX.path, label: INSIGHTS_INDEX.seo.title },
+            ...blogPosts.map(p => ({ href: `/news/${p.slug}`, label: p.title })),
+        ],
+        [INSIGHTS_INDEX.path]: insightPages().map(i => ({ href: i.path, label: i.title })),
     };
 
     for (const route of staticRoutes) {
