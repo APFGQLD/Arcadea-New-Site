@@ -31,6 +31,13 @@ import './index.css';
 const StudioPage = lazy(() => import('./pages/StudioPage'));
 // Lazy-loaded: keeps Recharts out of the main bundle for everyone else
 const NewVsEstablishedPage = lazy(() => import('./pages/NewVsEstablishedPage'));
+// Arcadea Insights pages, one per video, plus the /insights landing page
+const InsightsIndexPage = lazy(() => import('./pages/insights/InsightsIndexPage'));
+const DefenceHousingPage = lazy(() => import('./pages/insights/DefenceHousingPage'));
+const GoldCoastGrowthPage = lazy(() => import('./pages/insights/GoldCoastGrowthPage'));
+const InterstateMigrationPage = lazy(() => import('./pages/insights/InterstateMigrationPage'));
+const StampDutyPage = lazy(() => import('./pages/insights/StampDutyPage'));
+const InterestRatesPage = lazy(() => import('./pages/insights/InterestRatesPage'));
 
 function App() {
   const location = useLocation();
@@ -65,7 +72,14 @@ function App() {
           <Route path="/tools/off-the-plan-calculator" element={<OffThePlanCalculatorPage />} />
 
           {/* Showcase research page — noindex and out of the sitemap until compliance sign-off */}
+          <Route path="/insights" element={<Suspense fallback={null}><InsightsIndexPage /></Suspense>} />
           <Route path="/insights/new-vs-established-gold-coast" element={<Suspense fallback={null}><NewVsEstablishedPage /></Suspense>} />
+          {/* Insight pages for videos 002–006 — also noindex and out of the sitemap until signed off */}
+          <Route path="/insights/defence-housing-townsville" element={<Suspense fallback={null}><DefenceHousingPage /></Suspense>} />
+          <Route path="/insights/gold-coast-growth-plan" element={<Suspense fallback={null}><GoldCoastGrowthPage /></Suspense>} />
+          <Route path="/insights/interstate-migration-queensland" element={<Suspense fallback={null}><InterstateMigrationPage /></Suspense>} />
+          <Route path="/insights/first-home-stamp-duty-new-vs-established" element={<Suspense fallback={null}><StampDutyPage /></Suspense>} />
+          <Route path="/insights/interest-rates-repayments-2022-2026" element={<Suspense fallback={null}><InterestRatesPage /></Suspense>} />
 
           {/* Sanity Studio, embedded at /studio — must come before the short-link catch-all */}
           <Route

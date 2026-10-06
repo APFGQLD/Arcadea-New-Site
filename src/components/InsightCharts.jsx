@@ -49,13 +49,16 @@ function useWidth(ref) {
 /**
  * Reserves the chart's height, then renders it once it's in view so the
  * Recharts entry animation plays as the reader arrives rather than on load.
+ * `height` may be a function of the measured width, for charts that are
+ * shorter on phones.
  */
 function ChartFrame({ height, ariaLabel, children }) {
     const ref = useRef(null);
     const inView = useInView(ref);
     const width = useWidth(ref);
+    const reserved = typeof height === 'function' ? height(width || Infinity) : height;
     return (
-        <div className="ic-frame" ref={ref} style={{ height }} role="figure" aria-label={ariaLabel}>
+        <div className="ic-frame" ref={ref} style={{ height: reserved }} role="figure" aria-label={ariaLabel}>
             {inView && width > 0 && children(width)}
         </div>
     );
@@ -346,6 +349,8 @@ export function InsightBarChart({
 /*  Line chart                                                          */
 /*  series: [{ dataKey, name, color, dashed? }]                         */
 /*  callout: { dataKey, text } — label on that series' final point      */
+/*  xTicks / narrowXTicks — show only these x values (all if omitted)   */
+/*  lineType 'stepAfter' — for rates that hold until the next change    */
 /* ------------------------------------------------------------------ */
 
 export function InsightLineChart({
@@ -357,29 +362,41 @@ export function InsightLineChart({
     formatY,
     formatTooltip,
     xTickFormat = (v) => v,
+    xTicks,
+    narrowXTicks = xTicks,
+    lineType = 'linear',
+    showDots = true,
+    height: fullHeight = 340,
     callout,
     ariaLabel,
 }) {
     const reduced = prefersReducedMotion();
     const last = data[data.length - 1];
+    const heightFor = (width) => (width < NARROW ? Math.round(fullHeight * 0.85) : fullHeight);
 
     return (
-        <ChartFrame height={340} ariaLabel={ariaLabel}>
+        <ChartFrame height={heightFor} ariaLabel={ariaLabel}>
             {(width) => {
                 const narrow = width < NARROW;
-                const height = narrow ? 290 : 340;
+                const height = heightFor(width);
                 const lastIdx = data.length - 1;
+                const shownTicks = narrow ? narrowXTicks : xTicks;
 
-                const XTick = ({ x, y, payload, index }) => (
-                    <text
-                        x={x}
-                        y={y + 14}
-                        className="ic-axis"
-                        textAnchor={index === 0 ? 'start' : index === lastIdx ? 'end' : 'middle'}
-                    >
-                        {xTickFormat(payload.value, index, lastIdx)}
-                    </text>
-                );
+                // Anchor by data position, so a sparse tick list still keeps
+                // the first and last labels inside the chart
+                const XTick = ({ x, y, payload }) => {
+                    const idx = data.findIndex((row) => row[xKey] === payload.value);
+                    return (
+                        <text
+                            x={x}
+                            y={y + 14}
+                            className="ic-axis"
+                            textAnchor={idx === 0 ? 'start' : idx === lastIdx ? 'end' : 'middle'}
+                        >
+                            {xTickFormat(payload.value, idx, lastIdx)}
+                        </text>
+                    );
+                };
 
                 const CalloutLabel = ({ viewBox }) => (
                     <text x={viewBox.x - 10} y={viewBox.y - 16} textAnchor="end" className="ic-callout">
@@ -398,6 +415,7 @@ export function InsightLineChart({
                         <XAxis
                             dataKey={xKey}
                             tick={XTick}
+                            ticks={shownTicks}
                             axisLine={false}
                             tickLine={false}
                             interval={0}
@@ -434,13 +452,13 @@ export function InsightLineChart({
                         {series.map((s, i) => (
                             <Line
                                 key={s.dataKey}
-                                type="linear"
+                                type={lineType}
                                 dataKey={s.dataKey}
                                 name={s.name}
                                 stroke={s.color}
                                 strokeWidth={2.5}
                                 strokeDasharray={s.dashed ? '6 5' : undefined}
-                                dot={{ r: 4.5, fill: s.color, stroke: 'var(--chart-card)', strokeWidth: 2 }}
+                                dot={showDots ? { r: 4.5, fill: s.color, stroke: 'var(--chart-card)', strokeWidth: 2 } : false}
                                 activeDot={{ r: 6, fill: s.color, stroke: 'var(--chart-card)', strokeWidth: 2 }}
                                 isAnimationActive={!reduced}
                                 animationBegin={i * 250}
