@@ -35,6 +35,11 @@ export const INSIGHTS = {
         tag: 'Investors',
         title: 'New vs established after the 2026 tax changes',
         blurb: 'Same $1.6M budget, four products, every cost and tax modelled under the new negative gearing and CGT rules.',
+        seo: {
+            title: 'New vs Established on the Gold Coast',
+            description: 'We modelled new and established Gold Coast apartments and houses under the 2026 negative gearing and CGT rules. Same $1.6M budget, four products, every cost and tax counted.',
+            image: SKYLINE,
+        },
     },
     defenceHousing: {
         path: '/insights/defence-housing-townsville',

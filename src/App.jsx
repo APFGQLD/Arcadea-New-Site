@@ -71,10 +71,9 @@ function App() {
           {/* Hidden calculator — accessible by direct link only, not in nav */}
           <Route path="/tools/off-the-plan-calculator" element={<OffThePlanCalculatorPage />} />
 
-          {/* Insights index and research pages — noindex and out of the sitemap until compliance sign-off */}
+          {/* Arcadea Insights: the index and one page per video (titles/SEO in data/insights/shared.js) */}
           <Route path="/insights" element={<Suspense fallback={null}><InsightsIndexPage /></Suspense>} />
           <Route path="/insights/new-vs-established-gold-coast" element={<Suspense fallback={null}><NewVsEstablishedPage /></Suspense>} />
-          {/* Insight pages for videos 002–006 — also noindex and out of the sitemap until signed off */}
           <Route path="/insights/defence-housing-townsville" element={<Suspense fallback={null}><DefenceHousingPage /></Suspense>} />
           <Route path="/insights/gold-coast-growth-plan" element={<Suspense fallback={null}><GoldCoastGrowthPage /></Suspense>} />
           <Route path="/insights/interstate-migration-queensland" element={<Suspense fallback={null}><InterstateMigrationPage /></Suspense>} />

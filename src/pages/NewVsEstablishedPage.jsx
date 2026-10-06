@@ -44,6 +44,7 @@ import {
     DISCLAIMER_UPDATED,
     SOURCES,
 } from '../data/newVsEstablishedData';
+import { INSIGHTS } from '../data/insights/shared';
 import './NewVsEstablishedPage.css';
 
 /* Chart colours — defined per theme in the CSS (validated for CVD + contrast) */
@@ -561,14 +562,9 @@ const ScenarioChart = () => {
 /* ------------------------------------------------------------------ */
 
 const NewVsEstablishedPage = () => {
-    // noindex until the page has passed its Australian Consumer Law review
-    // (see the brief's compliance guardrails). Remove `noindex` and the
-    // EXCLUDED_ROUTES entry in cms.js once it's signed off.
-    usePageTitle('New vs Established on the Gold Coast', {
-        description:
-            'We modelled new and established Gold Coast apartments and houses under the 2026 negative gearing and CGT rules. Same $1.6M budget, four products, every cost and tax counted.',
-        noindex: true,
-    });
+    // Title and description are shared with prerender.js via data/insights/shared.js
+    const { seo } = INSIGHTS.newVsEstablished;
+    usePageTitle(seo.title, { description: seo.description });
 
     const pageRef = useRef(null);
     const { setNavOverDarkHero } = useNavVisibility();

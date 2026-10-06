@@ -87,8 +87,7 @@ export async function fetchAllBlogPosts() {
  * /admin  — internal tooling.
  * /join   — internal Zoom room selector; displays the shared meeting password.
  * /tools  — hidden calculators/tools, shared by direct backlink only.
- * /insights/new-vs-established-gold-coast — awaiting Australian Consumer Law
- *   review; remove from this list (and drop `noindex` in the page) once signed off.
- *   The /insights index and the other insight pages are public.
+ * (The /insights index and every insight page are public. To hold a page
+ *  back, list its route here and pass `noindex` to its InsightPage.)
  */
-export const EXCLUDED_ROUTES = ['/admin', '/join', '/tools', '/insights/new-vs-established-gold-coast'];
+export const EXCLUDED_ROUTES = ['/admin', '/join', '/tools'];

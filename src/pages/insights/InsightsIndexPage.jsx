@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlayIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { PlayIcon, ArrowRightIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { InsightPage, InsightHero } from '../../components/insights/InsightKit';
 import { Segmented } from '../../components/InsightCharts';
 import { INSIGHTS, INSIGHTS_INDEX, GENERAL_ADVICE, LICENCE } from '../../data/insights/shared';
@@ -40,12 +40,23 @@ const InsightsIndexPage = () => {
                 <div className="container">
                     <div className="ins-index-head">
                         <h2 className="ins-kicker">{shown.length} insight{shown.length === 1 ? '' : 's'}</h2>
-                        <Segmented
-                            label="Filter by topic"
-                            options={FILTERS.map((f) => ({ value: f, label: f }))}
-                            value={filter}
-                            onChange={setFilter}
-                        />
+                        {/* Pills on larger screens; a native dropdown on phones */}
+                        <div className="ins-index-filter-pills">
+                            <Segmented
+                                label="Filter by topic"
+                                options={FILTERS.map((f) => ({ value: f, label: f }))}
+                                value={filter}
+                                onChange={setFilter}
+                            />
+                        </div>
+                        <label className="ins-index-filter-select">
+                            <select aria-label="Filter by topic" value={filter} onChange={(e) => setFilter(e.target.value)}>
+                                {FILTERS.map((f) => (
+                                    <option key={f} value={f}>{f === 'All' ? 'All topics' : f}</option>
+                                ))}
+                            </select>
+                            <ChevronDownIcon aria-hidden="true" />
+                        </label>
                     </div>
 
                     <div className="ins-index-grid">

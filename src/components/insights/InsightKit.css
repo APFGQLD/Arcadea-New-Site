@@ -1446,6 +1446,43 @@
     margin: 0;
 }
 
+/* Topic filter: pills, swapped for a dropdown on phones (see the 640px query) */
+.ins-index-filter-select {
+    position: relative;
+    display: none;
+}
+
+.ins-index-filter-select select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    padding: 0.85rem 2.75rem 0.85rem 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 1rem; /* 16px+ stops iOS zooming on focus */
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ins-index-filter-select select:focus-visible {
+    outline: 2px solid var(--accent-gold-light);
+    outline-offset: 2px;
+}
+
+.ins-index-filter-select svg {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    color: var(--accent-gold-light);
+    pointer-events: none;
+}
+
 .ins-index-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1544,6 +1581,20 @@
 
 /* Phones: compact rows, thumbnail beside the text */
 @media (max-width: 640px) {
+    .ins-index-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.9rem;
+    }
+
+    .ins-index-filter-pills {
+        display: none;
+    }
+
+    .ins-index-filter-select {
+        display: block;
+    }
+
     .ins-index-grid {
         grid-template-columns: 1fr;
         gap: 0.9rem;
