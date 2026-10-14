@@ -331,6 +331,580 @@
     color: var(--text-muted);
 }
 
+/* ---------------- Landscape YouTube video (009) ---------------- */
+.ins-hero.has-landscape .ins-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-areas:
+        'copy reel'
+        'stats stats';
+}
+
+.ins-yt-frame {
+    aspect-ratio: 16 / 9;
+    border-radius: 22px;
+}
+
+.ins-yt-frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.ins-yt-play {
+    align-items: center;
+    padding: 0;
+    background: #000;
+}
+
+.ins-yt-play img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    transition: opacity var(--transition-normal);
+}
+
+.ins-yt-play:hover img,
+.ins-yt-play:focus-visible img {
+    opacity: 1;
+}
+
+.ins-yt-play:focus-visible {
+    border-radius: 22px;
+}
+
+
+/* Ownership tree (009) */
+.ins-owners {
+    display: grid;
+    justify-items: center;
+    gap: 0;
+}
+
+.ins-owner {
+    display: grid;
+    place-items: center;
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: #fff;
+}
+
+/* Logos in their own colours, on white tiles in both themes */
+.ins-logo {
+    display: block;
+    width: auto;
+    height: 18px;
+    max-width: 150px;
+    object-fit: contain;
+}
+
+/* For logos supplied white on transparent */
+.ins-owner-kids li.is-dark { background: #1b1b1b; }
+
+.ins-logo.is-md { height: 30px; max-width: 220px; }
+.ins-logo.is-lg { height: 38px; max-width: 240px; }
+
+/* Mortgage Choice's file has wide transparent margins */
+.ins-logo.is-padded { height: 30px; }
+
+
+.ins-owner.is-root {
+    border-color: rgba(var(--accent-gold-rgb), 0.6);
+}
+
+.ins-owner-stem {
+    width: 1px;
+    height: 1.5rem;
+    background: var(--ins-edge);
+}
+
+.ins-owner-branches {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+    position: relative;
+    padding-top: 1.5rem;
+}
+
+/* The bar joining the two branches */
+.ins-owner-branches::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    height: 1px;
+    background: var(--ins-edge);
+}
+
+.ins-owner-branch {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    position: relative;
+}
+
+.ins-owner-branch::before {
+    content: '';
+    position: absolute;
+    top: -1.5rem;
+    left: 50%;
+    width: 1px;
+    height: 1.5rem;
+    background: var(--ins-edge);
+}
+
+.ins-owner-tag {
+    margin-bottom: 0.6rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--fill, var(--chart-b)) 22%, transparent);
+    color: var(--fill, var(--chart-b));
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.ins-owner-kids {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ins-owner-kids li {
+    display: grid;
+    place-items: center;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.ins-owner-kids {
+    gap: 0.5rem;
+}
+
+.ins-owner-overseas {
+    display: grid;
+    justify-items: center;
+    width: 100%;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.ins-owner-overseas .ins-owner-kids {
+    margin-top: 0.25rem;
+}
+
+/* The family layer above News Corp: words, not a logo */
+.ins-owner.is-family {
+    max-width: 30rem;
+    padding: 0.9rem 1.4rem;
+    border-color: rgba(var(--accent-gold-rgb), 0.6);
+    background: rgba(var(--accent-gold-rgb), 0.1);
+    text-align: center;
+}
+
+.ins-owner.is-family strong {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.ins-owner.is-family small {
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Incentive loop (009): four steps and a "round again" arrow */
+.ins-loop {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+}
+
+.ins-loop > li:not(.ins-loop-back) {
+    position: relative;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background: var(--chart-card);
+}
+
+/* Arrow to the next step */
+.ins-loop > li:not(.ins-loop-back):not(:nth-child(4))::after {
+    content: '→';
+    position: absolute;
+    top: 50%;
+    right: -1.2rem;
+    transform: translateY(-50%);
+    color: var(--accent-gold-light);
+    font-size: 1.1rem;
+}
+
+.ins-loop-num {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.2rem;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.ins-loop-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--accent-gold-light);
+}
+
+.ins-loop h3 {
+    margin: 0.9rem 0 0.4rem;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.ins-loop p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.ins-loop-back {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1rem;
+    border: 1px dashed rgba(var(--accent-gold-rgb), 0.55);
+    border-radius: 999px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.ins-loop-back svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--accent-gold-light);
+}
+
+.ins-loop + .ins-callout {
+    margin-top: 1.5rem;
+}
+
+/* Boom vs slump headlines (009) */
+.ins-headlines {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.ins-headline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin: 0;
+    padding: 1.75rem;
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--fill);
+    border-radius: 18px;
+    background: var(--chart-card);
+}
+
+.ins-headline-mood {
+    align-self: flex-start;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--fill) 20%, transparent);
+    color: var(--fill);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.ins-headline blockquote {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+
+.ins-headline figcaption {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.ins-headline figcaption span {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--text-secondary);
+}
+
+.ins-headline-reading {
+    display: flex;
+    gap: 0.6rem;
+    margin: auto 0 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+}
+
+.ins-headline-reading svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--fill);
+}
+
+.ins-headline-reading em {
+    font-style: normal;
+    color: var(--text-primary);
+}
+
+.ins-headlines + .ins-callout,
+.ins-callout + .ins-prose,
+.ins-prose + .ins-panel,
+.ins-checklist + .ins-callout {
+    margin-top: 1.5rem;
+}
+
+.ins-panel-title + .ins-prose {
+    margin-top: 0;
+}
+
+@media (max-width: 1000px) {
+    .ins-loop {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ins-loop > li:nth-child(2)::after {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .ins-loop,
+    .ins-headlines {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Stacked: arrows point down */
+    .ins-loop > li:not(.ins-loop-back):not(:nth-child(4))::after {
+        display: block;
+        content: '↓';
+        top: auto;
+        bottom: -1.35rem;
+        right: 50%;
+        transform: translateX(50%);
+    }
+}
+
+/* Tree entrance: each tile pops up in turn, then its logo bobs */
+.ins-owner-pop {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+    transition: opacity 0.5s ease, transform 0.7s var(--ins-ease);
+    transition-delay: calc(var(--n, 0) * 110ms);
+}
+
+.ins-owners.is-in .ins-owner-pop {
+    opacity: 1;
+    transform: none;
+}
+
+/* The bob uses `translate`, which stacks with the entrance's `transform`.
+   The negative delay puts each tile out of step with its neighbours. */
+.ins-owners.is-in .ins-owner-pop:not(.ins-owner-tag) {
+    animation: ins-logo-bob 4.2s ease-in-out infinite;
+    animation-delay: calc(var(--n, 0) * -0.65s);
+}
+
+@keyframes ins-logo-bob {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ins-owner-pop {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .ins-owners.is-in .ins-owner-pop:not(.ins-owner-tag) {
+        animation: none;
+    }
+}
+
+/* Shareholding pie (009) */
+.ins-pie {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem 3.5rem;
+}
+
+.ins-pie svg {
+    width: min(220px, 60vw);
+    height: auto;
+    transform: rotate(-90deg);
+}
+
+.ins-pie-slice {
+    fill: none;
+    stroke: var(--fill);
+    stroke-width: 50;
+    transition: stroke-dasharray 1.1s var(--ins-ease);
+    transition-delay: calc(var(--i) * 500ms);
+}
+
+.ins-pie-legend {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ins-pie-legend li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 0.7rem;
+}
+
+.ins-pie-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--fill);
+}
+
+.ins-pie-legend strong {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.ins-pie-legend span:last-child {
+    grid-column: 2;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Clearance-rate ring (009) */
+.ins-auction {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem 3rem;
+}
+
+.ins-ring {
+    position: relative;
+    width: 170px;
+    height: 170px;
+}
+
+.ins-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.ins-ring circle {
+    fill: none;
+    stroke-width: 12;
+}
+
+.ins-ring .ins-ring-track {
+    stroke: var(--ins-track);
+}
+
+.ins-ring .ins-ring-fill {
+    stroke: var(--chart-b);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s var(--ins-ease);
+}
+
+.ins-ring-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    text-align: center;
+}
+
+.ins-ring-label strong {
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.ins-ring-wrap {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    margin: 0;
+}
+
+.ins-ring-wrap figcaption {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+@media (max-width: 700px) {
+    .ins-auction {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+    }
+
+    .ins-auction .ins-bars {
+        width: 100%;
+    }
+
+    .ins-owner-branches {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+
+    .ins-owner-branches::before {
+        display: none;
+    }
+
+    .ins-owner-branch:not(:first-child)::before {
+        display: none;
+    }
+}
+
 /* ---------------- Sections ---------------- */
 .ins-section {
     padding: 6rem 0;
@@ -468,8 +1042,15 @@
 .ins-figures + .ins-callout,
 .ins-prose + .ins-panel,
 .ins-prose + .ins-figures,
-.ins-figures + .ins-prose {
+.ins-figures + .ins-prose,
+.ins-callout + .ins-callout {
     margin-top: 1.5rem;
+}
+
+/* A title between blocks, rather than inside a panel */
+.ins-callout + .ins-panel-title,
+.ins-panel + .ins-panel-title {
+    margin-top: 3rem;
 }
 
 .ins-panel-title {
@@ -1910,6 +2491,19 @@
     .ins-hero-reel {
         justify-self: center;
         width: min(280px, 78vw);
+    }
+
+    .ins-hero.has-landscape .ins-hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            'copy'
+            'reel'
+            'stats';
+    }
+
+    .ins-hero.has-landscape .ins-hero-reel {
+        justify-self: stretch;
+        width: auto;
     }
 
     .ins-hero-media {
