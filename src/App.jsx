@@ -38,6 +38,7 @@ const GoldCoastGrowthPage = lazy(() => import('./pages/insights/GoldCoastGrowthP
 const InterstateMigrationPage = lazy(() => import('./pages/insights/InterstateMigrationPage'));
 const StampDutyPage = lazy(() => import('./pages/insights/StampDutyPage'));
 const InterestRatesPage = lazy(() => import('./pages/insights/InterestRatesPage'));
+const WhoProfitsPage = lazy(() => import('./pages/insights/WhoProfitsPage'));
 
 function App() {
   const location = useLocation();
@@ -79,6 +80,7 @@ function App() {
           <Route path="/insights/interstate-migration-queensland" element={<Suspense fallback={null}><InterstateMigrationPage /></Suspense>} />
           <Route path="/insights/first-home-stamp-duty-new-vs-established" element={<Suspense fallback={null}><StampDutyPage /></Suspense>} />
           <Route path="/insights/interest-rates-repayments-2022-2026" element={<Suspense fallback={null}><InterestRatesPage /></Suspense>} />
+          <Route path="/insights/who-profits-when-you-buy-or-sell" element={<Suspense fallback={null}><WhoProfitsPage /></Suspense>} />
 
           {/* Sanity Studio, embedded at /studio — must come before the short-link catch-all */}
           <Route

@@ -111,6 +111,20 @@ export const INSIGHTS = {
             image: SKYLINE,
         },
     },
+    whoProfits: {
+        path: '/insights/who-profits-when-you-buy-or-sell',
+        poster: 'https://i.ytimg.com/vi/a49RtqW4Xa0/maxresdefault.jpg',
+        duration: '4:03',
+        date: 'Oct 2026',
+        tag: 'Buyers and sellers',
+        title: 'Who profits when you buy or sell?',
+        blurb: 'The same group publishes the housing headlines and owns most of realestate.com.au. Boom or slump, the listing gets paid for.',
+        seo: {
+            title: 'Who Profits When You Buy or Sell Property?',
+            description: "The Murdochs' News Corp publishes housing news and owns 62% of realestate.com.au's parent. Why boom and slump headlines can both pay.",
+            image: 'https://i.ytimg.com/vi/a49RtqW4Xa0/maxresdefault.jpg',
+        },
+    },
 };
 
 /** The notes under "Important information", shared by every page. */

@@ -220,6 +220,41 @@ export function ReelVideo({ src, poster, title, duration }) {
     );
 }
 
+/**
+ * A landscape YouTube video, tap to play. Nothing loads from YouTube until
+ * it's played (youtube-nocookie embed).
+ */
+export function YouTubeVideo({ youtubeId, poster, title, duration }) {
+    const [playing, setPlaying] = useState(false);
+
+    return (
+        <figure className="ins-reel ins-yt">
+            <div className="ins-reel-frame ins-yt-frame">
+                {playing ? (
+                    <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&cc_load_policy=1`}
+                        title={`Video: ${title}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
+                ) : (
+                    <button type="button" className="ins-reel-play ins-yt-play" onClick={() => setPlaying(true)} aria-label={`Play the video: ${title}`}>
+                        {poster && <img src={poster} alt="" decoding="async" />}
+                        <span className="ins-reel-play-icon"><PlayIcon aria-hidden="true" /></span>
+                    </button>
+                )}
+            </div>
+            <figcaption>
+                <span>Watch the video</span>
+                {duration && <span className="ins-reel-dot">·</span>}
+                {duration && <span>{duration}</span>}
+                <span className="ins-reel-dot">·</span>
+                <span>Captions on</span>
+            </figcaption>
+        </figure>
+    );
+}
+
 function HeroStats({ stats }) {
     const ref = useRef(null);
     // Low threshold: stacked on phones, the block is taller than the screen
@@ -239,11 +274,13 @@ function HeroStats({ stats }) {
 
 /**
  * Dark photo hero (dark in both themes). `image` is { src, srcSet?, position? };
- * `video` is the reel, shown beside the copy on desktop and under it on phones.
+ * `video` is the reel, shown beside the copy on desktop and under it on phones;
+ * a `video.youtubeId` makes it a landscape YouTube video with a wider column.
  */
 export function InsightHero({ eyebrow, title, accent, subtitle, stats, video, image, notice }) {
+    const youtube = Boolean(video?.youtubeId);
     return (
-        <header className="ins-hero">
+        <header className={`ins-hero ${youtube ? 'has-landscape' : ''}`}>
             {image && (
                 <div className="ins-hero-media" aria-hidden="true" style={{ '--pos': image.position || '50% 50%' }}>
                     <picture>
@@ -273,7 +310,7 @@ export function InsightHero({ eyebrow, title, accent, subtitle, stats, video, im
                 </div>
                 {video && (
                     <div className="ins-hero-reel ins-hero-in" style={{ '--d': '300ms' }}>
-                        <ReelVideo {...video} />
+                        {youtube ? <YouTubeVideo {...video} /> : <ReelVideo {...video} />}
                     </div>
                 )}
                 {stats && (
