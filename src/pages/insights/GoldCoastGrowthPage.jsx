@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HomeIcon, HomeModernIcon, BuildingOffice2Icon, ScaleIcon } from '@heroicons/react/24/outline';
 import {
     InsightPage,
@@ -20,7 +20,7 @@ import {
     FinePrint,
 } from '../../components/insights/InsightKit';
 import { fmtInt } from '../../components/insights/format';
-import { InsightLineChart, ChartDataTable } from '../../components/InsightCharts';
+import { Segmented, InsightLineChart, ChartDataTable, Legend } from '../../components/InsightCharts';
 import { GoldCoastMap } from '../../components/insights/InsightMaps';
 import { INSIGHTS } from '../../data/insights/shared';
 import {
@@ -55,11 +55,132 @@ const HERO_IMAGE = {
     position: '60% 40%',
 };
 
+// Residents to 2025, then the state's 2046 projection: a dashed line to the
+// medium series, inside a shaded cone from the low to the high series
+const LATEST = POPULATION[POPULATION.length - 1];
+const projected = (series) => PROJECTIONS.find((p) => p.label === `2046, ${series}`).people;
+const OUTLOOK = { low: projected('low'), medium: projected('medium'), high: projected('high') };
+const GROWTH_CHART = [
+    ...POPULATION.map((r) => ({ year: Number(r.year), people: r.people })),
+    { year: 2046, projected: OUTLOOK.medium, range: [OUTLOOK.low, OUTLOOK.high] },
+];
+// The cone and the dashed line both start at the latest estimate
+Object.assign(GROWTH_CHART[POPULATION.length - 1], {
+    projected: LATEST.people,
+    range: [LATEST.people, LATEST.people],
+});
+
+const growthTooltip = (row) =>
+    row.people ? (
+        <>
+            <strong>{row.year}</strong>
+            <span className="tip-row">Residents: {fmtInt(row.people)}</span>
+        </>
+    ) : (
+        <>
+            <strong>{row.year} projection</strong>
+            <span className="tip-row">Medium: {fmtInt(row.projected)}</span>
+            <span className="tip-row">Range: {fmtInt(row.range[0])} – {fmtInt(row.range[1])}</span>
+        </>
+    );
+
+const FOOTNOTE_TO_DATE = 'Estimated resident population of the City of Gold Coast at 30 June. 2022–2024 are revised estimates; 2025 is preliminary and may be revised.';
+const FOOTNOTE = {
+    toDate: `${FOOTNOTE_TO_DATE} Source: QGSO, from ABS Regional population 2024–25.`,
+    projection: `${FOOTNOTE_TO_DATE} The 2046 projection is the Queensland Government's 2023 edition for the Gold Coast SA4 region, which is slightly larger than the council area; the shaded range runs from its low to its high series. The line between 2025 and 2046 is drawn straight and isn't a year-by-year path. Sources: QGSO, from ABS Regional population 2024–25; Queensland Government population projections.`,
+};
+
+const GROWTH_VIEWS = [
+    { value: 'toDate', label: 'Growth to date' },
+    { value: 'projection', label: 'Projection to 2046' },
+];
+
+const GrowthChart = () => {
+    const [view, setView] = useState('projection');
+    const toDate = view === 'toDate';
+    return (
+        <Panel
+            controls={<Segmented label="Chart view" options={GROWTH_VIEWS} value={view} onChange={setView} />}
+            footnote={FOOTNOTE[view]}
+            table={
+                <ChartDataTable
+                    caption="Gold Coast population: estimates to 2025 and the 2046 projection"
+                    columns={['Year', 'Residents', 'Status']}
+                    rows={[
+                        ...POPULATION.map((r) => [r.year, fmtInt(r.people), r.note || 'final']),
+                        ['2046', fmtInt(OUTLOOK.medium), 'projection, medium'],
+                        ['2046', `${fmtInt(OUTLOOK.low)} – ${fmtInt(OUTLOOK.high)}`, 'projection, low to high'],
+                    ]}
+                />
+            }
+        >
+            {toDate ? (
+                <LiveNote>
+                    Last year alone: <strong>+{fmtInt(LAST_YEAR_GROWTH)} people</strong> (+1.8%).
+                </LiveNote>
+            ) : (
+                <LiveNote>
+                    By 2046: <strong>{fmtInt(OUTLOOK.medium)} people</strong> on the medium projection.
+                </LiveNote>
+            )}
+            {!toDate && (
+                <Legend
+                    items={[
+                        { label: 'Residents', color: 'var(--chart-a)' },
+                        { label: '2046 projection (medium)', color: 'var(--chart-a)', variant: 'is-dashed' },
+                        { label: 'Low to high range', color: 'var(--chart-a)', variant: 'is-band' },
+                    ]}
+                />
+            )}
+            {toDate ? (
+                <InsightLineChart
+                    key="toDate"
+                    data={POPULATION}
+                    xKey="year"
+                    series={[{ dataKey: 'people', name: 'Residents', color: 'var(--chart-a)' }]}
+                    domain={[540000, 700000]}
+                    ticks={[550000, 600000, 650000, 700000]}
+                    formatY={(v) => `${v / 1000}k`}
+                    formatTooltip={fmtInt}
+                    narrowXTicks={['2015', '2017', '2019', '2021', '2023', '2025']}
+                    callout={{ dataKey: 'people', text: `+${fmtInt(TEN_YEAR_GROWTH)} in ten years` }}
+                    ariaLabel="Line chart of the Gold Coast's population rising from 561,629 in 2015 to 691,230 in 2025"
+                />
+            ) : (
+                <InsightLineChart
+                    key="projection"
+                    data={GROWTH_CHART}
+                    xKey="year"
+                    xNumeric
+                    // Draw 2015–2025 first, then the projection and its range
+                    series={[
+                        { dataKey: 'people', name: 'Residents', color: 'var(--chart-a)', animationDuration: 1200 },
+                        { dataKey: 'projected', name: 'Projection', color: 'var(--chart-a)', dashed: true, dots: false, animationBegin: 1200, animationDuration: 1200 },
+                    ]}
+                    band={{ dataKey: 'range', name: 'Range', color: 'var(--chart-a)', animationBegin: 1200 }}
+                    domain={[500000, 1200000]}
+                    ticks={[500000, 750000, 1000000]}
+                    formatY={(v) => (v >= 1000000 ? `${v / 1000000}m` : `${v / 1000}k`)}
+                    formatTooltip={fmtInt}
+                    renderTooltip={growthTooltip}
+                    xTicks={[2015, 2020, 2025, 2030, 2035, 2040, 2046]}
+                    narrowXTicks={[2015, 2025, 2035, 2046]}
+                    callout={[
+                        { dataKey: 'people', x: 2025, placement: 'below', text: `+${fmtInt(TEN_YEAR_GROWTH)} in ten years` },
+                        { dataKey: 'projected', text: `${fmtInt(OUTLOOK.medium)} projected` },
+                    ]}
+                    ariaLabel={`Line chart of the Gold Coast's population rising from 561,629 in 2015 to 691,230 in 2025, then a projection to ${fmtInt(OUTLOOK.medium)} in 2046, within a range of ${fmtInt(OUTLOOK.low)} to ${fmtInt(OUTLOOK.high)}`}
+                />
+            )}
+        </Panel>
+    );
+};
+
 const GoldCoastGrowthPage = () => (
     <InsightPage seo={INSIGHTS.goldCoastGrowth.seo}>
         <InsightHero
             eyebrow="Data story · Gold Coast · October 2026"
-            title="A million people by 2046."
+            title="Gold Coast: a million people by 2046."
             accent="Where will they live?"
             subtitle="The City of Gold Coast is planning for a million residents and 185,000 new homes. Approvals just hit a ten-year high, but are still short of the pace the plan needs, and the plan points inland and upward."
             image={HERO_IMAGE}
@@ -106,34 +227,14 @@ const GoldCoastGrowthPage = () => (
             id="growth-so-far"
             number={2}
             title="Growth so far"
-            lede={<p>The city has added almost 130,000 people in ten years, to 691,230 in June 2025.</p>}
+            lede={
+                <p>
+                    The city has added almost 130,000 people in ten years, to 691,230 in June 2025. The state&apos;s
+                    medium projection puts the region at <strong>{fmtInt(OUTLOOK.medium)} by 2046</strong>.
+                </p>
+            }
         >
-            <Panel
-                footnote="Estimated resident population of the City of Gold Coast at 30 June. 2022–2024 are revised estimates; 2025 is preliminary and may be revised. Source: QGSO, from ABS Regional population 2024–25."
-                table={
-                    <ChartDataTable
-                        caption="City of Gold Coast estimated resident population at 30 June"
-                        columns={['Year', 'Residents', 'Status']}
-                        rows={POPULATION.map((r) => [r.year, fmtInt(r.people), r.note || 'final'])}
-                    />
-                }
-            >
-                <LiveNote>
-                    Last year alone: <strong>+{fmtInt(LAST_YEAR_GROWTH)} people</strong> (+1.8%).
-                </LiveNote>
-                <InsightLineChart
-                    data={POPULATION}
-                    xKey="year"
-                    series={[{ dataKey: 'people', name: 'Residents', color: 'var(--chart-a)' }]}
-                    domain={[540000, 700000]}
-                    ticks={[550000, 600000, 650000, 700000]}
-                    formatY={(v) => `${v / 1000}k`}
-                    formatTooltip={fmtInt}
-                    narrowXTicks={['2015', '2017', '2019', '2021', '2023', '2025']}
-                    callout={{ dataKey: 'people', text: `+${fmtInt(TEN_YEAR_GROWTH)} in ten years` }}
-                    ariaLabel="Line chart of the Gold Coast's population rising from 561,629 in 2015 to 691,230 in 2025"
-                />
-            </Panel>
+            <GrowthChart />
         </Section>
 
         <Section

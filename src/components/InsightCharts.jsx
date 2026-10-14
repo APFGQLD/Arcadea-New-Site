@@ -2,8 +2,9 @@ import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'reac
 import {
     BarChart,
     Bar,
-    LineChart,
+    ComposedChart,
     Line,
+    Area,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -347,10 +348,17 @@ export function InsightBarChart({
 
 /* ------------------------------------------------------------------ */
 /*  Line chart                                                          */
-/*  series: [{ dataKey, name, color, dashed? }]                         */
-/*  callout: { dataKey, text } — label on that series' final point      */
+/*  series: [{ dataKey, name, color, dashed?, dots?, animationBegin?,   */
+/*    animationDuration? }] — timings in ms, to draw series in turn     */
+/*  callout: { dataKey, text, x?, placement? } — label on that series'  */
+/*    point at x (the final point if x is omitted), above-left or       */
+/*    'below' (below-right); may be an array of callouts                */
+/*  band: { dataKey, color, animationBegin? } — shaded range; each      */
+/*    value is [low, high]                                              */
+/*  xNumeric — space x values by size (e.g. years with a gap)           */
 /*  xTicks / narrowXTicks — show only these x values (all if omitted)   */
 /*  lineType 'stepAfter' — for rates that hold until the next change    */
+/*  renderTooltip(row) — replaces the default tooltip content           */
 /* ------------------------------------------------------------------ */
 
 export function InsightLineChart({
@@ -364,14 +372,18 @@ export function InsightLineChart({
     xTickFormat = (v) => v,
     xTicks,
     narrowXTicks = xTicks,
+    xNumeric = false,
     lineType = 'linear',
     showDots = true,
     height: fullHeight = 340,
     callout,
+    band,
+    renderTooltip,
     ariaLabel,
 }) {
     const reduced = prefersReducedMotion();
     const last = data[data.length - 1];
+    const callouts = callout ? [].concat(callout) : [];
     const heightFor = (width) => (width < NARROW ? Math.round(fullHeight * 0.85) : fullHeight);
 
     return (
@@ -398,14 +410,20 @@ export function InsightLineChart({
                     );
                 };
 
-                const CalloutLabel = ({ viewBox }) => (
-                    <text x={viewBox.x - 10} y={viewBox.y - 16} textAnchor="end" className="ic-callout">
-                        {callout.text}
-                    </text>
-                );
+                const calloutLabel = (text, below) => function CalloutLabel({ viewBox }) {
+                    return below ? (
+                        <text x={viewBox.x + 10} y={viewBox.y + 28} textAnchor="start" className="ic-callout">
+                            {text}
+                        </text>
+                    ) : (
+                        <text x={viewBox.x - 10} y={viewBox.y - 16} textAnchor="end" className="ic-callout">
+                            {text}
+                        </text>
+                    );
+                };
 
                 return (
-                    <LineChart
+                    <ComposedChart
                         width={width}
                         height={height}
                         data={data}
@@ -414,6 +432,8 @@ export function InsightLineChart({
                         <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
                         <XAxis
                             dataKey={xKey}
+                            type={xNumeric ? 'number' : 'category'}
+                            domain={xNumeric ? ['dataMin', 'dataMax'] : undefined}
                             tick={XTick}
                             ticks={shownTicks}
                             axisLine={false}
@@ -435,7 +455,7 @@ export function InsightLineChart({
                             isAnimationActive={false}
                             content={
                                 <ChartTooltip
-                                    render={(row, payload) => (
+                                    render={renderTooltip ? (row) => renderTooltip(row) : (row, payload) => (
                                         <>
                                             <strong>{row[xKey]}</strong>
                                             {payload.map((p) => (
@@ -449,6 +469,21 @@ export function InsightLineChart({
                                 />
                             }
                         />
+                        {band && (
+                            <Area
+                                dataKey={band.dataKey}
+                                name={band.name}
+                                type="linear"
+                                stroke="none"
+                                fill={band.color}
+                                fillOpacity={0.18}
+                                activeDot={false}
+                                isAnimationActive={!reduced}
+                                animationBegin={band.animationBegin ?? series.length * 250}
+                                animationDuration={1000}
+                                animationEasing="ease-out"
+                            />
+                        )}
                         {series.map((s, i) => (
                             <Line
                                 key={s.dataKey}
@@ -458,24 +493,29 @@ export function InsightLineChart({
                                 stroke={s.color}
                                 strokeWidth={2.5}
                                 strokeDasharray={s.dashed ? '6 5' : undefined}
-                                dot={showDots ? { r: 4.5, fill: s.color, stroke: 'var(--chart-card)', strokeWidth: 2 } : false}
+                                dot={showDots && s.dots !== false ? { r: 4.5, fill: s.color, stroke: 'var(--chart-card)', strokeWidth: 2 } : false}
                                 activeDot={{ r: 6, fill: s.color, stroke: 'var(--chart-card)', strokeWidth: 2 }}
                                 isAnimationActive={!reduced}
-                                animationBegin={i * 250}
-                                animationDuration={1400}
+                                animationBegin={s.animationBegin ?? i * 250}
+                                animationDuration={s.animationDuration ?? 1400}
                                 animationEasing="ease-in-out"
                             />
                         ))}
-                        {callout && (
-                            <ReferenceDot
-                                x={last[xKey]}
-                                y={last[callout.dataKey]}
-                                r={0}
-                                ifOverflow="visible"
-                                label={<CalloutLabel />}
-                            />
-                        )}
-                    </LineChart>
+                        {callouts.map((c) => {
+                            const row = c.x === undefined ? last : data.find((r) => r[xKey] === c.x);
+                            const Label = calloutLabel(c.text, c.placement === 'below');
+                            return (
+                                <ReferenceDot
+                                    key={c.text}
+                                    x={row[xKey]}
+                                    y={row[c.dataKey]}
+                                    r={0}
+                                    ifOverflow="visible"
+                                    label={<Label />}
+                                />
+                            );
+                        })}
+                    </ComposedChart>
                 );
             }}
         </ChartFrame>
