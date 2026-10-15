@@ -81,8 +81,8 @@ function generateSitemapXML(projects, blogPosts) {
         addUrl(route, priority, changefreq);
     });
 
-    // 2. Dynamic project pages (Sanity)
-    projects.forEach(project => {
+    // 2. Dynamic project pages (Sanity). Unlisted ones are direct-link only.
+    projects.filter(project => !project.unlisted).forEach(project => {
         addUrl(`/project/${project.slug}`, '0.8', 'weekly', project.updatedAt || now);
     });
 

@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { fetchAllProjects, fetchAllBlogPosts, EXCLUDED_ROUTES } from './cms.js';
 import { formatListingPrice } from './src/utils/priceFormat.js';
+import { truncate, projectSeoTitle, projectSeoDescription } from './src/utils/projectSeo.js';
 import { INSIGHTS, INSIGHTS_INDEX } from './src/data/insights/shared.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,17 +27,13 @@ function stripBaseMetaTags(html) {
 const DEFAULT_DESCRIPTION = 'Discover premium off-plan investment properties in Bali and Australia. Arcadea Property offers curated coastal and island collections with expert guidance.';
 
 /**
- * Trim CMS copy to a search-snippet-friendly length, cutting on a word
- * boundary rather than mid-word. Returns '' for empty/missing input so
- * callers can fall back rather than emitting an empty description tag.
+ * Link text for a project in prerendered listings. House-and-land packages
+ * lead with the design, so links to several packages in one estate differ.
  */
-function truncate(text, maxLength) {
-    const clean = String(text || '').replace(/\s+/g, ' ').trim();
-    if (!clean) return '';
-    if (clean.length <= maxLength) return clean;
-    const cut = clean.slice(0, maxLength);
-    const lastSpace = cut.lastIndexOf(' ');
-    return `${(lastSpace > 0 ? cut.slice(0, lastSpace) : cut).replace(/[,;:.\s]+$/, '')}…`;
+function projectLinkLabel(p) {
+    const seoTitle = projectSeoTitle({ ...p, name: p.title });
+    if (seoTitle !== (p.title || '').trim()) return seoTitle;
+    return p.location ? `${p.title} — ${p.location}` : p.title;
 }
 
 /**
@@ -119,7 +116,7 @@ function staticPageBodyHTML(routeObj, listLinks = []) {
 function homeBodyHTML(projects, blogPosts, staticRoutes) {
     const listingLinks = projects.map(p => ({
         href: `/project/${p.slug}`,
-        label: p.location ? `${p.title} — ${p.location}` : p.title,
+        label: projectLinkLabel(p),
     }));
     // Hand-built pages (One Park Lane, The Luc sub-pages, IPDC, ...) that
     // aren't Sanity projects or posts. Skip any a project link already covers.
@@ -235,8 +232,9 @@ function blogPostJSONLD(post, url) {
  */
 function generateProjectHTML(project, baseHTML) {
     const slug = project.slug;
-    const title = escapeAttr(project.title || 'Project');
-    const description = escapeAttr(truncate(project.description, 160) || DEFAULT_DESCRIPTION);
+    const seoTitle = projectSeoTitle({ ...project, name: project.title }) || 'Project';
+    const title = escapeAttr(seoTitle);
+    const description = escapeAttr(projectSeoDescription({ ...project, name: project.title }, project.description) || DEFAULT_DESCRIPTION);
     const image = project.image || `${SITE_URL}/og-image.jpg`;
     const url = `${SITE_URL}/project/${slug}`;
 
@@ -245,7 +243,7 @@ function generateProjectHTML(project, baseHTML) {
             { name: 'Home', url: `${SITE_URL}/` },
             { name: 'Our Collections', url: `${SITE_URL}/properties` },
             ...(project.collectionTitle ? [{ name: project.collectionTitle, url: `${SITE_URL}/properties` }] : []),
-            { name: project.title || 'Project', url },
+            { name: seoTitle, url },
         ]),
         propertyJSONLD(project, url)
     );
@@ -263,6 +261,7 @@ function generateProjectHTML(project, baseHTML) {
     <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${image}">
     <link rel="canonical" href="${url}">
+    ${project.unlisted ? '<meta name="robots" content="noindex">' : ''}
     ${structuredData}
 `;
 
@@ -397,6 +396,9 @@ async function prerender() {
     console.log('📡 Fetching projects from Sanity...');
     const projects = await fetchAllProjects();
     console.log(`✅ Found ${projects.length} projects\n`);
+    // Unlisted projects still get their own page (for direct links) but are
+    // never linked from the homepage or /properties.
+    const listedProjects = projects.filter(p => !p.unlisted);
 
     // Fetch all blog posts
     console.log('📡 Fetching blog posts from Sanity...');
@@ -503,7 +505,7 @@ async function prerender() {
     // Index pages link out to every listing / article so crawlers can reach
     // them from the HTML alone, not just via the sitemap.
     const listLinksByPath = {
-        '/properties': projects.map(p => ({ href: `/project/${p.slug}`, label: p.location ? `${p.title} — ${p.location}` : p.title })),
+        '/properties': listedProjects.map(p => ({ href: `/project/${p.slug}`, label: projectLinkLabel(p) })),
         '/news': [
             { href: INSIGHTS_INDEX.path, label: INSIGHTS_INDEX.seo.title },
             ...blogPosts.map(p => ({ href: `/news/${p.slug}`, label: p.title })),
@@ -531,7 +533,7 @@ async function prerender() {
     // Homepage: the page search engines crawl most often, so it links directly
     // to every listing, article and section. Head tags stay as the template's
     // (they're already the homepage's).
-    fs.writeFileSync(indexPath, injectBody(baseHTML, homeBodyHTML(projects, blogPosts, staticRoutes)));
+    fs.writeFileSync(indexPath, injectBody(baseHTML, homeBodyHTML(listedProjects, blogPosts, staticRoutes)));
     generated++;
     console.log('  ✓ Generated: /index.html (homepage links)');
 

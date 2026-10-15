@@ -256,6 +256,9 @@ export const fetchProjectDetail = async (idOrSlug) => {
         "name": title,
         description,
         statusTag,
+        tag,
+        location,
+        features,
         "collection": *[_type == "propertyCollection" && references(^._id)][0].collectionId,
         "heroImage": image.asset->url + "${HERO_IMAGE_PARAMS}",
         videoUrl,
@@ -265,6 +268,7 @@ export const fetchProjectDetail = async (idOrSlug) => {
           amount
         },
         status,
+        unlisted,
         ctaLabel,
         ctaLink,
         agents[]-> {

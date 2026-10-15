@@ -8,6 +8,11 @@
   RewriteCond %{HTTP_HOST} ^arcadea\.com\.au$ [NC]
   RewriteRule ^(.*)$ https://www.arcadea.com.au/$1 [L,R=301]
 
+  # One URL per page: canonicals and the sitemap use the no-trailing-slash
+  # form, so 301 the slash variant (/about/ -> /about) rather than serving
+  # the same page at both. The homepage "/" doesn't match (needs 1+ chars).
+  RewriteRule ^(.+)/$ https://www.arcadea.com.au/$1 [L,R=301]
+
   RewriteRule ^index\.html$ - [L]
 
   # Serve a prerendered directory's index.html directly at the

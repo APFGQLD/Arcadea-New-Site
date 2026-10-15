@@ -233,6 +233,14 @@ export default {
       },
     },
     {
+      name: 'unlisted',
+      title: 'Unlisted',
+      type: 'boolean',
+      group: 'listing',
+      description: 'Private listing: the page still works for anyone with the direct link (/project/<Property ID>), but it is kept out of the sitemap, search engines and the homepage links. Also leave it out of every Property Collection so it doesn\'t appear on /properties.',
+      initialValue: false,
+    },
+    {
       name: 'ctaLabel',
       title: 'Call-to-Action Label',
       type: 'string',
