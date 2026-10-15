@@ -32,13 +32,14 @@ import {
     LinkIcon
 } from '@heroicons/react/24/outline';
 import { FaBed, FaBath, FaToilet, FaCar } from 'react-icons/fa6';
-import { PortableText } from '@portabletext/react';
+import { PortableText, toPlainText } from '@portabletext/react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ComparisonTable from '../components/ComparisonTable';
 import EnquiryForm from '../components/EnquiryForm';
 import usePageTitle from '../hooks/usePageTitle';
 import { formatListingPrice } from '../utils/priceFormat';
 import { rafThrottle } from '../utils/rafThrottle';
+import { projectSeoTitle, projectSeoDescription } from '../utils/projectSeo';
 import './ProjectDetailPage.css';
 
 const STATUS_STYLES = {
@@ -48,6 +49,10 @@ const STATUS_STYLES = {
     'coming soon': 'status-coming-soon',
     'off market': 'status-off-market',
 };
+
+// Description is Portable Text from Studio, or a plain string on legacy entries
+const descriptionText = (description) =>
+    Array.isArray(description) ? toPlainText(description) : description;
 
 const ProjectDetailPage = () => {
     const { id } = useParams();
@@ -71,7 +76,12 @@ const ProjectDetailPage = () => {
     // names that agent
     const [enquiryAgent, setEnquiryAgent] = useState(null);
 
-    usePageTitle(project?.name);
+    // Same title/description the prerender emits — without a description the
+    // hook would swap the page's own one for the site default after load.
+    usePageTitle(project ? projectSeoTitle(project) : undefined, {
+        description: project ? projectSeoDescription(project, descriptionText(project.description)) : undefined,
+        noindex: !!project?.unlisted,
+    });
 
     // The mini section-menu takes over the top of the viewport (replacing the
     // main Navbar) once it becomes sticky, detected via a zero-height sentinel

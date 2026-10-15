@@ -42,6 +42,10 @@ async function fetchOrFail(label, query) {
  * `description` is Portable Text in Studio — pt::text() flattens it to plain
  * text (paragraphs joined by blank lines). The coalesce keeps any legacy
  * plain-string descriptions working.
+ *
+ * Unlisted properties are included — their page still has to be prerendered
+ * for direct links — so callers that list or advertise projects must skip
+ * any with `unlisted` set.
  */
 export async function fetchAllProjects() {
     return fetchOrFail('projects', `
@@ -50,6 +54,8 @@ export async function fetchAllProjects() {
             title,
             "description": coalesce(pt::text(description), description),
             location,
+            tag,
+            statusTag,
             price,
             bedrooms,
             bathrooms,
@@ -57,6 +63,7 @@ export async function fetchAllProjects() {
             features,
             address,
             map,
+            unlisted,
             "image": image.asset->url,
             "collectionTitle": *[_type == "propertyCollection" && references(^._id)][0].title,
             "updatedAt": _updatedAt
