@@ -94,8 +94,10 @@
     cursor: not-allowed;
 }
 
-/* Loading Spinner */
-.spinner {
+/* Submit-button spinner. Namespaced: every page's CSS is global once loaded,
+   and a generic .spinner elsewhere once blew this up to 60px mid-send. */
+.btn-spinner {
+    flex-shrink: 0;
     width: 18px;
     height: 18px;
     border: 2px solid rgba(255, 255, 255, 0.3);

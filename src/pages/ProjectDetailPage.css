@@ -1424,15 +1424,6 @@
     gap: 2rem;
 }
 
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid rgba(133, 113, 77, 0.2);
-    border-top-color: var(--accent-gold);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
 .loading-title {
     font-size: 2rem;
     font-weight: 600;

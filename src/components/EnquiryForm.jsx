@@ -176,7 +176,7 @@ const EnquiryForm = ({
             <button type="submit" className="btn btn-primary btn-large" disabled={busy}>
                 {busy ? (
                     <>
-                        <span className="spinner"></span>
+                        <span className="btn-spinner"></span>
                         {t('contact.sending', 'Sending...')}
                     </>
                 ) : (
