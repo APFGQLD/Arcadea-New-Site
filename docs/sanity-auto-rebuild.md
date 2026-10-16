@@ -11,6 +11,11 @@ Publish in Sanity → Sanity webhook → GitHub Action (.github/workflows/sanity
 The Action waits 3 minutes and restarts that wait on every new publish, so a
 batch of edits produces a single rebuild.
 
+The same Action also regenerates that listing's brochure PDF on every
+`property` publish and attaches it to the property's **Resources** field in
+Sanity (see `scripts/generateBrochure.js`). It runs with `continue-on-error`,
+so a brochure failure never blocks the site rebuild.
+
 ## One-time setup
 
 ### 1. GitHub token
@@ -36,6 +41,16 @@ GitHub → Settings → Developer settings → Personal access tokens → **Fine
 | HTTP method | POST |
 | HTTP headers | `Authorization` = `Bearer <your token>` and `Accept` = `application/vnd.github+json` |
 | Trigger on drafts | Off |
+
+### 3. Sanity write token (for brochure auto-generation)
+
+[sanity.io/manage](https://www.sanity.io/manage) → project **b6pkfjxp** → API → Tokens →
+**Add API token**, permission **Editor**.
+
+GitHub → repo → **Settings → Secrets and variables → Actions → New repository secret**:
+name it `SANITY_WRITE_TOKEN`, paste the token value. Without this secret the
+brochure step just fails harmlessly (`continue-on-error`) — the site rebuild
+is unaffected either way.
 
 ## Checking it works
 
