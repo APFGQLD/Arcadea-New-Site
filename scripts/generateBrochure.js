@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import puppeteer from 'puppeteer';
 import sharp from 'sharp';
@@ -62,8 +63,31 @@ const QUERY = `*[_type == "property" && (propertyId == $slug || _id == $slug)][0
   features,
   quickFacts[]{ label, value, order },
   gallery[]{ "url": image.asset->url + "?w=1400&auto=format&q=80", caption },
-  agents[]->{ name, jobTitle, phone, email }
+  agents[]->{ name, jobTitle, phone, email },
+  "existingAutoBrochureHash": resources[_key == $autoBrochureKey][0].sourceHash
 }`;
+
+// Attaching the brochure to the property's own Resources field means our
+// own upload is itself an "Update" to a watched document — without this
+// guard, that write re-fires the Sanity webhook, which re-runs this exact
+// script, which uploads again, forever. Hashing the content that actually
+// feeds the brochure (everything the fetched property carries, except the
+// Resources field itself) lets a re-triggered run recognize "nothing I
+// actually render has changed" and exit immediately — no new PDF, no
+// upload, no write, so nothing re-fires the webhook. A genuine content edit
+// still produces one harmless extra run (it regenerates, the resulting
+// webhook fires once more, finds the hash now matches, and stops there) —
+// bounded to one echo per real edit, never unbounded.
+function computeSourceHash(property) {
+  // GROQ always returns this fixed query's fields in the same order, and
+  // preserves each array's own document order, so a plain stringify is
+  // already deterministic between runs — no custom key-sorting needed (and
+  // a JSON.stringify array replacer would wrongly apply across every
+  // nesting level, silently dropping fields like price.amount or
+  // quickFacts[].value that aren't in the top-level key list).
+  const { existingAutoBrochureHash, ...contentFields } = property;
+  return crypto.createHash('sha256').update(JSON.stringify(contentFields)).digest('hex');
+}
 
 // Split so the template can show the dollar amount large and any prefix
 // ("House & Land", "Offers Over") as small subtext beneath it, instead of
@@ -315,10 +339,18 @@ async function main() {
     process.exit(1);
   }
 
-  const property = await client.fetch(QUERY, { slug });
+  const property = await client.fetch(QUERY, { slug, autoBrochureKey: AUTO_BROCHURE_KEY });
   if (!property) {
     console.error(`No published property found with propertyId or _id "${slug}"`);
     process.exit(1);
+  }
+
+  const shouldUpload = process.argv.includes('--upload');
+  const sourceHash = computeSourceHash(property);
+
+  if (shouldUpload && property.existingAutoBrochureHash === sourceHash) {
+    console.log(`Brochure already up to date for "${property.title}" — nothing changed, skipping.`);
+    return;
   }
 
   const logoWhite = toDataUri('src/assets/brand-logo-white.png');
@@ -372,8 +404,8 @@ async function main() {
     await browser.close();
   }
 
-  if (process.argv.includes('--upload')) {
-    await uploadBrochureToSanity(property, outPath);
+  if (shouldUpload) {
+    await uploadBrochureToSanity(property, outPath, sourceHash);
   }
 }
 
@@ -383,7 +415,7 @@ async function main() {
 // resource a human added by hand keeps its own key and is left alone.
 // Dynamic import so a plain `npm run brochure` (no --upload) never requires
 // a write token — sanityWriteClient.js exits the process if one is missing.
-async function uploadBrochureToSanity(property, pdfPath) {
+async function uploadBrochureToSanity(property, pdfPath, sourceHash) {
   const { writeClient } = await import('./sanityWriteClient.js');
 
   const asset = await writeClient.assets.upload('file', fs.readFileSync(pdfPath), {
@@ -404,6 +436,10 @@ async function uploadBrochureToSanity(property, pdfPath) {
           _type: 'object',
           label: 'Brochure',
           file: { _type: 'file', asset: { _type: 'reference', _ref: asset._id } },
+          // Not a real schema field (Studio won't show it) — read back by
+          // computeSourceHash's caller next run to detect a no-op retrigger
+          // from this very upload and stop there instead of looping.
+          sourceHash,
         },
       ],
     })
