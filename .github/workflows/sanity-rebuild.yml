@@ -7,6 +7,8 @@
 #
 # Flow: Sanity webhook -> GitHub repository_dispatch (this workflow)
 #       -> empty commit on main -> Hostinger's normal auto-deploy.
+#       -> (property publishes only) regenerate that listing's brochure PDF
+#          and attach it to its Resources field in Sanity.
 #
 # Setup lives in Sanity (manage.sanity.io -> API -> Webhooks); see
 # docs/sanity-auto-rebuild.md.
@@ -39,6 +41,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Generate & attach brochure (property publishes only)
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.type == 'property'
+        continue-on-error: true # never block the site rebuild on this
+        env:
+          VITE_SANITY_WRITE_TOKEN: ${{ secrets.SANITY_WRITE_TOKEN }}
+        run: |
+          npm ci
+          node scripts/generateBrochure.js "${{ github.event.client_payload.id }}" --upload
 
       - name: Push empty commit to trigger Hostinger deploy
         env:

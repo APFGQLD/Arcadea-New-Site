@@ -14,8 +14,15 @@ const SITE_URL = 'https://www.arcadea.com.au';
  * fields (title, price, description, quickFacts, features, gallery, agents),
  * laid out to match the existing hand-made brochures.
  *
- * Usage: npm run brochure -- <propertyId>
+ * Usage: npm run brochure -- <propertyId|_id> [--upload]
  * Output: brochures/<propertyId>.pdf
+ *
+ * --upload additionally uploads the PDF to Sanity and attaches it to that
+ * property's Resources field (replacing any brochure this script uploaded
+ * before), so Studio shows it the same as a manual upload would. This is
+ * what the Sanity-publish GitHub Action runs — see .github/workflows/
+ * sanity-rebuild.yml and docs/sanity-auto-rebuild.md. It needs
+ * VITE_SANITY_WRITE_TOKEN (see scripts/sanityWriteClient.js).
  */
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -29,7 +36,17 @@ const AGENCY = {
   email: 'admin@arcadea.com.au',
 };
 
-const QUERY = `*[_type == "property" && propertyId == $slug][0]{
+// Fixed _key for the Resources array entry this script writes, so a rerun
+// (next publish) replaces its own prior upload instead of piling up
+// duplicates — a human's manually-added resources keep their own keys and
+// are left untouched.
+const AUTO_BROCHURE_KEY = 'auto-generated-brochure';
+
+// The webhook that triggers automatic generation hands us the Sanity
+// document _id, not the propertyId slug used everywhere else — accept
+// either so the same command works for a manual `npm run brochure` and CI.
+const QUERY = `*[_type == "property" && (propertyId == $slug || _id == $slug)][0]{
+  _id,
   title,
   propertyId,
   location,
@@ -294,13 +311,13 @@ function renderHtml({ property, particulars, descriptionParagraphs, galleryImage
 async function main() {
   const slug = process.argv[2];
   if (!slug) {
-    console.error('Usage: npm run brochure -- <propertyId>');
+    console.error('Usage: npm run brochure -- <propertyId|_id> [--upload]');
     process.exit(1);
   }
 
   const property = await client.fetch(QUERY, { slug });
   if (!property) {
-    console.error(`No published property found with propertyId "${slug}"`);
+    console.error(`No published property found with propertyId or _id "${slug}"`);
     process.exit(1);
   }
 
@@ -332,20 +349,58 @@ async function main() {
 
   const html = renderHtml({ property, particulars, descriptionParagraphs, galleryImages, agent, logoWhite, logoBlack, heroTopIsLight, qrDataUri });
 
+  const outDir = path.join(ROOT, 'brochures');
+  fs.mkdirSync(outDir, { recursive: true });
+  const outPath = path.join(outDir, `${property.propertyId}.pdf`);
+
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const outDir = path.join(ROOT, 'brochures');
-    fs.mkdirSync(outDir, { recursive: true });
-    const outPath = path.join(outDir, `${property.propertyId}.pdf`);
-
     await page.pdf({ path: outPath, format: 'A4', printBackground: true });
     console.log(`Brochure generated: ${outPath}`);
   } finally {
     await browser.close();
   }
+
+  if (process.argv.includes('--upload')) {
+    await uploadBrochureToSanity(property, outPath);
+  }
+}
+
+// Uploads the PDF to Sanity and attaches it to the property's Resources
+// field under a fixed key, so re-running on the next publish replaces this
+// script's own prior upload instead of accumulating duplicates — any
+// resource a human added by hand keeps its own key and is left alone.
+// Dynamic import so a plain `npm run brochure` (no --upload) never requires
+// a write token — sanityWriteClient.js exits the process if one is missing.
+async function uploadBrochureToSanity(property, pdfPath) {
+  const { writeClient } = await import('./sanityWriteClient.js');
+
+  const asset = await writeClient.assets.upload('file', fs.readFileSync(pdfPath), {
+    filename: `${property.propertyId}-brochure.pdf`,
+    contentType: 'application/pdf',
+  });
+
+  const existingResources = (await writeClient.fetch(`*[_id == $id][0].resources`, { id: property._id })) || [];
+  const keptResources = existingResources.filter((r) => r._key !== AUTO_BROCHURE_KEY);
+
+  await writeClient
+    .patch(property._id)
+    .set({
+      resources: [
+        ...keptResources,
+        {
+          _key: AUTO_BROCHURE_KEY,
+          _type: 'object',
+          label: 'Brochure',
+          file: { _type: 'file', asset: { _type: 'reference', _ref: asset._id } },
+        },
+      ],
+    })
+    .commit();
+
+  console.log(`Brochure uploaded to Sanity and attached to "${property.title}" (${property._id}).`);
 }
 
 main().catch((err) => {
