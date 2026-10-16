@@ -24,6 +24,10 @@ dist-ssr
 studio/dist
 studio/.sanity
 
+# Generated brochure PDFs (scripts/generateBrochure.js) — regenerated from
+# Sanity on demand, not source.
+brochures/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
