@@ -353,7 +353,16 @@ async function main() {
   fs.mkdirSync(outDir, { recursive: true });
   const outPath = path.join(outDir, `${property.propertyId}.pdf`);
 
-  const browser = await puppeteer.launch({ headless: true });
+  // --no-sandbox is required on GitHub-hosted runners, which don't support
+  // Chrome's unprivileged-namespace sandbox out of the box (it refuses to
+  // launch at all otherwise: "No usable sandbox!"). The runner is a
+  // disposable container rendering our own known-good HTML — not a
+  // meaningful attack surface — so this is the standard, documented
+  // workaround rather than a real security tradeoff.
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : [],
+  });
   try {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
