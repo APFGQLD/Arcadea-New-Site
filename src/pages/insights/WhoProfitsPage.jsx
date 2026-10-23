@@ -350,7 +350,7 @@ const HeadlinePair = () => (
 );
 
 const WhoProfitsPage = () => (
-    <InsightPage seo={INSIGHTS.whoProfits.seo} noindex>
+    <InsightPage seo={INSIGHTS.whoProfits.seo}>
         <InsightHero
             eyebrow="Buyers and sellers · Property news · October 2026"
             title="Who profits when"

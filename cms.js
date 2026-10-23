@@ -97,9 +97,7 @@ export async function fetchAllBlogPosts() {
  * (The /insights index and every insight page are public. To hold a page
  *  back, list its route here and pass `noindex` to its InsightPage.)
  */
-// Held back pending its legal read (it names News Corp and REA Group): to
-// publish, remove it here, drop `noindex` from WhoProfitsPage and add
-// 'whoProfits' to ORDER in InsightsIndexPage.
-const HELD_INSIGHTS = ['/insights/who-profits-when-you-buy-or-sell'];
+// None held at the moment.
+const HELD_INSIGHTS = [];
 
 export const EXCLUDED_ROUTES = ['/admin', '/join', '/tools', ...HELD_INSIGHTS];
