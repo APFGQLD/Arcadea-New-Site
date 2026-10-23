@@ -125,6 +125,20 @@ export const INSIGHTS = {
             image: 'https://i.ytimg.com/vi/a49RtqW4Xa0/maxresdefault.jpg',
         },
     },
+    sameDip: {
+        path: '/insights/same-number-different-fear',
+        poster: 'https://i.ytimg.com/vi/PdcjCKr4Vn4/hqdefault.jpg',
+        duration: '1:13',
+        date: 'Oct 2026',
+        tag: 'Brisbane',
+        title: 'Same number, different fear',
+        blurb: 'Brisbane values are 5.4% off their peak, and 55.4% higher than five years ago. What the dip, the 2022 downturn and rents show.',
+        seo: {
+            title: 'Brisbane home values: the dip vs the five-year climb',
+            description: 'Brisbane values are 5.4% below their May peak but 55% higher than five years ago. What the dip, the 2022 downturn and rising rents show.',
+            image: 'https://i.ytimg.com/vi/PdcjCKr4Vn4/hqdefault.jpg',
+        },
+    },
 };
 
 /** The notes under "Important information", shared by every page. */

@@ -221,15 +221,16 @@ export function ReelVideo({ src, poster, title, duration }) {
 }
 
 /**
- * A landscape YouTube video, tap to play. Nothing loads from YouTube until
- * it's played (youtube-nocookie embed).
+ * A YouTube video, tap to play: landscape, or 9:16 like the reel for a
+ * Short (`vertical`). Nothing loads from YouTube until it's played
+ * (youtube-nocookie embed).
  */
-export function YouTubeVideo({ youtubeId, poster, title, duration }) {
+export function YouTubeVideo({ youtubeId, poster, title, duration, vertical = false }) {
     const [playing, setPlaying] = useState(false);
 
     return (
-        <figure className="ins-reel ins-yt">
-            <div className="ins-reel-frame ins-yt-frame">
+        <figure className={`ins-reel ${vertical ? '' : 'ins-yt'}`}>
+            <div className={`ins-reel-frame ${vertical ? 'ins-yt-vertical' : 'ins-yt-frame'}`}>
                 {playing ? (
                     <iframe
                         src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&cc_load_policy=1`}
@@ -275,12 +276,13 @@ function HeroStats({ stats }) {
 /**
  * Dark photo hero (dark in both themes). `image` is { src, srcSet?, position? };
  * `video` is the reel, shown beside the copy on desktop and under it on phones;
- * a `video.youtubeId` makes it a landscape YouTube video with a wider column.
+ * a `video.youtubeId` makes it a landscape YouTube video with a wider column
+ * (or a Short in the reel's column, with `video.vertical`).
  */
 export function InsightHero({ eyebrow, title, accent, subtitle, stats, video, image, notice }) {
     const youtube = Boolean(video?.youtubeId);
     return (
-        <header className={`ins-hero ${youtube ? 'has-landscape' : ''}`}>
+        <header className={`ins-hero ${youtube && !video.vertical ? 'has-landscape' : ''}`}>
             {image && (
                 <div className="ins-hero-media" aria-hidden="true" style={{ '--pos': image.position || '50% 50%' }}>
                     <picture>

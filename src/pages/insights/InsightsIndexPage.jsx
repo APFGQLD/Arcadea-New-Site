@@ -5,7 +5,7 @@ import { Segmented } from '../../components/InsightCharts';
 import { INSIGHTS, INSIGHTS_INDEX, GENERAL_ADVICE, LICENCE } from '../../data/insights/shared';
 
 // Newest first; 001 last
-const ORDER = ['stampDuty', 'rates', 'migration', 'goldCoastGrowth', 'defenceHousing', 'newVsEstablished'];
+const ORDER = ['sameDip', 'whoProfits', 'stampDuty', 'rates', 'migration', 'goldCoastGrowth', 'defenceHousing', 'newVsEstablished'];
 const ITEMS = ORDER.map((key) => INSIGHTS[key]);
 
 const FILTERS = ['All', ...new Set(ITEMS.map((i) => i.tag))];
@@ -69,8 +69,13 @@ const InsightsIndexPage = () => {
                             >
                                 <span className="ins-index-thumb">
                                     <img src={item.poster} alt="" loading="lazy" decoding="async" />
-                                    <span className="ins-index-play" aria-hidden="true"><PlayIcon /></span>
-                                    <span className="ins-index-duration">{item.duration}</span>
+                                    {/* A page whose video isn't out yet has no duration */}
+                                    {item.duration && (
+                                        <>
+                                            <span className="ins-index-play" aria-hidden="true"><PlayIcon /></span>
+                                            <span className="ins-index-duration">{item.duration}</span>
+                                        </>
+                                    )}
                                 </span>
                                 <span className="ins-index-body">
                                     <span className="ins-related-tag">{item.tag} · {item.date}</span>

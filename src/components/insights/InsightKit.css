@@ -344,7 +344,8 @@
     border-radius: 22px;
 }
 
-.ins-yt-frame iframe {
+.ins-yt-frame iframe,
+.ins-yt-vertical iframe {
     display: block;
     width: 100%;
     height: 100%;
