@@ -13,7 +13,7 @@ import './i18n';
 // for the Google tag)
 const isStaffPage = /^\/(admin|studio)/.test(window.location.pathname);
 if (import.meta.env.PROD && !isStaffPage) {
-  Clarity.init('vcvl03ur37');
+  Clarity.init('z740m6fzn5');
 }
 
 createRoot(document.getElementById('root')).render(
