@@ -40,6 +40,8 @@ const StampDutyPage = lazy(() => import('./pages/insights/StampDutyPage'));
 const InterestRatesPage = lazy(() => import('./pages/insights/InterestRatesPage'));
 const WhoProfitsPage = lazy(() => import('./pages/insights/WhoProfitsPage'));
 const SameDipPage = lazy(() => import('./pages/insights/SameDipPage'));
+// Campaign landing pages (email and paid traffic)
+const CommercialIndustrialPage = lazy(() => import('./pages/campaigns/CommercialIndustrialPage'));
 
 function App() {
   const location = useLocation();
@@ -83,6 +85,9 @@ function App() {
           <Route path="/insights/interest-rates-repayments-2022-2026" element={<Suspense fallback={null}><InterestRatesPage /></Suspense>} />
           <Route path="/insights/who-profits-when-you-buy-or-sell" element={<Suspense fallback={null}><WhoProfitsPage /></Suspense>} />
           <Route path="/insights/same-number-different-fear" element={<Suspense fallback={null}><SameDipPage /></Suspense>} />
+
+          {/* Campaign landing pages (titles/SEO in data/campaigns/shared.js) */}
+          <Route path="/campaigns/commercial"element={<Suspense fallback={null}><CommercialIndustrialPage /></Suspense>} />
 
           {/* Sanity Studio, embedded at /studio — must come before the short-link catch-all */}
           <Route

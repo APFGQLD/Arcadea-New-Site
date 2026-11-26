@@ -5,6 +5,7 @@ import { fetchAllProjects, fetchAllBlogPosts, EXCLUDED_ROUTES } from './cms.js';
 import { formatListingPrice } from './src/utils/priceFormat.js';
 import { truncate, projectSeoTitle, projectSeoDescription } from './src/utils/projectSeo.js';
 import { INSIGHTS, INSIGHTS_INDEX } from './src/data/insights/shared.js';
+import { CAMPAIGNS } from './src/data/campaigns/shared.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -499,6 +500,9 @@ async function prerender() {
             ...i.seo,
             parent: { path: INSIGHTS_INDEX.path, title: INSIGHTS_INDEX.seo.title },
         })),
+        // Campaign landing pages: titles, descriptions and share images come
+        // from src/data/campaigns/shared.js, the same values the pages use
+        ...Object.values(CAMPAIGNS).map((c) => ({ path: c.path, ...c.seo })),
     ];
 
     console.log('\n📡 Generating static routes...');
